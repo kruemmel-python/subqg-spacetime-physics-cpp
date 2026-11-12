@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 1,
+  "data": {
+    "source": "VizieR J/AJ/149/180 (Oh et al. 2015), rotdmbar and rotdm tables",
+    "semanticSha256": {
+      "rotdmbar": "50DC8DBA05E819F2744A5E9F9240C4B112DB686068653B1CC7D1CD7B350C18CE",
+      "rotdm": "3C6604FA8CB75CDD3B7465A7BDAE6BB6042D187EE64DAC062CCE1A8CBBBC9702"
+    },
+    "totalDataRows": 876,
+    "darkMatterDataRows": 742,
+    "matchedRows": 742,
+    "retainedPhysicalRows": 702,
+    "retainedGalaxies": 22,
+    "galaxyNames": [
+      "CVnIdwA",
+      "DDO_101",
+      "DDO_126",
+      "DDO_133",
+      "DDO_154",
+      "DDO_168",
+      "DDO_210",
+      "DDO_216",
+      "DDO_43",
+      "DDO_50",
+      "DDO_52",
+      "DDO_53",
+      "DDO_70",
+      "DDO_87",
+      "HARO_36",
+      "IC_10",
+      "IC_1613",
+      "NGC_1569",
+      "NGC_2366",
+      "NGC_3738",
+      "UGC_8508",
+      "WLM"
+    ],
+    "excluded": {
+      "nonPositiveReconstructedBaryonicVelocitySquared": 40,
+      "unmatchedTotalRows": 134,
+      "unmatchedDarkMatterRows": 0
+    }
+  },
+  "protocol": {
+    "independentSurvey": true,
+    "fittedOnLittleThings": false,
+    "frozenFrom": "SPARC training subset in sparc_rotation_validation.json",
+    "baryonicReconstruction": "Vbar^2 = Vtotal^2 - Vdm^2 at matched physical radius",
+    "radiusMatchToleranceKpc": 0.0001,
+    "systematicFloorDex": 0.05,
+    "baryonicModelFloorDex": 0.1,
+    "caveat": "The published DM-only curve is itself obtained by subtracting the authors baryonic mass model; reconstructed gbar is therefore model-correlated and its full covariance is unavailable in this table."
+  },
+  "models": {
+    "newton": {
+      "parametersFittedHere": 0,
+      "metrics": {
+        "galaxies": 22,
+        "points": 702,
+        "rmsDex": 0.7763026753078774,
+        "medianAbsoluteResidualDex": 0.7160930343266827,
+        "meanBiasDex": -0.6688381507688993,
+        "chiSquare": 20413.437725551354,
+        "reducedChiSquare": 29.078971119019023,
+        "fractionWithinOneSigma": 0.16524216524216523,
+        "fractionWithinTwoSigma": 0.25213675213675213,
+        "worstGalaxies": [
+          {
+            "name": "DDO_101",
+            "points": 8,
+            "rmsDex": 1.8598550596086079,
+            "medianResidualDex": -1.5333683173081587
+          },
+          {
+            "name": "NGC_3738",
+            "points": 12,
+            "rmsDex": 1.259837722844413,
+            "medianResidualDex": -1.2450590362947889
+          },
+          {
+            "name": "UGC_8508",
+            "points": 24,
+            "rmsDex": 1.2586790632150977,
+            "medianResidualDex": -1.1964193202166005
+          },
+          {
+            "name": "DDO_87",
+            "points": 33,
+            "rmsDex": 1.0451999427465692,
+            "medianResidualDex": -1.012428716093007
+          },
+          {
+            "name": "DDO_52",
+            "points": 16,
+            "rmsDex": 0.9694282557538549,
+            "medianResidualDex": -0.9450699061549397
+          },
+          {
+            "name": "DDO_154",
+            "points": 55,
+            "rmsDex": 0.9693671094427182,
+            "medianResidualDex": -0.967276185021877
+          },
+          {
+            "name": "DDO_133",
+            "points": 19,
+            "rmsDex": 0.8741416679482057,
+            "medianResidualDex": -0.8766585381379208
+          },
+          {
+            "name": "WLM",
+            "points": 132,
+            "rmsDex": 0.8430392924029462,
+            "medianResidualDex": -0.8528093407598067
+          },
+          {
+            "name": "DDO_216",
+            "points": 12,
+            "rmsDex": 0.787830139212834,
+            "medianResidualDex": -0.5950120881994092
+          },
+          {
+            "name": "DDO_43",
+            "points": 9,
+            "rmsDex": 0.7667685287657712,
+            "medianResidualDex": -0.6729843496394334
+          }
+        ]
+      }
+    },
+    "subqgDualStrain": {
+      "equation": "sqrt(gbar^2 + gbar*a0)",
+      "parametersFittedHere": 0,
+      "frozenA0MetersPerSecondSquared": 1.465547840958916e-10,
+      "metrics": {
+        "galaxies": 22,
+        "points": 702,
+        "rmsDex": 0.36960254988481145,
+        "medianAbsoluteResidualDex": 0.15178298105137777,
+        "meanBiasDex": 0.17007635312371117,
+        "chiSquare": 3689.2572989177884,
+        "reducedChiSquare": 5.255352277660667,
+        "fractionWithinOneSigma": 0.51994301994302,
+        "fractionWithinTwoSigma": 0.7336182336182336,
+        "worstGalaxies": [
+          {
+            "name": "DDO_101",
+            "points": 8,
+            "rmsDex": 0.8207961172254474,
+            "medianResidualDex": -0.6207826865993598
+          },
+          {
+            "name": "NGC_3738",
+            "points": 12,
+            "rmsDex": 0.784916645398351,
+            "medianResidualDex": -0.7878263697665409
+          },
+          {
+            "name": "IC_1613",
+            "points": 77,
+            "rmsDex": 0.6661187865222208,
+            "medianResidualDex": 0.654386787454369
+          },
+          {
+            "name": "DDO_50",
+            "points": 73,
+            "rmsDex": 0.5525559473933799,
+            "medianResidualDex": 0.5502141714148756
+          },
+          {
+            "name": "CVnIdwA",
+            "points": 12,
+            "rmsDex": 0.4815911281841859,
+            "medianResidualDex": 0.2755357322362517
+          },
+          {
+            "name": "NGC_1569",
+            "points": 24,
+            "rmsDex": 0.4012381798537297,
+            "medianResidualDex": 0.40032142390287895
+          },
+          {
+            "name": "DDO_53",
+            "points": 13,
+            "rmsDex": 0.3333665165596739,
+            "medianResidualDex": 0.2877935875462647
+          },
+          {
+            "name": "DDO_216",
+            "points": 12,
+            "rmsDex": 0.3053513914463709,
+            "medianResidualDex": 0.30699501148591946
+          },
+          {
+            "name": "UGC_8508",
+            "points": 24,
+            "rmsDex": 0.27793548513550065,
+            "medianResidualDex": -0.17569268842812935
+          },
+          {
+            "name": "DDO_126",
+            "points": 30,
+            "rmsDex": 0.25106594738631804,
+            "medianResidualDex": 0.21069838983460532
+          }
+        ]
+      }
+    },
+    "empiricalRarReference": {
+      "equation": "gbar/(1-exp(-sqrt(gbar/a0)))",
+      "parametersFittedHere": 0,
+      "frozenA0MetersPerSecondSquared": 1.1428783347920197e-10,
+      "metrics": {
+        "galaxies": 22,
+        "points": 702,
+        "rmsDex": 0.3608239694090551,
+        "medianAbsoluteResidualDex": 0.1430129877433206,
+        "meanBiasDex": 0.14840990959542483,
+        "chiSquare": 3555.8437248202454,
+        "reducedChiSquare": 5.065304451310891,
+        "fractionWithinOneSigma": 0.5299145299145299,
+        "fractionWithinTwoSigma": 0.7378917378917379,
+        "worstGalaxies": [
+          {
+            "name": "DDO_101",
+            "points": 8,
+            "rmsDex": 0.8516779989228244,
+            "medianResidualDex": -0.6480665193945807
+          },
+          {
+            "name": "NGC_3738",
+            "points": 12,
+            "rmsDex": 0.7801819253444786,
+            "medianResidualDex": -0.7809191277381533
+          },
+          {
+            "name": "IC_1613",
+            "points": 77,
+            "rmsDex": 0.6411400478255278,
+            "medianResidualDex": 0.6288278206372073
+          },
+          {
+            "name": "DDO_50",
+            "points": 73,
+            "rmsDex": 0.5395735654838795,
+            "medianResidualDex": 0.5341872109148795
+          },
+          {
+            "name": "CVnIdwA",
+            "points": 12,
+            "rmsDex": 0.4585768326233157,
+            "medianResidualDex": 0.2410920747141656
+          },
+          {
+            "name": "NGC_1569",
+            "points": 24,
+            "rmsDex": 0.4030436640602388,
+            "medianResidualDex": 0.40310614761153296
+          },
+          {
+            "name": "DDO_53",
+            "points": 13,
+            "rmsDex": 0.3238768900641946,
+            "medianResidualDex": 0.2721973444640735
+          },
+          {
+            "name": "UGC_8508",
+            "points": 24,
+            "rmsDex": 0.3027125750889058,
+            "medianResidualDex": -0.20497108227488336
+          },
+          {
+            "name": "DDO_216",
+            "points": 12,
+            "rmsDex": 0.2885307553860137,
+            "medianResidualDex": 0.28028436343824303
+          },
+          {
+            "name": "DDO_126",
+            "points": 30,
+            "rmsDex": 0.22748175619116318,
+            "medianResidualDex": 0.187615214093392
+          }
+        ]
+      }
+    },
+    "subqgMicroscopicFlux": {
+      "equation": "C_SubQG(g)*g = gbar; C_SubQG from variational microchannel occupation",
+      "parametersFittedHere": 0,
+      "preExistingConstants": {
+        "threshold": 0.75,
+        "h0KmPerSecMpc": 70,
+        "gRefModel": 0.28
+      },
+      "metrics": {
+        "galaxies": 22,
+        "points": 702,
+        "rmsDex": 0.3461404480390667,
+        "medianAbsoluteResidualDex": 0.1228857551206346,
+        "meanBiasDex": 0.11065661266948276,
+        "chiSquare": 3390.0596413250164,
+        "reducedChiSquare": 4.829144788212274,
+        "fractionWithinOneSigma": 0.5740740740740741,
+        "fractionWithinTwoSigma": 0.7407407407407407,
+        "worstGalaxies": [
+          {
+            "name": "NGC_3738",
+            "points": 12,
+            "rmsDex": 0.871147258233444,
+            "medianResidualDex": -0.8760964987404494
+          },
+          {
+            "name": "DDO_101",
+            "points": 8,
+            "rmsDex": 0.8610964274098829,
+            "medianResidualDex": -0.6754014364002412
+          },
+          {
+            "name": "IC_1613",
+            "points": 77,
+            "rmsDex": 0.6126024216570468,
+            "medianResidualDex": 0.597246070743406
+          },
+          {
+            "name": "DDO_50",
+            "points": 73,
+            "rmsDex": 0.5015352371427981,
+            "medianResidualDex": 0.48527061417948403
+          },
+          {
+            "name": "CVnIdwA",
+            "points": 12,
+            "rmsDex": 0.4389169114916813,
+            "medianResidualDex": 0.2287800475037134
+          },
+          {
+            "name": "NGC_1569",
+            "points": 24,
+            "rmsDex": 0.3226085905045315,
+            "medianResidualDex": 0.3206014932004395
+          },
+          {
+            "name": "UGC_8508",
+            "points": 24,
+            "rmsDex": 0.3118731389411246,
+            "medianResidualDex": -0.22908308027562807
+          },
+          {
+            "name": "DDO_53",
+            "points": 13,
+            "rmsDex": 0.274918139341811,
+            "medianResidualDex": 0.22246715072821388
+          },
+          {
+            "name": "DDO_216",
+            "points": 12,
+            "rmsDex": 0.26423970153445475,
+            "medianResidualDex": 0.25207051923969725
+          },
+          {
+            "name": "DDO_168",
+            "points": 30,
+            "rmsDex": 0.23679937590226943,
+            "medianResidualDex": -0.1627081685631948
+          }
+        ]
+      }
+    }
+  },
+  "pairedComparisons": {
+    "subqgDualStrainMinusNewton": {
+      "unit": "mean per-galaxy squared log10 residual difference (modelA - modelB)",
+      "galaxies": 22,
+      "iterations": 20000,
+      "observedMeanMseDifference": -0.5894013211871942,
+      "confidenceInterval95": [
+        -0.8770982816892885,
+        -0.34785784963506056
+      ],
+      "probabilityModelABetter": 1
+    },
+    "subqgDualStrainMinusEmpiricalRar": {
+      "unit": "mean per-galaxy squared log10 residual difference (modelA - modelB)",
+      "galaxies": 22,
+      "iterations": 20000,
+      "observedMeanMseDifference": 0.0024929337341934514,
+      "confidenceInterval95": [
+        -0.004260810705857991,
+        0.00824580628327962
+      ],
+      "probabilityModelABetter": 0.2096
+    },
+    "microscopicFluxMinusNewton": {
+      "unit": "mean per-galaxy squared log10 residual difference (modelA - modelB)",
+      "galaxies": 22,
+      "iterations": 20000,
+      "observedMeanMseDifference": -0.5957493590284249,
+      "confidenceInterval95": [
+        -0.8717384142504145,
+        -0.36699909236740874
+      ],
+      "probabilityModelABetter": 1
+    },
+    "microscopicFluxMinusEmpiricalRar": {
+      "unit": "mean per-galaxy squared log10 residual difference (modelA - modelB)",
+      "galaxies": 22,
+      "iterations": 20000,
+      "observedMeanMseDifference": -0.003855104107037208,
+      "confidenceInterval95": [
+        -0.01699760732126541,
+        0.013781937343095917
+      ],
+      "probabilityModelABetter": 0.7133
+    }
+  }
+}

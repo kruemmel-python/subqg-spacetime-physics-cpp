@@ -8,7 +8,7 @@ werden. Kein einzelnes Gate reicht allein aus.
 | Gate | Mindestanforderung | Aktueller Status |
 |---|---|---|
 | G1 Interne Mathematik | Formale Konsistenz der verwendeten Gleichungen | bestanden, Lean- und Numeriknachweise vorhanden |
-| G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | erster SPARC-Holdout ausgeführt: klar besser als Newton, noch schlechter bzw. nicht eindeutig gegenüber RAR; unabhängiger Survey offen |
+| G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | SPARC-Holdout und LITTLE-THINGS-Außentest ausgeführt: klar besser als Newton; gegenüber RAR statistisch noch nicht eindeutig; externe Reproduktion offen |
 | G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | offen |
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | offen |
 | G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | offen |
@@ -42,6 +42,8 @@ Freie globale Parameter: genau einer (`a0`).
 
 Die erste SPARC-Auswertung dient als Entwicklungs- und Baseline-Test. Da das
 Protokoll innerhalb desselben Projekts entwickelt und ausgeführt wurde, zählt
-sie nicht als unabhängige Replikation. Die nächste Prüfung muss einen externen,
-nicht zur Entwicklung verwendeten Galaxiensurvey nutzen und dieses Modell ohne
-Formänderung übernehmen.
+sie nicht als unabhängige Replikation. Der anschließende LITTLE-THINGS-Test
+verwendet einen externen, zuvor nicht zur Entwicklung verwendeten Survey und
+übernimmt das Modell ohne Form- oder Parameteränderung. Er bestätigt die klare
+Verbesserung gegenüber Newton. Eine Reproduktion durch eine unabhängige
+Forschungsgruppe und die nichtgalaktischen Gates bleiben offen.

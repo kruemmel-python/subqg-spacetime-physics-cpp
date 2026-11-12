@@ -23,3 +23,25 @@ Die Daten sind externe wissenschaftliche Primärdaten. Bei Veröffentlichungen
 müssen die SPARC-Masterpublikation und gegebenenfalls die in `Table1.mrt`
 aufgeführten ursprünglichen Rotationskurvenquellen zitiert werden.
 
+## LITTLE THINGS
+
+- Herausgeber des Katalogs: Se-Heon Oh et al.
+- VizieR-Katalog: `J/AJ/149/180`
+- Katalogseite: <https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=J/AJ/149/180>
+- Primärpublikation: Oh et al., *AJ* 149, 180 (2015),
+  DOI `10.1088/0004-6256/149/6/180`
+- Preprint: <https://arxiv.org/abs/1502.01281>
+- Tabelle `rotdmbar`: gemessene Gesamtrotationskurven sowie Modelle
+- Tabelle `rotdm`: nach Abzug des baryonischen Massenmodells bestimmte
+  Dunkle-Materie-Rotationskurven sowie Modelle
+- verwendeter VizieR-Spiegel:
+  <https://vizier.cfa.harvard.edu/viz-bin/asu-tsv>
+- normalisierter wissenschaftlicher SHA-256 von `rotdmbar`:
+  `50DC8DBA05E819F2744A5E9F9240C4B112DB686068653B1CC7D1CD7B350C18CE`
+- normalisierter wissenschaftlicher SHA-256 von `rotdm`:
+  `3C6604FA8CB75CDD3B7465A7BDAE6BB6042D187EE64DAC062CCE1A8CBBBC9702`
+
+Die normalisierten Hashes umfassen Spaltenkopf und alle Tabellenzeilen, aber
+nicht die bei jedem Abruf wechselnden VizieR-Zeitstempel. Der Abrufprüfer
+kontrolliert zusätzlich Schema, 1.716 beziehungsweise 1.485 Tabellenzeilen
+und 26 beziehungsweise 22 Galaxien.

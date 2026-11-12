@@ -96,3 +96,65 @@ Dieses Ergebnis ist **kein empirischer Gesamtnachweis**. Es lokalisiert die
 nächste Aufgabe: Die physikalische Skalierung und Form der mikroskopischen
 Fluxgleichung müssen aus der SubQG-Wirkung geschlossen abgeleitet und danach
 auf einem neuen, bisher unbenutzten Galaxiensurvey geprüft werden.
+
+## Test 2: LITTLE THINGS ohne Nachfitten
+
+Der zweite Galaxientest verwendet den unabhängigen LITTLE-THINGS-Katalog von
+Oh et al. (2015). Aus den publizierten Gesamt- und DM-Rotationskurven wird an
+identischen Radien
+
+```text
+V_bar² = V_total² - V_DM²
+```
+
+rekonstruiert. Das ist möglich, weil die Autoren die DM-Kurve durch Abzug des
+baryonischen Massenmodells von der Gesamtkinematik bestimmen. Die Rekonstruktion
+ist deshalb nicht statistisch unabhängig vom baryonischen Modell; die
+vollständige Kovarianz wird vom Katalog nicht mitgeliefert.
+
+Entscheidend für den Holdout-Charakter:
+
+- keine Gleichung und kein Parameter wird an LITTLE THINGS angepasst;
+- Dual-Strain übernimmt `a0 = 1,465548e-10 m/s²` aus dem SPARC-Training;
+- auch die RAR-Referenz übernimmt ausschließlich ihren SPARC-Trainingswert;
+- die mikroskopische Fluxgleichung verwendet nur ihre vorhandenen Konstanten;
+- Vergleiche und Bootstrap resampeln ganze Galaxien, nicht einzelne Radien.
+
+### Ausführung
+
+```powershell
+npm run validation:fetch:little-things
+npm run validation:little-things
+```
+
+Das deterministische Resultat steht in
+`validation/results/little_things_validation.json`. Sein SHA-256 lautet
+`2ADC9E57CC1EB6294446B9C761E3D75DAB960E6C784420D659DD744442DF833F`.
+
+### Ergebnis vom 12. November 2026
+
+Von 742 exakt zugeordneten Messradien verbleiben nach Ausschluss von 40
+Punkten mit nichtpositivem rekonstruiertem `V_bar²` 702 Punkte in 22
+Galaxien. Es wurde kein LITTLE-THINGS-Parameter gefittet.
+
+| Eingefrorenes Modell | RMS |
+|---|---:|
+| Newton nur mit rekonstruierten Baryonen | 0,77630 dex |
+| SubQG Dual-Strain | 0,36960 dex |
+| empirische RAR-Referenz | 0,36082 dex |
+| SubQG mikroskopische Fluxgleichung | 0,34614 dex |
+
+Der gepaarte Bootstrap mit 20.000 Wiederholungen über 22 ganze Galaxien zeigt
+Dual-Strain und mikroskopische Fluxgleichung eindeutig besser als Newton; die
+jeweiligen 95-%-Intervalle der mittleren MSE-Differenz liegen vollständig
+unter null. Gegen die empirische RAR ist noch kein eindeutiger Unterschied
+nachgewiesen: Beide 95-%-Intervalle enthalten null. Die Fluxgleichung hat den
+kleinsten Punkt-RMS und gewinnt in 71,33 % der Bootstrap-Stichproben gegen die
+RAR, was als vielversprechende Replikation, nicht als Signifikanznachweis
+berichtet wird.
+
+Die reduzierten Chi-Quadrat-Werte bleiben deutlich größer als eins. Das weist
+auf noch nicht vollständig modellierte Mess- und Massenmodell-Systematiken
+und/oder verbleibende Modellabweichungen hin. Der unabhängige Survey bestätigt
+somit robust die Verbesserung gegenüber baryonischem Newton, schließt aber die
+übrigen Evidenz-Gates noch nicht.
