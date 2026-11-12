@@ -29,6 +29,8 @@ export interface TullyFisherResult {
   matchesTheoretical025: boolean;
 }
 
+export function subqgDualStrainAcceleration(gbar: number, a0: number): number;
+
 export class SubQGUnifiedProofEngine {
   constructor(options?: {
     supportRadius?: number;

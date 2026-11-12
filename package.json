@@ -10,7 +10,9 @@
     "demo": "node src/index.mjs --demo",
     "audit": "node src/index.mjs --audit",
     "test": "node --test tests/*.test.mjs",
-    "verify:lean": "powershell -ExecutionPolicy Bypass -File formal/verify.ps1"
+    "verify:lean": "powershell -ExecutionPolicy Bypass -File formal/verify.ps1",
+    "validation:fetch:sparc": "powershell -ExecutionPolicy Bypass -File validation/scripts/fetch-sparc.ps1",
+    "validation:sparc": "node validation/scripts/sparc_rotation_validation.mjs"
   },
   "keywords": [
     "quantum-gravity",

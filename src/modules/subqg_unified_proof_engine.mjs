@@ -1,3 +1,5 @@
+import { subqgDualStrainAcceleration } from './subqg_dual_strain_gravity.mjs';
+
 /**
  * SUBQG UNIFIED PROOF ENGINE
  * 
@@ -277,7 +279,7 @@ export class SubQGUnifiedProofEngine {
     if (M <= 0 || r <= 0) throw new RangeError('M and r must be positive');
     const gN = (this.G * M) / (r * r);
     // Inherent dual-strain substrate response
-    const gEff = Math.sqrt(gN * gN + gN * this.a0);
+    const gEff = subqgDualStrainAcceleration(gN, this.a0);
     return {
       r,
       gN,

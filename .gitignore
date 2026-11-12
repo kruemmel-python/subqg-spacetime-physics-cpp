@@ -1,4 +1,5 @@
 dist/
+validation/data/raw/
 cpp/build*/
 cpp/*.o
 *.obj

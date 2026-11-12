@@ -1676,6 +1676,56 @@ export class SubQGGraphCoupledEngine {
   }
 
   /**
+   * Maps a physical baryonic acceleration to the acceleration predicted by
+   * the microscopic SubQG variational channel-flux equation
+   *
+   *   C_SubQG(g) * g = g_Newton.
+   *
+   * The physical scale uses the existing cosmological bridge
+   * a0 = phaseFraction * c * H0. This bridge is a model ansatz, not a theorem.
+   */
+  predictPhysicalAccelerationFromBaryonic(gNewton, {
+    h0KmPerSecMpc = 70.0,
+    gRefModel = 0.28,
+    cMetersPerSec = 2.99792458e8,
+    mpcMeters = 3.085677581491367e22
+  } = {}) {
+    if (!Number.isFinite(gNewton) || gNewton <= 0) throw new RangeError('gNewton must be finite and positive');
+    if (!Number.isFinite(h0KmPerSecMpc) || h0KmPerSecMpc <= 0) throw new RangeError('H0 must be finite and positive');
+    if (!Number.isFinite(gRefModel) || gRefModel <= 0) throw new RangeError('gRefModel must be finite and positive');
+
+    const criticalPhaseAngleRad = Math.acos(2.0 * this.threshold - 1.0);
+    const horizonPhaseFraction = criticalPhaseAngleRad / (2.0 * Math.PI);
+    const h0SI = (h0KmPerSecMpc * 1000.0) / mpcMeters;
+    const a0Physical = horizonPhaseFraction * cMetersPerSec * h0SI;
+    const a0ModelDimless = gRefModel / this.evaluateMicroChannelFraction(gRefModel);
+    const gNewtonDimless = a0ModelDimless * (gNewton / a0Physical);
+
+    let lo = gNewtonDimless;
+    let hi = Math.max(10.0, gNewtonDimless * 20.0 + 2.0);
+    for (let iteration = 0; iteration < 64; iteration++) {
+      const mid = 0.5 * (lo + hi);
+      const flux = this.evaluateMicroChannelFraction(mid) * mid;
+      if (flux < gNewtonDimless) lo = mid;
+      else hi = mid;
+    }
+    const gSubQGDimless = 0.5 * (lo + hi);
+    const conductivity = this.evaluateMicroChannelFraction(gSubQGDimless);
+    const acceleration = (gSubQGDimless / a0ModelDimless) * a0Physical;
+
+    return {
+      acceleration,
+      conductivity,
+      a0Physical,
+      a0ModelDimless,
+      gNewtonDimless,
+      gSubQGDimless,
+      fluxResidual: Math.abs(conductivity * gSubQGDimless - gNewtonDimless),
+      horizonPhaseFraction
+    };
+  }
+
+  /**
    * Evaluates the plausible cosmological bridging ansatz for the physical acceleration scale:
    *   a_0^SubQG = (arccos(2*Theta_crit - 1) / (2*pi)) * c * H_0 = (1/6) * c * H_0
    * and performs a preliminary phenomenological benchmark against 6 reference galaxies from
@@ -1738,21 +1788,13 @@ export class SubQGGraphCoupledEngine {
       //   evaluateMicroChannelFraction(g_dimless) * g_dimless = g_Newton_dimless
       // via 64-step bisection directly on the 769-mode variational minimizer delta_m*(g)
       // (NO explicit MOND interpolation formula is used):
-      const gNewtonDimless = a0ModelDimless * (gNewton / a0SubQG_SI);
-      let lo = gNewtonDimless;
-      let hi = Math.max(10.0, gNewtonDimless * 20.0 + 2.0);
-      for (let iter = 0; iter < 64; iter++) {
-        const mid = 0.5 * (lo + hi);
-        const flux = this.evaluateMicroChannelFraction(mid) * mid;
-        if (flux < gNewtonDimless) lo = mid;
-        else hi = mid;
-      }
-      const gSubQGDimless = 0.5 * (lo + hi);
-      const localSpacetimeFraction = this.evaluateMicroChannelFraction(gSubQGDimless);
-      const fluxResidual = Math.abs(localSpacetimeFraction * gSubQGDimless - gNewtonDimless);
+      const physicalPrediction = this.predictPhysicalAccelerationFromBaryonic(gNewton, { h0KmPerSecMpc });
+      const gSubQGDimless = physicalPrediction.gSubQGDimless;
+      const localSpacetimeFraction = physicalPrediction.conductivity;
+      const fluxResidual = physicalPrediction.fluxResidual;
       if (fluxResidual > maxFluxBisectionResidual) maxFluxBisectionResidual = fluxResidual;
 
-      const gSubQG = (gSubQGDimless / a0ModelDimless) * a0SubQG_SI;
+      const gSubQG = physicalPrediction.acceleration;
       const vSubQGKmPerSec = Math.sqrt(gSubQG * R_m) / 1000.0;
 
       const relErrNewton = Math.abs(vNewtonKmPerSec - gal.vObsKmPerSec) / gal.vObsKmPerSec;

@@ -34,6 +34,7 @@ export { clockAngle, unwrapAngle } from './modules/subqg_internal_clock.mjs';
 
 // Advanced Physics Engines (SubQG 1.0)
 export { SubQGUnifiedProofEngine } from './modules/subqg_unified_proof_engine.mjs';
+export { subqgDualStrainAcceleration } from './modules/subqg_dual_strain_gravity.mjs';
 export { SubQGGenesisEngine, executeMasterGenesisExperiment } from './modules/subqg_genesis.mjs';
 export { SubQGMultiversePhaseEngine } from './modules/subqg_multiverse_phases.mjs';
 export { SubQGGraphCoupledEngine } from './modules/subqg_graph_coupled_gravity.mjs';
