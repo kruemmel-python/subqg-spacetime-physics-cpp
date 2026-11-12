@@ -114,3 +114,13 @@ Inverses Quadratgesetz:
   Konfidenz eine Reichweite kleiner als `38.6 µm`
 - Die aktuelle Prüfung verwendet den publizierten Nullbefund; sie ist noch
   kein Refit der 95 Torsionsmessungen und 17 Apparateparameter.
+
+## Doppelpulsar
+
+- Primärpublikation: Kramer et al., *Physical Review X* 11, 041050 (2021)
+- DOI: `10.1103/PhysRevX.11.041050`
+- Preprint: <https://arxiv.org/abs/2112.06795>
+- System: PSR J0737-3039A/B, 16 Jahre Timing
+- verwendete Tabellenwerte: `P_b`, `e_T`, `m_A`, `m_B`
+- verwendete Vergleichswerte: Gleichungen 44, 45 und 48 für gemessene
+  GW-Bahnabnahme, führende 2,5PN-Vorhersage und vollständigen GR-Quotienten

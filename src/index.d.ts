@@ -165,6 +165,14 @@ export function eotvosParameter(accelerationA: number, accelerationB: number): n
 export function universalFreeFallPrediction(fieldAcceleration: number, objectNorms: number[]): any;
 export function combinedIndependentUncertainty(statistical: number, systematic: number): number;
 export function standardizedResidual(predicted: number, observed: number, uncertainty: number): number;
+export function petersMathewsPeriodDerivative(options: {
+  massASolar: number;
+  massBSolar: number;
+  orbitalPeriodSeconds: number;
+  eccentricity: number;
+  solarMassTimeSeconds?: number;
+}): any;
+export function binaryRadiationClosureAudit(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

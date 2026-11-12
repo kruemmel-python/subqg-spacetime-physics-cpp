@@ -73,6 +73,12 @@ final MICROSCOPE Ti/Pt result at `0.546` combined standard deviations. The
 mapping from Standard-Model chemical composition to this universal packet
 density remains an explicit open microscopic bridge.
 
+The conditional massless-spin-2 radiation sector also reproduces the leading
+Peters-Mathews orbital decay of PSR J0737-3039A/B from its published masses,
+period and eccentricity, with no radiation fit. This result validates the
+infrared candidate but is not yet a derivation of nonlinear radiation
+reaction from the anchored scalar canonical microaction.
+
 ---
 
 ## 3. Architecture & Module Structure

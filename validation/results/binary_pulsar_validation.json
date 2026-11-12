@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "citation": "Kramer et al. (2021), Strong-field Gravity Tests with the Double Pulsar",
+    "doi": "10.1103/PhysRevX.11.041050",
+    "arxiv": "2112.06795",
+    "system": "PSR J0737-3039A/B",
+    "timingBaselineYears": 16
+  },
+  "fixedPublishedInputs": {
+    "massASolar": 1.338185,
+    "massBSolar": 1.248868,
+    "orbitalPeriodDays": 0.1022515592973,
+    "eccentricity": 0.087777023
+  },
+  "leadingQuadrupole": {
+    "predictedPeriodDerivative": -1.2478103781853955e-12,
+    "publishedGr25PNPeriodDerivative": -1.24781e-12,
+    "relativeDifferenceFromPublishedGr25PN": 3.030793114255914e-7,
+    "observedGwPeriodDerivative": -1.247782e-12,
+    "observedOneSigma": 7.9e-17,
+    "residualSigma": -0.35921753665340106
+  },
+  "fullRelativisticClosure": {
+    "publishedObservedToGrRatio": 0.999963,
+    "publishedRatioOneSigma": 0.000063,
+    "conditionalSubqgPrediction": 1,
+    "residualSigma": 0.5873015873008529,
+    "note": "This full 2.5PN+3.5PN comparison is conditional on the Einstein spin-2 completion; SubQG currently derives only the linear infrared candidate, not its nonlinear microscopic matching."
+  },
+  "bridgeAudit": {
+    "masslessDispersion": true,
+    "independentPhysicalPolarizations": 2,
+    "infraredClosureSelfConsistent": true,
+    "leadingQuadrupoleFormulaAvailable": true,
+    "universalSourceNormalizationFromCanonicalMicroaction": false,
+    "nonlinearStrongFieldCompletionFromCanonicalMicroaction": false,
+    "interpretation": "The Peters-Mathews prediction is conditional on matching the canonical SubQG microaction to the normalized massless spin-2 source theory."
+  },
+  "verdict": {
+    "leadingQuadrupoleCompatibleWithinFiveSigma": true,
+    "conditionalFullClosureCompatibleWithinFiveSigma": true,
+    "binaryPulsarEmpiricalCompatibilityPassed": true,
+    "fullG5G6Closed": false,
+    "openDerivation": "Universal source normalization, nonlinear strong-field completion and radiation reaction have not yet been derived from the anchored scalar canonical microaction."
+  }
+}

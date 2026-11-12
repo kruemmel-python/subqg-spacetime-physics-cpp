@@ -68,6 +68,10 @@ export {
   standardizedResidual
 } from './modules/subqg_local_gravity.mjs';
 export {
+  petersMathewsPeriodDerivative,
+  binaryRadiationClosureAudit
+} from './modules/subqg_binary_pulsar.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,

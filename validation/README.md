@@ -252,3 +252,23 @@ Torsionswaagengeometrie direkt ausgewertet ist.
 Die deterministische Ergebnisdatei
 `validation/results/local_gravity_validation.json` hat SHA-256
 `9F47969315E2F5804BEDE0AB7E90F215021BC2B1F20E619EA8EE72BA288F946D`.
+
+## Test 6: Doppelpulsar und Quadrupolstrahlung
+
+Aus den publizierten Massen, der Umlaufzeit und Exzentrizität von
+PSR J0737-3039A/B reproduziert die führende Spin-2-Quadrupolformel den
+veröffentlichten 2,5PN-Wert auf `3,03e-7` relativ. Gegen die gemessene
+GW-Bahnabnahme liegt die Vorhersage `0,359 Sigma` entfernt; die bedingte
+vollständige relativistische Closure liegt `0,587 Sigma` vom publizierten
+Quotienten entfernt.
+
+```powershell
+npm run validation:binary-pulsar
+```
+
+Die vollständige Herleitung und die weiterhin offene Mikro-zu-Spin-2-Brücke
+stehen in `BINARY_PULSAR.md`.
+
+Die deterministische Ergebnisdatei
+`validation/results/binary_pulsar_validation.json` hat SHA-256
+`431C037B76085CE83E323DF60DAA313989533B2F0F60F975241DCBF267258F41`.

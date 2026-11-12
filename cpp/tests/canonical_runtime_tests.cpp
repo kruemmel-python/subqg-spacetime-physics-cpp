@@ -14,7 +14,7 @@ int main(){
   CanonicalRuntime runtime({node?node:"node.exe",root,bridge});
   require(runtime.running(),"canonical runtime process");
   std::string modules=runtime.inventory();
-  for(const char* required:{"subqg_action","subqg_causal","subqg_waves","subqg_genesis","subqg_multiverse_phases","subqg_graph_coupled_gravity","subqg_apple_experiment","subqg_unified_proof_engine","subqg_weak_field_metric","subqg_spin2_ir","subqg_solar_system","subqg_local_gravity"})
+  for(const char* required:{"subqg_action","subqg_causal","subqg_waves","subqg_genesis","subqg_multiverse_phases","subqg_graph_coupled_gravity","subqg_apple_experiment","subqg_unified_proof_engine","subqg_weak_field_metric","subqg_spin2_ir","subqg_solar_system","subqg_local_gravity","subqg_binary_pulsar"})
    require(modules.find(required)!=std::string::npos,"canonical module missing from inventory");
   require(runtime.invoke("subqg_fpv","overlap","[0,0]")=="1","canonical overlap result");
   std::string bonds=runtime.invoke("subqg_fpv","buildBonds","[[0,0],0.7]");
@@ -27,6 +27,9 @@ int main(){
   require(spin2.find("\"infraredClosureSelfConsistent\":true")!=std::string::npos,"canonical spin-two infrared closure");
   require(runtime.invoke("subqg_solar_system","dualStrainHighAccelerationLimit","[2]")=="1","canonical solar-system high-field limit");
   require(runtime.invoke("subqg_local_gravity","eotvosParameter","[1,1]")=="0","canonical local-gravity Eotvos ratio");
+  std::string binary=runtime.invoke("subqg_binary_pulsar","binaryRadiationClosureAudit");
+  require(binary.find("\"leadingQuadrupoleFormulaAvailable\":true")!=std::string::npos,"canonical binary-radiation closure");
+  require(binary.find("\"universalSourceNormalizationFromCanonicalMicroaction\":false")!=std::string::npos,"canonical binary-radiation bridge caveat");
   auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");
   std::string a0=runtime.get(proof,"a0"); require(!a0.empty()&&a0!="null","proof-engine a0");
   std::string gravity=runtime.call(proof,"effectiveGravitationalAcceleration","[20,0.4]");
