@@ -9,7 +9,7 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
 - Lean-Version: **4.34.1**
 - Unbewiesene Platzhalter (`sorry`, `admit`, `sorryAx`): **keine (0)**
 - Axiomatische Grundlage: Ausschließlich Lean 4 Kernaxiome `[propext, Classical.choice, Quot.sound]`
-- `npm test`: **277 von 277 Tests bestanden**
+- `npm test`: **296 von 296 Tests bestanden**
 - Fehlgeschlagene, übersprungene oder abgebrochene Tests: **0**
 - Spezifische Tests der `SubQGExactGlitchEngine`: **3 von 3 bestanden**
 
@@ -21,6 +21,15 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
 4. **Symmetrische Kopplung und Normerhaltung**: Die reelle Off-Diagonal-Kopplung hebt sich in der momentanen Zeitableitung der Gesamtnorm exakt auf (`SubQG.symmetric_coupling_preserves_total_norm_rate`, `SubQG.total_norm_rate_zero_of_symmetric_coupling`).
 5. **Vollständige gemeinsame Energie- und Leistungsbilanz**: Definition des gemeinsamen Hamiltonians $\mathcal{H}_{\mathrm{joint}} = E_{\Psi,A} + E_{\Psi,B} + E_{\mathrm{cross}} + S_{\mathrm{edge}}[x_A] + S_{\mathrm{edge}}[x_B]$ und formaler Beweis der Energievariation unter simultaner Änderung von Tunnelkopplung und metrischem Quellübertrag (`SubQG.joint_energy_variation_with_metric_feedback`):
    $$\Delta \mathcal{H}_{\mathrm{joint}} = 2 \Delta g \operatorname{Re}\langle \Psi_A | \Psi_B \rangle + \Delta w_{AB} \cdot \beta \sum_e w_e \rho_{B,e} x_{A,e}.$$
+6. **Linearisierte Spin-2-No-Slip-Closure**: Für `bar(h)00 = 4U` und
+   `bar(h)ij = 0` beweist Lean durch Spurumkehr exakt `h00 = hij = 2U` und
+   damit `gamma = 1` (`SubQG.linearized_spin_two_static_dust_no_slip`,
+   `SubQG.linearized_spin_two_static_dust_gamma_one`).
+7. **Massengap der verankerten Kantenwirkung**: Aus
+   `v^T H v = anchor ||v||² + interaction` und nichtnegativer Interaktion
+   folgt die untere Spektralschranke; bei positivem Anker ist kein Nullmodus
+   möglich (`SubQG.anchored_metric_hessian_lower_bound`,
+   `SubQG.positive_anchor_excludes_zero_metric_mode`).
 
 ## Numerische Umsetzung (Weg A: Emergentes Actio = Reactio & Hartree-Korrektur)
 

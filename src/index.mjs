@@ -39,6 +39,8 @@ export {
   weakFieldMetricComponents,
   lensingStrengthRelativeToGammaOne,
   einsteinRadiusRelativeToGammaOne,
+  linearizedSpinTwoStaticDustClosure,
+  microToSpinTwoBridgeAudit,
   singleMetricNoSlipClosure
 } from './modules/subqg_weak_field_metric.mjs';
 export { SubQGGenesisEngine, executeMasterGenesisExperiment } from './modules/subqg_genesis.mjs';
@@ -46,6 +48,13 @@ export { SubQGMultiversePhaseEngine } from './modules/subqg_multiverse_phases.mj
 export { SubQGGraphCoupledEngine } from './modules/subqg_graph_coupled_gravity.mjs';
 export { SubQGEmergentGravity } from './modules/subqg_emergent_gravity_darkmatter.mjs';
 export { SubQGFirstPrinciplesEngine } from './modules/subqg_first_principles_gravity.mjs';
+export {
+  minkowskiNormSquared,
+  linearizedEinsteinTensorFourier,
+  pureGaugePerturbation,
+  transverseTracelessPlaneWave,
+  spinTwoInfraredAudit
+} from './modules/subqg_spin2_ir.mjs';
 export {
   SubQGAppleWorld,
   SubQGAppleExperiment,

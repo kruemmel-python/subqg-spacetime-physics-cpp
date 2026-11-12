@@ -27,11 +27,12 @@
   "closure": {
     "gamma": 1,
     "status": "conditional",
-    "equation": "Psi = Phi, hence gamma = Psi/Phi = 1",
+    "equation": "Fierz-Pauli static dust: bar(h)00=4U/c^2, bar(h)ij=0; trace reversal gives h00=hij=2U/c^2 and gamma=1",
+    "formallyVerifiedTheorem": "SubQG.linearized_spin_two_static_dust_gamma_one",
     "requiredProof": [
-      "continuum Lorentzian metric from the SubQG graph action",
-      "universal minimal coupling of massive and massless excitations",
-      "vanishing weak-field gravitational slip for a static spherical source"
+      "massless spin-2 continuum spectrum from the SubQG graph action",
+      "continuum Lorentz invariance from the SubQG graph action",
+      "universal minimal coupling of massive and massless excitations"
     ]
   },
   "candidates": {

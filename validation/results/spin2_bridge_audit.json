@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "question": "Does the canonical SubQG microaction currently derive the massless spin-2 no-slip closure required by strong lensing?",
+  "exactHessianIdentity": "v^T H v = anchor*||v||^2 + sum_(i,j) w_ij*(v_i-v_j)^2",
+  "formalTheorems": {
+    "massGap": "SubQG.positive_anchor_excludes_zero_metric_mode",
+    "spinTwoNoSlip": "SubQG.linearized_spin_two_static_dust_no_slip",
+    "gammaOne": "SubQG.linearized_spin_two_static_dust_gamma_one"
+  },
+  "microscopicSpectrum": {
+    "edgeDegreesOfFreedom": 320,
+    "interactionPairs": 3421,
+    "componentsPerEdge": 1,
+    "anchor": 1,
+    "allPairWeightsNonnegative": true,
+    "uniformModeEigenvalue": 1.0000000000000058,
+    "uniformModeResidual": 5.833955260131092e-15,
+    "provenEigenvalueLowerBound": 1,
+    "hasMasslessMode": false,
+    "hasSymmetricTensorStructure": false,
+    "supportsMasslessSpinTwo": false,
+    "reason": "Positive anchor gaps every scalar edge-length mode; no tensor gauge field is present."
+  },
+  "effectiveSpinTwoSolution": {
+    "effectiveEquation": "box(bar(h)_mu_nu) = -16*pi*G*T_mu_nu/c^4",
+    "sourceSector": "static pressureless matter: T00=rho*c^2, Tij=0",
+    "traceReversed00": 4e-9,
+    "traceReversedSpatial": 0,
+    "trace": -4e-9,
+    "h00": 2e-9,
+    "hSpatial": 2e-9,
+    "gamma": 1,
+    "noSlip": true
+  },
+  "infraredCandidate": {
+    "effectiveAction": "massless Fierz-Pauli quadratic action",
+    "independentPhysicalPolarizations": 2,
+    "plusModeOnShell": true,
+    "crossModeOnShell": true,
+    "masslessDispersion": true,
+    "transverseTraceless": true,
+    "pureGaugeNullDirection": true,
+    "infraredClosureSelfConsistent": true,
+    "microscopicMatchingStatus": "not yet derived from the anchored scalar SubQG microaction"
+  },
+  "bridge": {
+    "staticDustNoSlipInsideFierzPauli": true,
+    "leanTheorem": "SubQG.linearized_spin_two_static_dust_no_slip",
+    "masslessSpinTwoSpectrumFromCanonicalMicroaction": false,
+    "continuumLorentzInvarianceFromCanonicalMicroaction": false,
+    "universalPhotonAndMatterMetricCouplingFromCanonicalMicroaction": false,
+    "bridgeComplete": false
+  },
+  "verdict": {
+    "effectiveSpinTwoClosureGivesGammaOne": true,
+    "canonicalMicroactionHasMasslessMode": false,
+    "canonicalMicroactionHasSpinTwoTensorStructure": false,
+    "infraredCandidateSelfConsistent": true,
+    "derivationComplete": false,
+    "requiredChange": "Derive or add a gauge-invariant tensor metric sector whose infrared quadratic action is Fierz-Pauli; the positive anchored scalar edge action alone cannot supply it."
+  }
+}

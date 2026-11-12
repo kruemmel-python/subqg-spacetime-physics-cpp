@@ -12,3 +12,15 @@ test('causal clock is unaffected by static solver',()=>{const w=build();const be
 test('reject invalid overlap floor',()=>assert.throws(()=>new MicroActionWorld({overlapFloor:0}),RangeError));
 test('reject invalid solver options',()=>assert.throws(()=>build().solveMicroAction({iterations:0}),RangeError));
 test('bounded metric is not silently clipped',()=>{const w=build({minLog:-0.001,maxLog:0.001});w.setMass(w.edgesOrdered()[0].a,10);assert.throws(()=>w.solveMicroAction(),RangeError);});
+test('canonical anchored scalar metric sector is gapped and not spin two',()=>{
+  const w=build();const audit=w.linearizedMetricSpectrumAudit();
+  assert(audit.edgeDegreesOfFreedom>0);
+  assert.equal(audit.componentsPerEdge,1);
+  assert.equal(audit.allPairWeightsNonnegative,true);
+  assert(Math.abs(audit.uniformModeEigenvalue-w.anchor)<1e-12);
+  assert(audit.uniformModeResidual<1e-12);
+  assert.equal(audit.provenEigenvalueLowerBound,w.anchor);
+  assert.equal(audit.hasMasslessMode,false);
+  assert.equal(audit.hasSymmetricTensorStructure,false);
+  assert.equal(audit.supportsMasslessSpinTwo,false);
+});

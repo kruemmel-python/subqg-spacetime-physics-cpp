@@ -179,9 +179,29 @@ veröffentlichten Messung aus 80 starken Galaxienlinsen:
 | zeitartiges Potential bei räumlich flacher Metrik | 0 | -21,170 Sigma |
 | No-Lensing-Grenze | -1 | -42,447 Sigma |
 
-Der No-Slip-Kandidat besteht den empirischen Kompatibilitätstest. Das
-Linsen-Gate bleibt trotzdem offen, da diese Closure gegenwärtig eine explizit
-markierte Bedingung und noch kein Satz der kanonischen SubQG-Mikrowirkung ist.
+Die masselose Spin-2-No-Slip-Closure besteht den empirischen
+Kompatibilitätstest. Ihre interne Ableitung von `gamma=1` ist inzwischen in
+Lean formal verifiziert. Das Linsen-Gate bleibt trotzdem offen, weil das
+Matching der kanonischen skalaren Kantenwirkung auf den Spin-2-IR-Sektor noch
+nicht hergeleitet ist.
 Die deterministische Ergebnisdatei
 `validation/results/lensing_ppn_validation.json` hat SHA-256
-`109AE0A8316308535BF63BB981647A5C463F4DD839C90C6ED9D904B290B0B6E3`.
+`AD37238F45AC021B0817E815EED82E69461AFBECC2FB77B66F77778FD116A893`.
+
+### Spin-2-Brückenaudit
+
+```powershell
+npm run validation:spin2-bridge
+```
+
+Der Audit prüft die vorhandene Mikrowirkung und den konstruierten
+Fierz-Pauli-IR-Sektor:
+
+- Mikrowirkung: skalare Kantenvariable, Spektrallücke mindestens `1`, kein
+  masseloser Spin-2-Modus;
+- IR-Kandidat: zwei TT-Polarisationen, masselose Dispersion und reine
+  Eichrichtungen im Nullraum;
+- mikro-zu-IR-Matching: noch nicht hergeleitet.
+
+Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
+`C32EE7C5F05C483B07FE9D63B701882DD4D9ECF495040535B7CCF983391FACE9`.

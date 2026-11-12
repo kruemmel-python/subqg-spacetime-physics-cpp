@@ -38,10 +38,30 @@ export function weakFieldMetricComponents(options: { potential: number; gamma: n
 };
 export function lensingStrengthRelativeToGammaOne(gamma: number): number;
 export function einsteinRadiusRelativeToGammaOne(gamma: number): number;
+export function linearizedSpinTwoStaticDustClosure(potentialOverC2: number): {
+  effectiveEquation: string;
+  sourceSector: string;
+  traceReversed00: number;
+  traceReversedSpatial: number;
+  trace: number;
+  h00: number;
+  hSpatial: number;
+  gamma: number;
+  noSlip: boolean;
+};
+export function microToSpinTwoBridgeAudit(): {
+  readonly staticDustNoSlipInsideFierzPauli: true;
+  readonly leanTheorem: string;
+  readonly masslessSpinTwoSpectrumFromCanonicalMicroaction: false;
+  readonly continuumLorentzInvarianceFromCanonicalMicroaction: false;
+  readonly universalPhotonAndMatterMetricCouplingFromCanonicalMicroaction: false;
+  readonly bridgeComplete: false;
+};
 export function singleMetricNoSlipClosure(): {
   readonly gamma: 1;
   readonly status: 'conditional';
   readonly equation: string;
+  readonly formallyVerifiedTheorem: string;
   readonly requiredProof: readonly string[];
 };
 
@@ -115,6 +135,17 @@ export function executeMasterGenesisExperiment(): {
     natureLawsEmergeWithoutFormulas: boolean;
   };
 };
+
+export function minkowskiNormSquared(vectorContravariant: number[]): number;
+export function linearizedEinsteinTensorFourier(hCovariant: number[][], kContravariant: number[]): any;
+export function pureGaugePerturbation(kContravariant: number[], xiContravariant: number[]): number[][];
+export function transverseTracelessPlaneWave(options: {
+  waveNumber: number;
+  plus?: number;
+  cross?: number;
+  speed?: number;
+}): any;
+export function spinTwoInfraredAudit(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

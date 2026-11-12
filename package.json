@@ -15,7 +15,8 @@
     "validation:fetch:little-things": "powershell -ExecutionPolicy Bypass -File validation/scripts/fetch-little-things.ps1",
     "validation:sparc": "node validation/scripts/sparc_rotation_validation.mjs",
     "validation:little-things": "node validation/scripts/little_things_validation.mjs",
-    "validation:lensing": "node validation/scripts/lensing_ppn_validation.mjs"
+    "validation:lensing": "node validation/scripts/lensing_ppn_validation.mjs",
+    "validation:spin2-bridge": "node validation/scripts/spin2_bridge_audit.mjs"
   },
   "keywords": [
     "quantum-gravity",

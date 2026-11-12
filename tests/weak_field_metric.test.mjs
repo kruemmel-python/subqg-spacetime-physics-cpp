@@ -4,6 +4,8 @@ import {
   weakFieldMetricComponents,
   lensingStrengthRelativeToGammaOne,
   einsteinRadiusRelativeToGammaOne,
+  linearizedSpinTwoStaticDustClosure,
+  microToSpinTwoBridgeAudit,
   singleMetricNoSlipClosure
 } from '../src/modules/subqg_weak_field_metric.mjs';
 
@@ -36,8 +38,28 @@ test('no-slip closure remains explicitly conditional', () => {
   assert.equal(closure.requiredProof.length, 3);
 });
 
+test('linearized spin-two static dust has equal metric potentials', () => {
+  const solution = linearizedSpinTwoStaticDustClosure(2e-8);
+  assert.equal(solution.traceReversed00, 8e-8);
+  assert.equal(solution.traceReversedSpatial, 0);
+  assert.equal(solution.h00, 4e-8);
+  assert.equal(solution.hSpatial, 4e-8);
+  assert.equal(solution.gamma, 1);
+  assert.equal(solution.noSlip, true);
+});
+
+test('micro-to-spin-two audit does not overstate the open bridge', () => {
+  const audit = microToSpinTwoBridgeAudit();
+  assert.equal(audit.staticDustNoSlipInsideFierzPauli, true);
+  assert.equal(audit.masslessSpinTwoSpectrumFromCanonicalMicroaction, false);
+  assert.equal(audit.continuumLorentzInvarianceFromCanonicalMicroaction, false);
+  assert.equal(audit.universalPhotonAndMatterMetricCouplingFromCanonicalMicroaction, false);
+  assert.equal(audit.bridgeComplete, false);
+});
+
 test('weak-field metric rejects invalid regimes', () => {
   assert.throws(() => weakFieldMetricComponents({ potential: -1, gamma: 1 }), RangeError);
   assert.throws(() => weakFieldMetricComponents({ potential: 1, gamma: Number.NaN }), RangeError);
   assert.throws(() => lensingStrengthRelativeToGammaOne(-1.01), RangeError);
+  assert.throws(() => linearizedSpinTwoStaticDustClosure(0), RangeError);
 });

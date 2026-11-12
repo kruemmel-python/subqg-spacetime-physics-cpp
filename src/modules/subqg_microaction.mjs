@@ -49,6 +49,41 @@ export class MicroActionWorld extends ActionWorld {
     return a;
   }
   microAction(){const s=this._microSystem();return this._energy(s,s.x);}
+  /**
+   * Exact quadratic-spectrum audit of the presently implemented edge action.
+   * H = anchor*I + L_w and all pair weights are nonnegative, hence
+   * v^T H v >= anchor*||v||^2.  The uniform edge mode is an exact eigenmode
+   * with eigenvalue `anchor`.  With the required positive anchor this sector
+   * is gapped and its one scalar variable per edge is not a spin-2 field.
+   */
+  linearizedMetricSpectrumAudit(){
+    const s=this._microSystem(),n=s.x.length;
+    if(n===0)return {
+      edgeDegreesOfFreedom:0,componentsPerEdge:1,anchor:this.anchor,
+      uniformModeEigenvalue:null,provenEigenvalueLowerBound:this.anchor,
+      hasMasslessMode:false,hasSymmetricTensorStructure:false,
+      supportsMasslessSpinTwo:false,
+      reason:'No geometric edges exist in this state.'
+    };
+    const uniform=Array(n).fill(1/Math.sqrt(n));
+    const Hu=this._matvec(s,uniform);
+    const eigenvalue=uniform.reduce((sum,value,i)=>sum+value*Hu[i],0);
+    const residual=Math.hypot(...Hu.map((value,i)=>value-eigenvalue*uniform[i]));
+    return {
+      edgeDegreesOfFreedom:n,
+      interactionPairs:s.pairs.length,
+      componentsPerEdge:1,
+      anchor:this.anchor,
+      allPairWeightsNonnegative:s.pairs.every(([, ,weight])=>weight>=0),
+      uniformModeEigenvalue:eigenvalue,
+      uniformModeResidual:residual,
+      provenEigenvalueLowerBound:this.anchor,
+      hasMasslessMode:Math.abs(eigenvalue)<1e-12,
+      hasSymmetricTensorStructure:false,
+      supportsMasslessSpinTwo:false,
+      reason:'Positive anchor gaps every scalar edge-length mode; no tensor gauge field is present.'
+    };
+  }
   /** Matrix-free conjugate gradient. The positive anchor makes H SPD.
    * Bounds are checked, not silently projected: a bounded solution requires
    * a different constrained optimizer.

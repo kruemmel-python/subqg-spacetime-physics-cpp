@@ -556,6 +556,84 @@ end TwoSector
 
 end ExactGlitch
 
+/-! ## Linearized spin-2 weak-field closure
+
+This section proves the algebraic part of the relativistic closure.  It does
+not assume that the current graph action has already been shown to converge to
+Fierz--Pauli theory.  Instead it states exactly what follows once its static
+dust response is the trace-reversed massless spin-2 response
+`bar h_00 = 4 U`, `bar h_ij = 0` (in units `c = 1`).
+-/
+
+section LinearizedSpinTwoClosure
+
+/-- Abstract lower-bound form of the anchored metric Hessian. -/
+def anchoredMetricQuadratic
+    (anchor normSquared interaction : ℝ) : ℝ :=
+  anchor * normSquared + interaction
+
+/-- A positive anchor and nonnegative interaction give a strict mass-gap
+lower bound for every nonzero fluctuation norm. -/
+theorem anchored_metric_hessian_lower_bound
+    (anchor normSquared interaction : ℝ)
+    (hInteraction : 0 ≤ interaction) :
+    anchor * normSquared ≤
+      anchoredMetricQuadratic anchor normSquared interaction := by
+  simp [anchoredMetricQuadratic]
+  exact hInteraction
+
+/-- If both the anchor and fluctuation norm are positive, the quadratic
+response is strictly positive, so the mode cannot be massless. -/
+theorem positive_anchor_excludes_zero_metric_mode
+    (anchor normSquared interaction : ℝ)
+    (hAnchor : 0 < anchor)
+    (hNorm : 0 < normSquared)
+    (hInteraction : 0 ≤ interaction) :
+    0 < anchoredMetricQuadratic anchor normSquared interaction := by
+  dsimp [anchoredMetricQuadratic]
+  nlinarith [mul_pos hAnchor hNorm]
+
+/-- Trace of the trace-reversed perturbation for static pressureless matter. -/
+def staticDustTrace (U : ℝ) : ℝ := -(4 * U)
+
+/-- `h_00 = bar h_00 - 1/2 eta_00 bar h`, with `eta_00 = -1`. -/
+def staticDustTimePerturbation (U : ℝ) : ℝ :=
+  4 * U + (1 / 2 : ℝ) * staticDustTrace U
+
+/-- `h_ii = bar h_ii - 1/2 eta_ii bar h`, with `bar h_ii = 0`. -/
+def staticDustSpatialPerturbation (U : ℝ) : ℝ :=
+  -(1 / 2 : ℝ) * staticDustTrace U
+
+/-- Trace reversal gives the Newtonian time perturbation `h_00 = 2 U`. -/
+theorem static_dust_time_perturbation (U : ℝ) :
+    staticDustTimePerturbation U = 2 * U := by
+  simp [staticDustTimePerturbation, staticDustTrace]
+  ring
+
+/-- Trace reversal gives the same spatial perturbation `h_ii = 2 U`. -/
+theorem static_dust_spatial_perturbation (U : ℝ) :
+    staticDustSpatialPerturbation U = 2 * U := by
+  simp [staticDustSpatialPerturbation, staticDustTrace]
+  ring
+
+/-- The linearized massless spin-2 static-dust response has no slip. -/
+theorem linearized_spin_two_static_dust_no_slip (U : ℝ) :
+    staticDustSpatialPerturbation U = staticDustTimePerturbation U := by
+  rw [static_dust_spatial_perturbation, static_dust_time_perturbation]
+
+/-- For a nonzero source, the PPN ratio is exactly `gamma = 1`. -/
+theorem linearized_spin_two_static_dust_gamma_one (U : ℝ) (hU : U ≠ 0) :
+    staticDustSpatialPerturbation U / staticDustTimePerturbation U = 1 := by
+  rw [static_dust_spatial_perturbation, static_dust_time_perturbation]
+  field_simp
+
+/-- The corresponding weak-field lensing strength `(1 + gamma)/2` is one. -/
+theorem gamma_one_full_lensing_strength :
+    ((1 : ℝ) + 1) / 2 = 1 := by
+  norm_num
+
+end LinearizedSpinTwoClosure
+
 #print axioms edgeAction_along_variation
 #print axioms stationary_action_expansion
 #print axioms quadraticRemainder_nonneg
@@ -578,6 +656,13 @@ end ExactGlitch
 #print axioms total_norm_rate_zero_of_symmetric_coupling
 #print axioms blockCouplingEnergy_parameter_change
 #print axioms joint_energy_variation_with_metric_feedback
+#print axioms static_dust_time_perturbation
+#print axioms static_dust_spatial_perturbation
+#print axioms linearized_spin_two_static_dust_no_slip
+#print axioms linearized_spin_two_static_dust_gamma_one
+#print axioms gamma_one_full_lensing_strength
+#print axioms anchored_metric_hessian_lower_bound
+#print axioms positive_anchor_excludes_zero_metric_mode
 
 end
 
