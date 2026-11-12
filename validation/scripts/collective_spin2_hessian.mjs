@@ -28,6 +28,10 @@ const result = {
     constrainedTTHessianPositiveSemidefinite: audit.hessianPositiveSemidefiniteOnProbe,
     causalSelectionHasExactIncrementalVariationalForm:
       audit.selectionRuleHasExactIncrementalVariationalForm,
+    finiteLocalPenaltyReproducesEverySelectionDecision:
+      audit.selectionVariation.everyDecisionMinimizesFinitePenaltyAction,
+    implementedFixedTopologyMicroactionNoGoProved:
+      audit.microscopicSelectionNoGo.noGoProved,
     selectionDerivedFromOriginalContinuousMicroaction:
       audit.selectionRuleDerivedFromOriginalContinuousMicroaction,
     localFrameTransportClosed: parallelTransport.localFrameTransportClosed,
@@ -37,7 +41,7 @@ const result = {
     einsteinReggeCurvatureMatchingDerived: holonomy.einsteinReggeCurvatureMatchingDerived,
     fullCanonicalDerivationClosed: audit.fullCanonicalHessianMatchingClosed,
     nextNecessaryProof:
-      'Derive the exact incremental admissibility action from the original continuous microaction and match dimensionless loop holonomies to Regge/Einstein curvature with a physical length scale.'
+      'Derive dynamical cell occupancy/orientation and the positive local constraint penalty from deeper SubQG dynamics; the implemented fixed-topology quadratic cannot produce them. Then match loop holonomy to dimensionful Regge/Einstein curvature.'
   }
 };
 fs.mkdirSync(path.dirname(resultPath), { recursive: true });

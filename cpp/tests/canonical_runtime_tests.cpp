@@ -36,6 +36,8 @@ int main(){
   std::string collective=runtime.invoke("subqg_collective_spin2_hessian","canonicalCollectiveSpinTwoHessianAudit");
   require(collective.find("\"manifoldSupportedMasslessTTSector\":true")!=std::string::npos,"canonical collective spin-two Hessian");
   require(collective.find("\"selectionRuleHasExactIncrementalVariationalForm\":true")!=std::string::npos,"canonical causal selection variation");
+  require(collective.find("\"everyDecisionMinimizesFinitePenaltyAction\":true")!=std::string::npos,"canonical finite selection penalty");
+  require(collective.find("\"noGoProved\":true")!=std::string::npos,"fixed-topology selection no-go");
   require(collective.find("\"selectionRuleDerivedFromOriginalContinuousMicroaction\":false")!=std::string::npos,"canonical selection microaction caveat");
   require(collective.find("\"fullCanonicalHessianMatchingClosed\":false")!=std::string::npos,"canonical collective-Hessian caveat");
   std::string transport=runtime.invoke("subqg_simplex_parallel_transport","canonicalSimplexParallelTransportAuditDefault");

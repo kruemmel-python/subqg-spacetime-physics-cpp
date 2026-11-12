@@ -106,7 +106,10 @@ Plus-/Kreuzmoden geschlossen. Noch nicht hergeleitet sind die Auswahlregel als
 Euler-Lagrange-Gleichung der ursprünglichen kontinuierlichen Mikrowirkung und das dimensionsbehaftete
 Matching auf Regge-/Einstein-Krümmung. Als diskrete kausale Update-Regel ist
 die Auswahl bereits exakt durch `Delta S_i=-n_i+I_admissible` variationell
-charakterisiert. Die 84 unabhängigen geschlossenen
+charakterisiert; äquivalent genügt die lokale endliche Strafwirkung
+`-n_i+Lambda n_i V_i` für jedes `Lambda>1`. Die vorhandene festtopologische
+Kantenquadratik enthält jedoch weder `n_i` noch `o_i` und kann diese Gleichung
+nachweislich nicht selbst erzeugen. Die 84 unabhängigen geschlossenen
 Dualschleifen besitzen wohldefinierte, sämtlich nichttriviale SO(3)-Holonomien;
 die Spin-2-Darstellung erfüllt den Doppelwinkel. Der frühere deterministisch
 gesuchte 186-Zellen-Unterkomplex bleibt lediglich ein Existenznachweis.

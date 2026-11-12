@@ -61,6 +61,10 @@ const result = {
       collectiveHessian.causalParameterFreeSelectionImplemented,
     causalSelectionHasExactIncrementalVariationalForm:
       collectiveHessian.selectionRuleHasExactIncrementalVariationalForm,
+    finiteLocalPenaltyReproducesEverySelectionDecision:
+      collectiveHessian.selectionVariation.everyDecisionMinimizesFinitePenaltyAction,
+    implementedFixedTopologyMicroactionNoGoProved:
+      collectiveHessian.microscopicSelectionNoGo.noGoProved,
     selectionDerivedFromOriginalContinuousMicroaction:
       collectiveHessian.selectionRuleDerivedFromOriginalContinuousMicroaction,
     localSpinTwoParallelTransportClosed:
@@ -69,7 +73,7 @@ const result = {
     nontrivialDiscreteCurvatureDetected: holonomy.nontrivialDiscreteCurvatureDetected,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
-    requiredChange: 'Derive the incremental admissibility action from the original continuous microaction, match loop holonomy to dimensionful Regge/Einstein curvature, and derive gauge-null Lorentzian dynamics and universal source coupling.'
+    requiredChange: 'Extend the fixed-topology scalar microaction by microscopically derived occupancy/orientation dynamics and its local positive constraint penalty; then match holonomy to dimensionful curvature and derive universal source coupling.'
   }
 };
 

@@ -177,6 +177,9 @@
     },
     "selectionVariation": {
       "incrementalAction": "Delta S_i(n_i,o_i) = -n_i + I_admissible(n_i,o_i), n_i in {0,1}, o_i in {-1,+1}",
+      "finiteLocalPenaltyAction": "Delta S_i^Lambda = -n_i + Lambda*n_i*[sum_f 1(c_f>=2) + sum_shared (1-o_i*r_ij)/2]",
+      "exactPenaltyCondition": "Lambda > 1 because every forbidden inclusion has an integer violation count V_i >= 1",
+      "auditedFinitePenaltyLambda": 2,
       "admissibilityIndicator": "I=0 iff every triangular face has incidence <=2 and every shared face has opposite induced orientation; otherwise I=+infinity",
       "updateOrder": "canonical link-birth tick, then lexicographic cell key",
       "tetrahedralCellsConsidered": 1003,
@@ -188,10 +191,30 @@
       "forcedOrientationChoices": 229,
       "cumulativeIncrementalAction": -264,
       "everyDecisionMinimizesIncrementalAction": true,
+      "everyDecisionMinimizesFinitePenaltyAction": true,
+      "hardIndicatorIsInfinitePenaltyLimit": true,
       "selectionMatchesCausalExtractor": true,
       "fittedParameters": 0,
       "variationalCharacterizationClosed": true,
       "derivedFromOriginalContinuousMicroaction": false
+    },
+    "microscopicSelectionNoGo": {
+      "implementedAction": "S(x)=1/2 x^T(anchor I + L_w)x - source^T x",
+      "variedConfigurationSpace": "R^E log-metric variables on a fixed graph",
+      "continuousLogMetricVariables": 320,
+      "binaryCellOccupancyVariables": 0,
+      "cellOrientationVariables": 0,
+      "topologyFixedDuringVariation": true,
+      "finiteAnalyticQuadratic": true,
+      "anchor": 1,
+      "allPairWeightsNonnegative": true,
+      "hessianStrictlyPositiveDefinite": true,
+      "uniqueContinuousStationaryPoint": true,
+      "exactInfiniteAdmissibilityBarrierFromImplementedAction": false,
+      "cellSelectionEulerLagrangeEquationPresent": false,
+      "noGoProved": true,
+      "theorem": "A functional on fixed-topology x in R^E has no variation with respect to absent binary occupancy n_i or orientation o_i; its Euler-Lagrange equations therefore cannot select the causal cell complex.",
+      "necessaryExtension": "Derive dynamical cell occupancy/orientation variables and a local positive constraint penalty, or an equivalent singular limit, from deeper SubQG dynamics."
     },
     "constrainedCollectiveAction": "S_TT = sum_A[ m/2 sum_C (dq_C^A/dt)^2 - k/2 sum_<CD> w_CD(q_C^A-q_D^A)^2 ], A in {plus,cross}",
     "reusesCanonicalFpvDirichletForm": true,
@@ -1460,12 +1483,14 @@
     "orientableManifoldSubcomplexSupportsMasslessTTHessian": true,
     "causalManifoldSelectionIsParameterFree": true,
     "causalSelectionHasExactIncrementalVariationalForm": true,
+    "finiteLocalPenaltyReproducesEverySelectionDecision": true,
+    "implementedFixedTopologyMicroactionNoGoProved": true,
     "selectionDerivedFromOriginalContinuousMicroaction": false,
     "localSpinTwoParallelTransportClosed": true,
     "closedLoopHolonomyConnectionDerived": true,
     "nontrivialDiscreteCurvatureDetected": true,
     "infraredCandidateSelfConsistent": true,
     "derivationComplete": false,
-    "requiredChange": "Derive the incremental admissibility action from the original continuous microaction, match loop holonomy to dimensionful Regge/Einstein curvature, and derive gauge-null Lorentzian dynamics and universal source coupling."
+    "requiredChange": "Extend the fixed-topology scalar microaction by microscopically derived occupancy/orientation dynamics and its local positive constraint penalty; then match holonomy to dimensionful curvature and derive universal source coupling."
   }
 }

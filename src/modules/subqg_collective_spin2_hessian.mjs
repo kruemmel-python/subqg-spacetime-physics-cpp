@@ -277,24 +277,34 @@ export function causalSelectionVariationalAudit(world) {
   let freeOrientationGaugeChoices = 0;
   let forcedOrientationChoices = 0;
   let everyDecisionMinimizesIncrementalAction = true;
+  let everyDecisionMinimizesFinitePenaltyAction = true;
   let cumulativeIncrementalAction = 0;
   for (const { index } of order) {
     const faceAdmissible = faces[index].every(face => (faceCounts.get(face) ?? 0) < 2);
     const requirements = orientationRequirements(index, faces, faceCells, selected, orientations);
     const plusAdmissible = faceAdmissible && requirements.every(value => value === 1);
     const minusAdmissible = faceAdmissible && requirements.every(value => value === -1);
+    const saturatedFaceViolations = faces[index]
+      .reduce((sum, face) => sum + ((faceCounts.get(face) ?? 0) >= 2 ? 1 : 0), 0);
+    const orientationViolation = orientation => requirements
+      .reduce((sum, required) => sum + (required === orientation ? 0 : 1), 0);
+    const minimumViolation = saturatedFaceViolations + Math.min(
+      orientationViolation(1), orientationViolation(-1));
     const includeMinimum = plusAdmissible || minusAdmissible ? -1 : Number.POSITIVE_INFINITY;
+    const finitePenaltyIncludeAction = -1 + 2 * minimumViolation;
     const excludeAction = 0;
     const include = includeMinimum < excludeAction;
     if (!include) {
       if (!faceAdmissible) rejectedByFaceCapacity++;
       else rejectedByOrientationFrustration++;
       everyDecisionMinimizesIncrementalAction &&= excludeAction <= includeMinimum;
+      everyDecisionMinimizesFinitePenaltyAction &&= excludeAction < finitePenaltyIncludeAction;
       continue;
     }
     const orientation = requirements[0] ?? 1;
     everyDecisionMinimizesIncrementalAction &&=
       (orientation === 1 ? plusAdmissible : minusAdmissible) && includeMinimum === -1;
+    everyDecisionMinimizesFinitePenaltyAction &&= finitePenaltyIncludeAction < excludeAction;
     if (requirements.length === 0) freeOrientationGaugeChoices++;
     else forcedOrientationChoices++;
     selected.add(index);
@@ -305,6 +315,10 @@ export function causalSelectionVariationalAudit(world) {
   const extracted = extractCausalManifoldSector(world);
   return {
     incrementalAction: 'Delta S_i(n_i,o_i) = -n_i + I_admissible(n_i,o_i), n_i in {0,1}, o_i in {-1,+1}',
+    finiteLocalPenaltyAction:
+      'Delta S_i^Lambda = -n_i + Lambda*n_i*[sum_f 1(c_f>=2) + sum_shared (1-o_i*r_ij)/2]',
+    exactPenaltyCondition: 'Lambda > 1 because every forbidden inclusion has an integer violation count V_i >= 1',
+    auditedFinitePenaltyLambda: 2,
     admissibilityIndicator:
       'I=0 iff every triangular face has incidence <=2 and every shared face has opposite induced orientation; otherwise I=+infinity',
     updateOrder: 'canonical link-birth tick, then lexicographic cell key',
@@ -317,12 +331,15 @@ export function causalSelectionVariationalAudit(world) {
     forcedOrientationChoices,
     cumulativeIncrementalAction,
     everyDecisionMinimizesIncrementalAction,
+    everyDecisionMinimizesFinitePenaltyAction,
+    hardIndicatorIsInfinitePenaltyLimit: true,
     selectionMatchesCausalExtractor:
       selected.size === extracted.acceptedOriginalCellIndices.length &&
       [...selected].every((value, index) => value === extracted.acceptedOriginalCellIndices[index]),
     fittedParameters: 0,
     variationalCharacterizationClosed:
       everyDecisionMinimizesIncrementalAction &&
+      everyDecisionMinimizesFinitePenaltyAction &&
       selected.size === extracted.acceptedOriginalCellIndices.length &&
       [...selected].every((value, index) => value === extracted.acceptedOriginalCellIndices[index]),
     derivedFromOriginalContinuousMicroaction: false
@@ -357,6 +374,7 @@ export function collectiveSpinTwoHessianAudit(world) {
   const fullComplex = tetrahedralIncidenceAudit(world);
   const manifold = extractCausalManifoldSector(world);
   const selectionVariation = causalSelectionVariationalAudit(world);
+  const microscopicSelectionNoGo = world.topologySelectionNoGoAudit();
   const count = manifold.cells.length;
   const uniform = Array(count).fill(1);
   const uniformResidual = Math.max(0, ...applyDualGraphHessian(uniform, manifold.dualBonds).map(Math.abs));
@@ -380,6 +398,7 @@ export function collectiveSpinTwoHessianAudit(world) {
       orientable: manifold.orientable
     },
     selectionVariation,
+    microscopicSelectionNoGo,
     constrainedCollectiveAction:
       'S_TT = sum_A[ m/2 sum_C (dq_C^A/dt)^2 - k/2 sum_<CD> w_CD(q_C^A-q_D^A)^2 ], A in {plus,cross}',
     reusesCanonicalFpvDirichletForm: true,

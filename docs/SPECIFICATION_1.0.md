@@ -115,7 +115,11 @@ holonomies close numerically and are non-identity, while their spin-2 action
 obeys the double-angle representation. Derivation of the admissibility rule as
 an incremental variational equation is exact for all 1,003 cell decisions.
 Deriving its hard constraint indicator from the original continuous
-microaction and dimensionful Regge/Einstein curvature matching remain open.
+microaction is structurally impossible without extending the configuration
+space: the implemented strictly convex fixed-topology quadratic has no cell
+occupancy or orientation variables. A finite local penalty reproduces every
+decision for any `Lambda>1`, but its microscopic origin and dimensionful
+Regge/Einstein curvature matching remain open.
 
 ---
 
@@ -182,9 +186,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **336 unit tests**:
-- **Total Tests:** 336
-- **Passing:** 336 (100%)
+SubQG 1.0 features an automated test battery with **337 unit tests**:
+- **Total Tests:** 337
+- **Passing:** 337 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -199,7 +203,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 336 unit tests via `node --test` |
+| `npm test` | Runs all 337 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

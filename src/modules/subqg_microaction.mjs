@@ -50,6 +50,39 @@ export class MicroActionWorld extends ActionWorld {
   }
   microAction(){const s=this._microSystem();return this._energy(s,s.x);}
   /**
+   * Structural no-go audit for topology selection by the present action.
+   * The varied domain contains one real log-length per already existing edge;
+   * graph topology, cell occupancy, and cell orientation are not variables.
+   * A finite strictly convex quadratic on that domain cannot generate a hard
+   * indicator on variables that are absent from its configuration space.
+   */
+  topologySelectionNoGoAudit(){
+    const s=this._microSystem();
+    const nonnegativePairWeights=s.pairs.every(([, ,weight])=>weight>=0);
+    const strictlyConvex=this.anchor>0&&nonnegativePairWeights;
+    return {
+      implementedAction:'S(x)=1/2 x^T(anchor I + L_w)x - source^T x',
+      variedConfigurationSpace:'R^E log-metric variables on a fixed graph',
+      continuousLogMetricVariables:s.x.length,
+      binaryCellOccupancyVariables:0,
+      cellOrientationVariables:0,
+      topologyFixedDuringVariation:true,
+      finiteAnalyticQuadratic:true,
+      anchor:this.anchor,
+      allPairWeightsNonnegative:nonnegativePairWeights,
+      hessianStrictlyPositiveDefinite:strictlyConvex,
+      uniqueContinuousStationaryPoint:strictlyConvex,
+      exactInfiniteAdmissibilityBarrierFromImplementedAction:false,
+      cellSelectionEulerLagrangeEquationPresent:false,
+      noGoProved:
+        strictlyConvex&&s.x.length===s.edges.length,
+      theorem:
+        'A functional on fixed-topology x in R^E has no variation with respect to absent binary occupancy n_i or orientation o_i; its Euler-Lagrange equations therefore cannot select the causal cell complex.',
+      necessaryExtension:
+        'Derive dynamical cell occupancy/orientation variables and a local positive constraint penalty, or an equivalent singular limit, from deeper SubQG dynamics.'
+    };
+  }
+  /**
    * Exact quadratic-spectrum audit of the presently implemented edge action.
    * H = anchor*I + L_w and all pair weights are nonnegative, hence
    * v^T H v >= anchor*||v||^2.  The uniform edge mode is an exact eigenmode

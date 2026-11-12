@@ -75,6 +75,41 @@ ihre mikroskopische Herleitung: Der harte Indikatorterm muss weiterhin als
 Grenzwert oder Nebenbedingung aus der ursprünglichen kontinuierlichen
 SubQG-Wirkung gewonnen werden.
 
+Der Indikator besitzt eine endliche lokale Strafwirkungsdarstellung. Für die
+Anzahl `V_i` verletzter Flächen- und Orientierungsbedingungen gilt
+
+```text
+Delta S_i^Lambda = -n_i + Lambda n_i V_i.
+```
+
+Jede verbotene Aufnahme hat ganzzahlig `V_i >= 1`. Deshalb reproduziert jedes
+`Lambda > 1` exakt dieselbe Entscheidung: zulässig ergibt `-1 < 0`, unzulässig
+mindestens `Lambda-1 > 0`, während Nichtaufnahme Wirkung null besitzt. Der
+Audit mit `Lambda=2` stimmt bei allen 1.003 Schritten exakt überein; der harte
+Indikator ist der Grenzwert `Lambda -> infinity`.
+
+## No-Go-Satz der derzeit implementierten Mikrowirkung
+
+Die aktuelle `MicroActionWorld` variiert ausschließlich einen reellen
+Log-Längenwert pro bereits vorhandener Kante:
+
+```text
+S(x) = 1/2 x^T(anchor I + L_w)x - source^T x,  anchor > 0.
+```
+
+Topologie, binäre Zellbelegung und Zellorientierung werden während dieser
+Variation festgehalten beziehungsweise kommen in ihrem Konfigurationsraum gar
+nicht vor. Wegen des positiven Ankers und nichtnegativer Gewichte ist die
+Wirkung glatt, endlich und strikt konvex. Ihre Euler-Lagrange-Gleichung kann
+daher keine Variation nach den abwesenden Variablen `n_i` oder `o_i` und keine
+unendliche Topologiebarriere erzeugen. Das ist ein struktureller No-Go-Satz
+für die derzeitige Wirkung, kein numerisches Scheitern.
+
+Die notwendige nächste Theorieerweiterung ist damit eindeutig: Zellbelegung
+und Orientierung müssen als dynamische mikroskopische Variablen samt positivem
+lokalem Strafterm hergeleitet werden. Sie dürfen nicht lediglich nachträglich
+als Fit angenommen werden.
+
 ## Kollektiver TT-Hessian
 
 Auf dem Dualgraphen der 116 kausal ausgewählten Zellen werden die bereits aus Kanten konstruierten
@@ -151,8 +186,9 @@ parameterfrei an die vorhandene kausale Entstehungsordnung gebunden und als
 inkrementelles diskretes Variationsminimum formuliert, der
 lokale Paralleltransport ist konstruiert und die geschlossene Holonomie der
 vollständigen fundamentalen Zyklenbasis ist berechnet. Noch nicht bewiesen ist,
-dass der dabei verwendete Indikatorterm selbst aus der ursprünglichen
-kontinuierlichen Mikrowirkung folgt. Ebenfalls offen bleibt das dimensionsbehaftete Matching der
+dass die dafür notwendigen Zellvariablen und ihr positiver Strafterm aus einer
+tieferen Mikrodynamik folgen; die aktuell implementierte festtopologische
+Quadratik kann dies nachweislich nicht. Ebenfalls offen bleibt das dimensionsbehaftete Matching der
 Verbindungsholonomie auf Regge-/Einstein-Krümmung.
 
 ## Reproduktion
@@ -163,5 +199,5 @@ npm run validation:collective-spin2-hessian
 
 Ergebnisdatei: `validation/results/collective_spin2_hessian.json`.
 
-SHA-256: `4C7A30E2E06FDCE5D08D2E135D7A2312BFB1CFECFB86877C0571664A858480C3`.
+SHA-256: `CBCD4FB43616E93DBF060C1AFF1A97873BA1AAFD7090D5BF2CE992AAEC0EA49E`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.

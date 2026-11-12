@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`EE935E8B3691D9D2A1451098D9580EC15DB5D48A118099F90674DB0BD35CAC02`.
+`F7AC2AE85D36BB688E1AE4C4DC04E0DD269AD3E6A21E7AA494CDD2702613DB88`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -326,8 +326,12 @@ die Verbindung trägt damit diskrete Krümmung. Das dimensionsbehaftete Matching
 auf lokale Regge-/Einstein-Krümmung bleibt offen.
 Die kausale Zulassung ist außerdem für sämtliche 1.003 Zellentscheidungen als
 exaktes Minimum einer parameterfreien inkrementellen Indikatorwirkung
-geschlossen. Noch offen ist die Herleitung dieses Indikatorterms aus der
-ursprünglichen kontinuierlichen SubQG-Mikrowirkung.
+geschlossen. Eine endliche lokale Strafwirkung reproduziert alle Entscheidungen
+für jedes `Lambda>1`. Zugleich beweist ein Strukturaudit, dass die derzeitige
+festtopologische, strikt konvexe Kantenquadratik keine Euler-Lagrange-Gleichung
+für die in ihrem Konfigurationsraum fehlenden Zellbelegungs- und
+Orientierungsvariablen erzeugen kann. Diese Variablen müssen aus einer tieferen
+SubQG-Mikrodynamik hergeleitet werden.
 
 ```powershell
 npm run validation:collective-spin2-hessian
@@ -337,4 +341,4 @@ Der negative Vollkomplexbefund, die Orientierungsprüfung und die offene
 dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
-SHA-256 `4C7A30E2E06FDCE5D08D2E135D7A2312BFB1CFECFB86877C0571664A858480C3`.
+SHA-256 `CBCD4FB43616E93DBF060C1AFF1A97873BA1AAFD7090D5BF2CE992AAEC0EA49E`.

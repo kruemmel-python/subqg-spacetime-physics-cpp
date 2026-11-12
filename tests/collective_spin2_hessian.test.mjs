@@ -30,6 +30,9 @@ test('causal selection is the exact minimum of a parameter-free incremental acti
   assert.equal(audit.acceptedCells, 264);
   assert.equal(audit.rejectedCells, 739);
   assert.equal(audit.everyDecisionMinimizesIncrementalAction, true);
+  assert.equal(audit.everyDecisionMinimizesFinitePenaltyAction, true);
+  assert.equal(audit.auditedFinitePenaltyLambda, 2);
+  assert.equal(audit.hardIndicatorIsInfinitePenaltyLimit, true);
   assert.equal(audit.selectionMatchesCausalExtractor, true);
   assert.equal(audit.variationalCharacterizationClosed, true);
   assert.equal(audit.derivedFromOriginalContinuousMicroaction, false);

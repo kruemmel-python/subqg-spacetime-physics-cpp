@@ -10,6 +10,15 @@ test('same seed reproduces bitwise result',()=>{const a=build(),b=build();const 
 test('removing excitation restores reference metric',()=>{const w=build();const id=w.edgesOrdered()[0].a;w.setMass(id,1);w.solveMicroAction();w.setMass(id,0);const r=w.solveMicroAction();assert.ok(r.converged);assert.ok(Math.abs(r.meanLength-1)<1e-9);});
 test('causal clock is unaffected by static solver',()=>{const w=build();const before=JSON.stringify(w.causalSnapshot());w.solveMicroAction();assert.equal(JSON.stringify(w.causalSnapshot()),before);});
 test('reject invalid overlap floor',()=>assert.throws(()=>new MicroActionWorld({overlapFloor:0}),RangeError));
+test('fixed-topology quadratic microaction cannot vary absent cell-selection variables',()=>{
+  const audit=build().topologySelectionNoGoAudit();
+  assert.equal(audit.continuousLogMetricVariables,320);
+  assert.equal(audit.binaryCellOccupancyVariables,0);
+  assert.equal(audit.cellOrientationVariables,0);
+  assert.equal(audit.hessianStrictlyPositiveDefinite,true);
+  assert.equal(audit.noGoProved,true);
+  assert.equal(audit.cellSelectionEulerLagrangeEquationPresent,false);
+});
 test('reject invalid solver options',()=>assert.throws(()=>build().solveMicroAction({iterations:0}),RangeError));
 test('bounded metric is not silently clipped',()=>{const w=build({minLog:-0.001,maxLog:0.001});w.setMass(w.edgesOrdered()[0].a,10);assert.throws(()=>w.solveMicroAction(),RangeError);});
 test('canonical anchored scalar metric sector is gapped and not spin two',()=>{
