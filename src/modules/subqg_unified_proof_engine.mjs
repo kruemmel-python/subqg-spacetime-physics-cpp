@@ -272,7 +272,8 @@ export class SubQGUnifiedProofEngine {
    * g_eff(r) = sqrt(g_N^2 + g_N * a0)
    * 
    * Asymptotics:
-   * - Near core (g_N >> a0): g_eff -> g_N = G*M/r^2   (Pure Newton)
+   * - Near core (g_N >> a0): relative limit g_eff/g_N -> 1, but the additive
+   *   a0/2 term excludes this surrogate as an exact Solar-System law.
    * - Outer realm (g_N << a0): g_eff -> sqrt(g_N*a0) = sqrt(G*M*a0)/r (Pure 1/r)
    */
   effectiveGravitationalAcceleration(M, r) {

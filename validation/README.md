@@ -205,3 +205,25 @@ Fierz-Pauli-IR-Sektor:
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
 `C32EE7C5F05C483B07FE9D63B701882DD4D9ECF495040535B7CCF983391FACE9`.
+
+## Test 4: Sonnensystem-Perihelien
+
+Die vollständige Herleitung, Tabellen und Modelltrennung stehen in
+`SOLAR_SYSTEM.md`.
+
+```powershell
+npm run validation:solar-system
+```
+
+Das aus dem SPARC-Training eingefrorene Dual-Strain-Surrogat wird durch die
+INPOP10a-Perihelgrenzen eindeutig ausgeschlossen; der größte Widerspruch
+beträgt beim Mars `13.120,63 Sigma`. Die mikroskopische Fluxgleichung erreicht
+dagegen bereits am Aphel jedes geprüften Planeten exakt `C_SubQG=1`, sagt
+daher keine zusätzliche Perihelpräzession voraus und liegt für alle sechs
+Planeten innerhalb `0,98 Sigma` der INPOP10a-Werte. Gegen die unabhängigen
+EPM2011-Werte beträgt der größte Abstand `2,074 Sigma`. Es wurde kein lokaler
+Parameter gefittet.
+
+Die deterministische Ergebnisdatei
+`validation/results/solar_system_perihelion_validation.json` hat SHA-256
+`BD2C99EB3D1B930EB3C0C5918E0596CF85F3F1AFE13AA073F03560F8ED8B5B7A`.

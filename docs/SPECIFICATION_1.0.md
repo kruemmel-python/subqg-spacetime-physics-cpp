@@ -43,17 +43,23 @@ $$\hat{\mathcal{H}} |\Psi\rangle = 0 \implies \langle \tau_B | \Psi \rangle = \h
 The discrete causal order forms a Directed Acyclic Graph (DAG) whose transitive reduction defines a causal poset $(E, \prec)$ with topological depth $D(e) = 1 + \max_{p \in \mathrm{parents}(e)} D(p)$.
 
 ### 2.4 Emergent Gravitational Dynamics & Newton-to-MOND Crossover
-The effective gravitational acceleration $g_{\mathrm{eff}}$ in the relational lattice emerges from non-linear conductance saturation across graph filaments:
+The original algebraic galactic surrogate is:
 $$g_{\mathrm{eff}} = \sqrt{g_N^2 + a_0 g_N}$$
 
 Where:
-- For $g_N \gg a_0$ (Solar System / High Acceleration): $g_{\mathrm{eff}} \approx g_N = \frac{GM}{r^2}$ (Newtonian $1/r^2$).
+- For $g_N \gg a_0$: $g_{\mathrm{eff}} = g_N + a_0/2 + O(a_0^2/g_N)$. INPOP10a excludes this residual constant term, so this algebraic form is not the universal Solar-System law.
 - For $g_N \ll a_0$ (Galactic Outskirts / Low Acceleration): $g_{\mathrm{eff}} \approx \sqrt{a_0 g_N} = \frac{\sqrt{G M a_0}}{r}$ (MONDian $1/r$).
 - Cosmological Scale $a_0$: Determined by the cosmic horizon diameter $L_H$:
   $$a_0 = \frac{c^2}{L_H} \approx 1.2 \times 10^{-10}\,\text{m/s}^2$$
 
 Flat rotation curves satisfy the baryonic Tully-Fisher relation identically:
 $$v_{\mathrm{flat}} = (G M a_0)^{1/4} \propto M^{0.25}$$
+
+The surviving cross-scale equation is the microscopic variational flux law
+$C_{\mathrm{SubQG}}(g)g=g_N$. Its channel occupation saturates exactly to
+$C_{\mathrm{SubQG}}=1$ at high field, producing $g=g_N$ throughout the tested
+planetary orbits without a Solar-System fit. The dual-strain expression is
+retained as a falsified local extrapolation and useful galactic surrogate.
 
 ---
 

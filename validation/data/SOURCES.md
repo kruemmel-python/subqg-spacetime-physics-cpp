@@ -61,3 +61,30 @@ und 26 beziehungsweise 22 Galaxien.
 Die aktuelle Pipeline verwendet nur diese publizierten Posteriorangaben und
 behauptet keinen Refit der Bildpixel oder des ursprünglichen Linsenkatalogs.
 Ein späterer radienaufgelöster Rohdatentest muss dieses Aggregat-Gate ersetzen.
+
+## Planetare Ephemeriden
+
+- Primärpublikation: Fienga et al., *Celestial Mechanics and Dynamical
+  Astronomy* 111, 363–385 (2011)
+- DOI: `10.1007/s10569-011-9377-8`
+- Preprint: <https://arxiv.org/abs/1108.5546>
+- verwendete Daten: INPOP10a Tabelle 5, zusätzliche Perihelraten von Merkur,
+  Venus, Erde-Mond-Baryzentrum, Mars, Jupiter und Saturn
+- Methode der Quelle: gleichzeitige Fits von Anfangsbedingungen, solarem `GM`
+  und Asteroidenmassen; angegebene Intervalle verschlechtern die
+  INPOP10a-Postfit-Residuen um weniger als fünf Prozent
+
+Bahnelemente:
+
+- Herausgeber: NASA/JPL Solar System Dynamics
+- Tabelle: <https://ssd.jpl.nasa.gov/planets/approx_pos.html>
+- verwendete Spalten: J2000-Halbachse und Exzentrizität, Tabelle für
+  1800–2050
+
+Unabhängige Ephemeriden-Replikation:
+
+- Primärpublikation: Pitjeva & Pitjev, *Astronomy Letters* 39 (2013)
+- Preprint: <https://arxiv.org/abs/1306.3043>
+- verwendete Daten: EPM2011 Tabelle 4, zusätzliche Perihelraten aus ungefähr
+  678.000 Beobachtungen von Planeten und Raumfahrzeugen
+- Einheitenumrechnung: `mas/Jahr * 100 = mas/Jahrhundert`

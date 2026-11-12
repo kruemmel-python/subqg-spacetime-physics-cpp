@@ -56,6 +56,12 @@ export {
   spinTwoInfraredAudit
 } from './modules/subqg_spin2_ir.mjs';
 export {
+  dualStrainAnomalousAcceleration,
+  dualStrainHighAccelerationLimit,
+  secularPerihelionPrecession,
+  constantRadialAccelerationPrecession
+} from './modules/subqg_solar_system.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,

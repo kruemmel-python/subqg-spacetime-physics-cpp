@@ -11,7 +11,7 @@ werden. Kein einzelnes Gate reicht allein aus.
 | G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | SPARC-Holdout und LITTLE-THINGS-Außentest ausgeführt: klar besser als Newton; gegenüber RAR statistisch noch nicht eindeutig; externe Reproduktion offen |
 | G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | Spin-2-No-Slip `gamma=1` formal bewiesen und mit 80 starken Linsen kompatibel; skalare Mikrowirkung ist gegappt, mikro-zu-Spin-2-Matching und Rohdatentest offen |
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | offen |
-| G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | offen |
+| G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | Unabhängige INPOP10a- und EPM2011-Perihelwerte: mikroskopische Fluxgleichung ohne Fit innerhalb 2,075 Sigma; Dual-Strain als lokale Fundamentalgleichung falsifiziert; Pulsare und weitere PPN-Observablen offen |
 | G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | offen |
 | G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | offen |
 | G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | offen |
@@ -32,13 +32,16 @@ werden. Kein einzelnes Gate reicht allein aus.
 7. „Empirisch bewiesen“ wird erst nach unabhängiger Reproduktion und dem
    Bestehen aller relevanten Gates verwendet.
 
-## Eingefrorenes Galaxienmodell v1
+## Eingefrorenes Galaxien-Surrogat v1
 
 ```text
 g_SubQG(g_bar; a0) = sqrt(g_bar^2 + g_bar*a0)
 ```
 
-Freie globale Parameter: genau einer (`a0`).
+Freie globale Parameter: genau einer (`a0`). Der Sonnensystemtest zeigt, dass
+diese algebraische Form kein universelles lokales Gesetz ist. Die kanonische
+Fundamentalvorhersage für weitere Skalen ist daher die mikroskopische
+Fluxgleichung `C_SubQG(g) g = g_bar`, nicht eine Extrapolation des Surrogats.
 
 Die erste SPARC-Auswertung dient als Entwicklungs- und Baseline-Test. Da das
 Protokoll innerhalb desselben Projekts entwickelt und ausgeführt wurde, zählt

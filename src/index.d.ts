@@ -146,6 +146,21 @@ export function transverseTracelessPlaneWave(options: {
   speed?: number;
 }): any;
 export function spinTwoInfraredAudit(): any;
+export function dualStrainAnomalousAcceleration(gNewton: number, a0: number): number;
+export function dualStrainHighAccelerationLimit(a0: number): number;
+export function secularPerihelionPrecession(options: {
+  semiMajorAxis: number;
+  eccentricity: number;
+  centralMu: number;
+  anomalousInwardAcceleration: (gNewton: number, radius: number) => number;
+  samples?: number;
+}): any;
+export function constantRadialAccelerationPrecession(options: {
+  semiMajorAxis: number;
+  eccentricity: number;
+  centralMu: number;
+  acceleration: number;
+}): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

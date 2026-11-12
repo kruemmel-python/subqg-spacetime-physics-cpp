@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "observations": {
+      "citation": "Fienga et al. (2011), INPOP10a, Table 5",
+      "doi": "10.1007/s10569-011-9377-8",
+      "arxiv": "1108.5546",
+      "units": "milliarcseconds per Julian century",
+      "interpretation": "Intervals inducing less than 5% degradation of post-fit residuals while refitting planetary initial conditions, solar GM and asteroid densities."
+    },
+    "independentReplication": {
+      "citation": "Pitjeva & Pitjev (2013), EPM2011 additional perihelion precessions, Table 4",
+      "arxiv": "1306.3043",
+      "observations": 678000,
+      "units": "converted from milliarcseconds per year to milliarcseconds per Julian century"
+    },
+    "orbitalElements": {
+      "citation": "JPL Solar System Dynamics, Approximate Positions of the Planets, J2000 elements valid 1800-2050",
+      "url": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    }
+  },
+  "fixedInputs": {
+    "a0MetersPerSecondSquared": 1.465547840958916e-10,
+    "a0Origin": "SPARC training subset; not fitted to Solar-System data",
+    "solarMuMetersCubedPerSecondSquared": 132712440018000000000,
+    "astronomicalUnitMeters": 149597870700,
+    "numericalOrbitSamples": 65536
+  },
+  "rows": [
+    {
+      "planet": "Mercury",
+      "orbitalElements": {
+        "semiMajorAxisAu": 0.38709927,
+        "eccentricity": 0.20563593
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": 0.4,
+        "oneSigmaMasPerCentury": 0.6
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": -2,
+        "oneSigmaMasPerCentury": 3
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -975.0683419038288,
+        "residualSigmaInpop10a": -1625.7805698397146,
+        "residualSigmaEpm2011": -324.3561139679429,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.327739194933459e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.3277392005137e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.02722599377747751,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.027225993777477513,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": -0.6666666666666667,
+        "residualSigmaEpm2011": 0.6666666666666666
+      }
+    },
+    {
+      "planet": "Venus",
+      "orbitalElements": {
+        "semiMajorAxisAu": 0.72333566,
+        "eccentricity": 0.00677672
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": 0.2,
+        "oneSigmaMasPerCentury": 1.5
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": 2.6,
+        "oneSigmaMasPerCentury": 1.6
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -1361.9650287825402,
+        "residualSigmaInpop10a": -908.1100191883602,
+        "residualSigmaEpm2011": -852.8531429890876,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.327739180784407e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.327739181426516e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.011181877457315595,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.011181877457315597,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": -0.13333333333333333,
+        "residualSigmaEpm2011": -1.625
+      }
+    },
+    {
+      "planet": "Earth-Moon barycenter",
+      "orbitalElements": {
+        "semiMajorAxisAu": 1.00000261,
+        "eccentricity": 0.01671123
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": -0.2,
+        "oneSigmaMasPerCentury": 0.9
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": 0.19,
+        "oneSigmaMasPerCentury": 0.19
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -1601.2011923355208,
+        "residualSigmaInpop10a": -1778.890213706134,
+        "residualSigmaEpm2011": -8428.37469650274,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.327739157994489e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.327739161020844e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.0057367153594025805,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.005736715359402581,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": 0.22222222222222224,
+        "residualSigmaEpm2011": -1
+      }
+    },
+    {
+      "planet": "Mars",
+      "orbitalElements": {
+        "semiMajorAxisAu": 1.52371034,
+        "eccentricity": 0.0933941
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": -0.04,
+        "oneSigmaMasPerCentury": 0.15
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": -0.02,
+        "oneSigmaMasPerCentury": 0.037
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -1968.1347162866368,
+        "residualSigmaInpop10a": -13120.631441910913,
+        "residualSigmaEpm2011": -53192.28962936856,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.327739079131567e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.327739118399085e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.0021364981858566353,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.0021364981858566353,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": 0.26666666666666666,
+        "residualSigmaEpm2011": 0.5405405405405406
+      }
+    },
+    {
+      "planet": "Jupiter",
+      "orbitalElements": {
+        "semiMajorAxisAu": 5.202887,
+        "eccentricity": 0.04838624
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": -41,
+        "oneSigmaMasPerCentury": 42
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": 58.7,
+        "oneSigmaMasPerCentury": 28.3
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -3648.539545053365,
+        "residualSigmaInpop10a": -85.8937986917468,
+        "residualSigmaEpm2011": -130.99786378280442,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.327737857754695e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.327738094957361e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.0001993101418199848,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.0001993101418199848,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": 0.9761904761904762,
+        "residualSigmaEpm2011": -2.0742049469964665
+      }
+    },
+    {
+      "planet": "Saturn",
+      "orbitalElements": {
+        "semiMajorAxisAu": 9.53667594,
+        "eccentricity": 0.05386179
+      },
+      "inpop10a": {
+        "supplementaryPerihelionMasPerCentury": 0.15,
+        "oneSigmaMasPerCentury": 0.65
+      },
+      "epm2011": {
+        "supplementaryPerihelionMasPerCentury": -0.32,
+        "oneSigmaMasPerCentury": 0.47
+      },
+      "subqgDualStrain": {
+        "predictedMasPerCentury": -4938.2507466227735,
+        "residualSigmaInpop10a": -7597.539610188882,
+        "residualSigmaEpm2011": -10506.235631112286,
+        "minAnomalousAccelerationMetersPerSecondSquared": 7.32773463170163e-11,
+        "maxAnomalousAccelerationMetersPerSecondSquared": 7.327735518823014e-11
+      },
+      "subqgMicroscopicFlux": {
+        "minimumGNewtonMetersPerSecondSquared": 0.00005870829152973278,
+        "conductivityAtMinimumField": 1,
+        "accelerationAtMinimumField": 0.00005870829152973279,
+        "saturatedAcrossOrbit": true,
+        "predictedMasPerCentury": 0,
+        "residualSigmaInpop10a": -0.23076923076923075,
+        "residualSigmaEpm2011": 0.6808510638297873
+      }
+    }
+  ],
+  "verdict": {
+    "dualStrainMaxAbsoluteResidualSigma": 53192.28962936856,
+    "dualStrainCompatibleWithinFiveSigmaAllPlanets": false,
+    "microscopicFluxMaxAbsoluteResidualSigma": 2.0742049469964665,
+    "microscopicFluxCompatibleWithinFiveSigmaAllPlanets": true,
+    "methodologicalConclusion": "The frozen algebraic dual-strain surrogate is tested separately from the pre-existing microscopic flux law. No Solar-System parameter is fitted."
+  }
+}
