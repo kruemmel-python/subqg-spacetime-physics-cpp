@@ -92,15 +92,42 @@ Die induzierte Abbildung der Plus-/Kreuz-Basis ist eine orientierungs- und
 normerhaltende `SO(2)`-Matrix. Damit können die beiden TT-Amplituden über den
 gesamten kausalen Sektor kovariant verglichen werden.
 
-## Noch offene Auswahl- und Holonomiebrücke
+## Geschlossene Dualschleifen und diskrete Holonomie
+
+Ein deterministischer Spannbaum des verbundenen Dualgraphen besitzt 115
+Kanten. Zusammen mit den 199 Dualbindungen ergibt sich exakt der
+Zyklus-Rang
+
+```text
+b_1 = E - V + 1 = 199 - 116 + 1 = 84.
+```
+
+Für jede der 84 unabhängigen Fundamentalschleifen werden die gerichteten
+Flächentransporte in Schleifenreihenfolge multipliziert. Alle resultierenden
+Matrizen liegen bis auf höchstens `7,8e-15` in `SO(3)`. Alle 84 Holonomien sind
+nichttrivial; ihre konjugationsinvarianten Rotationswinkel liegen zwischen
+`0,1283882205` und `3,1251315624` Radiant. Das ist globale Pfadabhängigkeit und
+damit die diskrete Krümmungsobservable der konstruierten Verbindung.
+
+Für die jeweilige Holonomieachse wirkt dieselbe Schleife auf Plus/Kreuz in der
+Spin-2-Darstellung mit dem doppelten Winkel. Die maximale Abweichung von
+`cos(2 theta)` beträgt `5,2e-15`.
+
+Pfadunabhängigkeit wäre nur für eine flache Verbindung zu erwarten. Der offene
+Schritt ist daher nicht, die nichttriviale Holonomie zu beseitigen, sondern sie
+mit einer physikalischen Simplex-Längenskala auf lokalen Regge-Defizitwinkel
+und den Einstein-Krümmungstensor abzubilden.
+
+## Noch offene Auswahl- und Krümmungsbrücke
 
 Die verwendete Dirichlet-Form ist dieselbe quadratische FPV-Wellenwirkung, die
 bereits im kanonischen Projekt vorhanden ist. Die Auswahl ist nun
-parameterfrei an die vorhandene kausale Entstehungsordnung gebunden und der
-lokale Paralleltransport ist konstruiert. Noch nicht bewiesen ist, dass die
-Zulassungsregel selbst als Euler-Lagrange-Bedingung der fundamentalen Wirkung
-folgt. Außerdem muss die Holonomie um geschlossene Dualschleifen ausgewertet
-und mit der diskreten Krümmung identifiziert werden.
+parameterfrei an die vorhandene kausale Entstehungsordnung gebunden, der
+lokale Paralleltransport ist konstruiert und die geschlossene Holonomie der
+vollständigen fundamentalen Zyklenbasis ist berechnet. Noch nicht bewiesen ist,
+dass die Zulassungsregel selbst als Euler-Lagrange-Bedingung der fundamentalen
+Wirkung folgt. Ebenfalls offen bleibt das dimensionsbehaftete Matching der
+Verbindungsholonomie auf Regge-/Einstein-Krümmung.
 
 ## Reproduktion
 
@@ -110,5 +137,5 @@ npm run validation:collective-spin2-hessian
 
 Ergebnisdatei: `validation/results/collective_spin2_hessian.json`.
 
-SHA-256: `5AC02453572258E200B3BF134A42623906EF6EAE8D789BAC7E2264D8C88F9226`.
+SHA-256: `0773F2938CC391B850A9282379333359FDF54B665DCEF71CC21E08E0A03F8F53`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.

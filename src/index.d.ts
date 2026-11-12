@@ -217,6 +217,8 @@ export function sharedFaceFrameTransport(
   face: string | number[]
 ): any;
 export function spinTwoFrameTransport(rotationBToA: number[][], directionInA?: number[]): any;
+export function canonicalDualHolonomyAudit(world: any): any;
+export function canonicalDualHolonomyAuditDefault(): any;
 export function canonicalSimplexParallelTransportAudit(world: any): any;
 export function canonicalSimplexParallelTransportAuditDefault(): any;
 

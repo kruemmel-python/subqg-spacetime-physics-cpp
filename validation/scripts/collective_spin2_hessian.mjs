@@ -3,7 +3,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MicroActionWorld } from '../../src/modules/subqg_microaction.mjs';
 import { collectiveSpinTwoHessianAudit } from '../../src/modules/subqg_collective_spin2_hessian.mjs';
-import { canonicalSimplexParallelTransportAudit } from '../../src/modules/subqg_simplex_parallel_transport.mjs';
+import {
+  canonicalDualHolonomyAudit,
+  canonicalSimplexParallelTransportAudit
+} from '../../src/modules/subqg_simplex_parallel_transport.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'collective_spin2_hessian.json');
@@ -11,11 +14,13 @@ const world = new MicroActionWorld({ seed: 42 });
 world.run(400);
 const audit = collectiveSpinTwoHessianAudit(world);
 const parallelTransport = canonicalSimplexParallelTransportAudit(world);
+const holonomy = canonicalDualHolonomyAudit(world);
 const result = {
   schemaVersion: 1,
   canonicalGraph: { seed: 42, evolutionSteps: 400, nodes: world.nodes.length, edges: world.links.size },
   ...audit,
   parallelTransport,
+  holonomy,
   verdict: {
     fullCliqueComplexAdmissibleAsSpatialManifold: audit.fullComplex.fullCliqueComplexIsFaceManifold,
     orientableManifoldSubcomplexExists: audit.selectedManifold.orientable,
@@ -23,9 +28,12 @@ const result = {
     constrainedTTHessianPositiveSemidefinite: audit.hessianPositiveSemidefiniteOnProbe,
     localFrameTransportClosed: parallelTransport.localFrameTransportClosed,
     spinTwoNormPreservingTransportClosed: parallelTransport.spinTwoNormPreservingTransportClosed,
+    closedLoopHolonomyConnectionDerived: holonomy.holonomyConnectionMathematicallyClosed,
+    nontrivialDiscreteCurvatureDetected: holonomy.nontrivialDiscreteCurvatureDetected,
+    einsteinReggeCurvatureMatchingDerived: holonomy.einsteinReggeCurvatureMatchingDerived,
     fullCanonicalDerivationClosed: audit.fullCanonicalHessianMatchingClosed,
     nextNecessaryProof:
-      'Derive the parameter-free causal admissibility rule as a canonical variational equation and compute curvature holonomy around closed dual loops.'
+      'Derive the causal admissibility rule as a canonical variational equation and match the dimensionless loop holonomies to Regge/Einstein curvature with a physical length scale.'
   }
 };
 fs.mkdirSync(path.dirname(resultPath), { recursive: true });

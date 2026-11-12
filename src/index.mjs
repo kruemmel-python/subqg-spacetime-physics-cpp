@@ -107,6 +107,8 @@ export {
   orientedRegularTetrahedronCoordinates,
   sharedFaceFrameTransport,
   spinTwoFrameTransport,
+  canonicalDualHolonomyAudit,
+  canonicalDualHolonomyAuditDefault,
   canonicalSimplexParallelTransportAudit,
   canonicalSimplexParallelTransportAuditDefault
 } from './modules/subqg_simplex_parallel_transport.mjs';

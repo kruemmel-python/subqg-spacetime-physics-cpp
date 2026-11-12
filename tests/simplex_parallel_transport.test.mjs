@@ -6,6 +6,7 @@ import {
   orientedRegularTetrahedronCoordinates,
   sharedFaceFrameTransport,
   spinTwoFrameTransport,
+  canonicalDualHolonomyAudit,
   canonicalSimplexParallelTransportAudit
 } from '../src/modules/subqg_simplex_parallel_transport.mjs';
 
@@ -52,10 +53,30 @@ test('all causal-sector shared faces pass the parallel-transport audit', () => {
   assert.equal(audit.sharedFacesTested, 199);
   assert.equal(audit.localFrameTransportClosed, true);
   assert.equal(audit.spinTwoNormPreservingTransportClosed, true);
-  assert.equal(audit.curvatureHolonomyAndPathIndependenceDerived, false);
+  assert.equal(audit.closedLoopHolonomyIncludedInThisLocalAudit, false);
+  assert.equal(audit.globalPathIndependenceExpectedInCurvedSector, false);
+});
+
+test('fundamental dual loops define closed SO(3) holonomies and spin-two double angles', () => {
+  const audit = canonicalDualHolonomyAudit(canonicalWorld());
+  assert.equal(audit.selectedCells, 116);
+  assert.equal(audit.dualBonds, 199);
+  assert.equal(audit.spanningTreeEdges, 115);
+  assert.equal(audit.cycleRank, 84);
+  assert.equal(audit.fundamentalLoopsTested, 84);
+  assert.equal(audit.holonomyConnectionMathematicallyClosed, true);
+  assert.equal(audit.nontrivialDiscreteCurvatureDetected, true);
+  assert.equal(audit.globallyPathIndependent, false);
+  assert.equal(audit.einsteinReggeCurvatureMatchingDerived, false);
+  assert(audit.maximumSO3ClosureResidual < 1e-12);
+  assert(audit.maximumSpinTwoDoubleAngleResidual < 1e-12);
 });
 
 test('parallel transport rejects malformed cells and orientations', () => {
   assert.throws(() => orientedRegularTetrahedronCoordinates(0), RangeError);
   assert.throws(() => sharedFaceFrameTransport([0, 1], 1, [0, 1, 2, 3], 1, [0, 1, 2]), RangeError);
+  const empty = canonicalDualHolonomyAudit(new MicroActionWorld({ seed: 42 }));
+  assert.equal(empty.fundamentalLoopsTested, 0);
+  assert.equal(empty.minimumHolonomyAngleRadians, 0);
+  assert.equal(empty.holonomyConnectionMathematicallyClosed, false);
 });

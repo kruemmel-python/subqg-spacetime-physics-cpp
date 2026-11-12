@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`D0AE87BF10B0BB469444F4603C0FF3C8927A88C9492FA681C1EBAE7D847AE2C0`.
+`31152E7A3190A99217F861857CC04385562D3ED077CF3E533CC2839FA1DA859D`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -320,7 +320,10 @@ einen verbundenen orientierbaren Raumsektor mit 116 Tetraedern und höchstens
 zwei Zellen pro Dreiecksfläche. Sein dualer FPV-Hessian besitzt für Plus und
 Kreuz zwei exakte ankerfreie Nullmoden. Der lokale `SO(3)`-Rahmentransport und
 die induzierte normerhaltende Plus-/Kreuz-Abbildung bestehen auf allen 199
-inneren Flächen.
+inneren Flächen. Der Dualgraph besitzt 84 unabhängige Fundamentalschleifen.
+Ihre SO(3)-Holonomien sind mathematisch geschlossen und sämtlich nichttrivial;
+die Verbindung trägt damit diskrete Krümmung. Das dimensionsbehaftete Matching
+auf lokale Regge-/Einstein-Krümmung bleibt offen.
 
 ```powershell
 npm run validation:collective-spin2-hessian
@@ -330,4 +333,4 @@ Der negative Vollkomplexbefund, die Orientierungsprüfung und die offene
 dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
-SHA-256 `5AC02453572258E200B3BF134A42623906EF6EAE8D789BAC7E2264D8C88F9226`.
+SHA-256 `0773F2938CC391B850A9282379333359FDF54B665DCEF71CC21E08E0A03F8F53`.

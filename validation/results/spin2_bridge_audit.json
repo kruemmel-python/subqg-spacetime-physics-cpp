@@ -200,7 +200,1206 @@
     "maximumPolarizationDeterminantError": 1.3322676295501878e-15,
     "localFrameTransportClosed": true,
     "spinTwoNormPreservingTransportClosed": true,
-    "curvatureHolonomyAndPathIndependenceDerived": false
+    "closedLoopHolonomyIncludedInThisLocalAudit": false,
+    "globalPathIndependenceExpectedInCurvedSector": false
+  },
+  "holonomy": {
+    "selectedCells": 116,
+    "dualBonds": 199,
+    "connected": true,
+    "spanningTreeEdges": 115,
+    "cycleRank": 84,
+    "fundamentalLoopsTested": 84,
+    "nontrivialHolonomies": 84,
+    "trivialHolonomies": 0,
+    "minimumHolonomyAngleRadians": 0.12838822047570583,
+    "maximumHolonomyAngleRadians": 3.1251315623897793,
+    "meanHolonomyAngleRadians": 1.9369067168424037,
+    "maximumSO3ClosureResidual": 7.771561172376096e-15,
+    "maximumSpinTwoDoubleAngleResidual": 5.10702591327572e-15,
+    "holonomyConnectionMathematicallyClosed": true,
+    "nontrivialDiscreteCurvatureDetected": true,
+    "globallyPathIndependent": false,
+    "pathDependenceInterpretation": "non-identity closed-loop holonomy is the discrete curvature observable",
+    "einsteinReggeCurvatureMatchingDerived": false,
+    "loops": [
+      {
+        "closingDualBond": 5,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          0.5000000000000002,
+          0.28867513459481287,
+          0.816496580927726
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 8.881784197001252e-16,
+        "spinTwoDoubleAngleResidual": 6.106226635438361e-16
+      },
+      {
+        "closingDualBond": 7,
+        "dualEdges": 7,
+        "angleRadians": 2.1314957906678162,
+        "trace": -0.06355738454503812,
+        "axis": [
+          -8.19344699182573e-17,
+          -0.07053456158585994,
+          0.9975093361076329
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 1.9984014443252818e-15,
+        "spinTwoDoubleAngleResidual": 1.6653345369377348e-16
+      },
+      {
+        "closingDualBond": 8,
+        "dualEdges": 7,
+        "angleRadians": 3.0205563291443402,
+        "trace": -0.9853680841335164,
+        "axis": [
+          -0.34276097342219436,
+          0.2349981040741893,
+          -0.909555279342716
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 8.881784197001252e-16
+      },
+      {
+        "closingDualBond": 10,
+        "dualEdges": 17,
+        "angleRadians": 2.3555404150334973,
+        "trace": -0.4132882579682051,
+        "axis": [
+          -0.2506303700117534,
+          -0.46187886520760935,
+          -0.8507951172299372
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 5.551115123125783e-15,
+        "spinTwoDoubleAngleResidual": 4.737963493761654e-16
+      },
+      {
+        "closingDualBond": 12,
+        "dualEdges": 17,
+        "angleRadians": 2.066193565822178,
+        "trace": 0.04923765660726309,
+        "axis": [
+          -0.06828610917070826,
+          -0.4294752258006308,
+          0.9004932191403904
+        ],
+        "orthogonalityResidual": 4.440892098500626e-15,
+        "determinantError": 5.551115123125783e-15,
+        "spinTwoDoubleAngleResidual": 2.4424906541753444e-15
+      },
+      {
+        "closingDualBond": 13,
+        "dualEdges": 12,
+        "angleRadians": 2.5370945924899857,
+        "trace": -0.6455749556394803,
+        "axis": [
+          -0.7477945020767087,
+          -0.6194521210170787,
+          -0.2389193429408542
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 2.6645352591003757e-15
+      },
+      {
+        "closingDualBond": 14,
+        "dualEdges": 6,
+        "angleRadians": 1.102571196865061,
+        "trace": 1.9026063100137183,
+        "axis": [
+          -0.5000000000000001,
+          0.2886751345948129,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.5543122344752192e-15,
+        "determinantError": 1.9984014443252818e-15,
+        "spinTwoDoubleAngleResidual": 1.6653345369377348e-15
+      },
+      {
+        "closingDualBond": 16,
+        "dualEdges": 11,
+        "angleRadians": 1.2425515902123927,
+        "trace": 1.6447639531010985,
+        "axis": [
+          -0.751057946358147,
+          0.27572799118644237,
+          0.5999050225565475
+        ],
+        "orthogonalityResidual": 2.4424906541753444e-15,
+        "determinantError": 3.3306690738754696e-15,
+        "spinTwoDoubleAngleResidual": 2.886579864025407e-15
+      },
+      {
+        "closingDualBond": 19,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          -8.516349720092793e-17,
+          0.5773502691896256,
+          -0.816496580927726
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.5543122344752192e-15,
+        "spinTwoDoubleAngleResidual": 1.7763568394002505e-15
+      },
+      {
+        "closingDualBond": 22,
+        "dualEdges": 19,
+        "angleRadians": 3.1051691598404703,
+        "trace": -0.9986734757679127,
+        "axis": [
+          -0.006806253019471141,
+          -0.9556530644978036,
+          0.29441619390888096
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 6.439293542825908e-15,
+        "spinTwoDoubleAngleResidual": 1.3322676295501878e-15
+      },
+      {
+        "closingDualBond": 23,
+        "dualEdges": 22,
+        "angleRadians": 2.9070747813206017,
+        "trace": -0.945252976718886,
+        "axis": [
+          -0.5448559970010116,
+          0.13988952697027057,
+          -0.8267786056593794
+        ],
+        "orthogonalityResidual": 5.773159728050814e-15,
+        "determinantError": 7.771561172376096e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-16
+      },
+      {
+        "closingDualBond": 24,
+        "dualEdges": 21,
+        "angleRadians": 2.7869155447305927,
+        "trace": -0.8755173475761291,
+        "axis": [
+          -0.7875886368850469,
+          0.5388064154911889,
+          0.298984591032866
+        ],
+        "orthogonalityResidual": 5.773159728050814e-15,
+        "determinantError": 7.327471962526033e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-16
+      },
+      {
+        "closingDualBond": 26,
+        "dualEdges": 18,
+        "angleRadians": 2.7548450348992373,
+        "trace": -0.8522813670807201,
+        "axis": [
+          0.9221681389897988,
+          0.34773561689052945,
+          -0.16936901776255894
+        ],
+        "orthogonalityResidual": 5.329070518200751e-15,
+        "determinantError": 6.661338147750939e-15,
+        "spinTwoDoubleAngleResidual": 8.881784197001252e-16
+      },
+      {
+        "closingDualBond": 29,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197532,
+        "axis": [
+          -0.5,
+          -0.2886751345948131,
+          0.8164965809277261
+        ],
+        "orthogonalityResidual": 8.881784197001252e-16,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-16
+      },
+      {
+        "closingDualBond": 30,
+        "dualEdges": 17,
+        "angleRadians": 1.6994461083382333,
+        "trace": 0.7434096006213039,
+        "axis": [
+          -0.8501004313491395,
+          -0.4178206847361074,
+          0.32055441351922964
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 5.329070518200751e-15,
+        "spinTwoDoubleAngleResidual": 3.6637359812630166e-15
+      },
+      {
+        "closingDualBond": 33,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          2.8387832400309305e-17,
+          0.5773502691896256,
+          -0.816496580927726
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 1.7763568394002505e-15
+      },
+      {
+        "closingDualBond": 35,
+        "dualEdges": 10,
+        "angleRadians": 0.6040741517603943,
+        "trace": 2.6460566648038104,
+        "axis": [
+          0.7434563018276682,
+          -0.5534868448304067,
+          0.3753998400005099
+        ],
+        "orthogonalityResidual": 2.886579864025407e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-15
+      },
+      {
+        "closingDualBond": 37,
+        "dualEdges": 8,
+        "angleRadians": 1.1488451995669995,
+        "trace": 1.819082456942541,
+        "axis": [
+          -0.706924231349715,
+          -0.5380065437602906,
+          0.45913733239818433
+        ],
+        "orthogonalityResidual": 2.886579864025407e-15,
+        "determinantError": 3.1086244689504383e-15,
+        "spinTwoDoubleAngleResidual": 2.7755575615628914e-15
+      },
+      {
+        "closingDualBond": 39,
+        "dualEdges": 8,
+        "angleRadians": 2.6680445660005785,
+        "trace": -0.7799115988416409,
+        "axis": [
+          -0.9878291611472619,
+          -0.05184758473652107,
+          -0.14664711502135325
+        ],
+        "orthogonalityResidual": 1.9984014443252818e-15,
+        "determinantError": 2.4424906541753444e-15,
+        "spinTwoDoubleAngleResidual": 3.3306690738754696e-16
+      },
+      {
+        "closingDualBond": 40,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197532,
+        "axis": [
+          -0.5000000000000001,
+          0.8660254037844385,
+          0
+        ],
+        "orthogonalityResidual": 8.881784197001252e-16,
+        "determinantError": 8.881784197001252e-16,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-16
+      },
+      {
+        "closingDualBond": 42,
+        "dualEdges": 19,
+        "angleRadians": 2.009242434843067,
+        "trace": 0.15093386985701385,
+        "axis": [
+          0.1893493897641238,
+          0.7592065072973505,
+          -0.6226975894230778
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 6.217248937900877e-15,
+        "spinTwoDoubleAngleResidual": 2.7755575615628914e-15
+      },
+      {
+        "closingDualBond": 43,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197532,
+        "axis": [
+          -0.5000000000000001,
+          0.8660254037844385,
+          0
+        ],
+        "orthogonalityResidual": 8.881784197001252e-16,
+        "determinantError": 8.881784197001252e-16,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-16
+      },
+      {
+        "closingDualBond": 44,
+        "dualEdges": 19,
+        "angleRadians": 1.6807012420535963,
+        "trace": 0.7806324194347591,
+        "axis": [
+          0.9418051938845896,
+          0.12430586536500239,
+          0.31233160039910857
+        ],
+        "orthogonalityResidual": 5.329070518200751e-15,
+        "determinantError": 6.661338147750939e-15,
+        "spinTwoDoubleAngleResidual": 3.4416913763379853e-15
+      },
+      {
+        "closingDualBond": 47,
+        "dualEdges": 17,
+        "angleRadians": 2.8566415922311412,
+        "trace": -0.9193508219437532,
+        "axis": [
+          0.5789041366836837,
+          0.6860655017581161,
+          -0.4406632816878476
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 5.329070518200751e-15,
+        "spinTwoDoubleAngleResidual": 1.4432899320127035e-15
+      },
+      {
+        "closingDualBond": 49,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          2.8387832400309305e-17,
+          0.5773502691896256,
+          -0.816496580927726
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 1.7763568394002505e-15
+      },
+      {
+        "closingDualBond": 56,
+        "dualEdges": 5,
+        "angleRadians": 2.959899148624925,
+        "trace": -0.9670781893004122,
+        "axis": [
+          0.2898704818803734,
+          -0.7624032033882407,
+          -0.5785468513420404
+        ],
+        "orthogonalityResidual": 1.5543122344752192e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 8.881784197001252e-16
+      },
+      {
+        "closingDualBond": 57,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197534,
+        "axis": [
+          0.5000000000000001,
+          0.28867513459481303,
+          0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.3322676295501878e-15,
+        "spinTwoDoubleAngleResidual": 9.992007221626409e-16
+      },
+      {
+        "closingDualBond": 58,
+        "dualEdges": 16,
+        "angleRadians": 1.9938076700559766,
+        "trace": 0.17898355138362304,
+        "axis": [
+          0.933502418788861,
+          0.0960254884683639,
+          -0.34547407960621024
+        ],
+        "orthogonalityResidual": 3.9968028886505635e-15,
+        "determinantError": 5.329070518200751e-15,
+        "spinTwoDoubleAngleResidual": 3.1086244689504383e-15
+      },
+      {
+        "closingDualBond": 60,
+        "dualEdges": 6,
+        "angleRadians": 1.1025711968650607,
+        "trace": 1.9026063100137192,
+        "axis": [
+          0.5000000000000001,
+          0.28867513459481303,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 2.4424906541753444e-15
+      },
+      {
+        "closingDualBond": 61,
+        "dualEdges": 7,
+        "angleRadians": 2.1314957906678167,
+        "trace": -0.06355738454503918,
+        "axis": [
+          -0.8551861104941365,
+          -0.4232073695151589,
+          -0.2992528008322897
+        ],
+        "orthogonalityResidual": 1.9984014443252818e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 3.885780586188048e-16
+      },
+      {
+        "closingDualBond": 66,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          -1.0598124096115476e-16,
+          -0.5773502691896254,
+          -0.8164965809277264
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 71,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          -1.0598124096115476e-16,
+          0.5773502691896254,
+          0.8164965809277264
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 72,
+        "dualEdges": 6,
+        "angleRadians": 1.1025711968650607,
+        "trace": 1.9026063100137192,
+        "axis": [
+          0.5000000000000001,
+          -0.28867513459481303,
+          0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 2.4424906541753444e-15
+      },
+      {
+        "closingDualBond": 80,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197532,
+        "axis": [
+          -0.5000000000000001,
+          0.8660254037844385,
+          0
+        ],
+        "orthogonalityResidual": 8.881784197001252e-16,
+        "determinantError": 8.881784197001252e-16,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-16
+      },
+      {
+        "closingDualBond": 81,
+        "dualEdges": 12,
+        "angleRadians": 1.9963475141925098,
+        "trace": 0.17435425569348179,
+        "axis": [
+          -0.7155175700549231,
+          -0.5756807775685242,
+          0.3957603432391852
+        ],
+        "orthogonalityResidual": 3.1086244689504383e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 2.3314683517128287e-15
+      },
+      {
+        "closingDualBond": 82,
+        "dualEdges": 12,
+        "angleRadians": 2.996059591512472,
+        "trace": -0.9788574837093874,
+        "axis": [
+          -0.13615585238343053,
+          0.5120855117077762,
+          -0.8480742966042104
+        ],
+        "orthogonalityResidual": 3.3306690738754696e-15,
+        "determinantError": 3.774758283725532e-15,
+        "spinTwoDoubleAngleResidual": 3.3306690738754696e-16
+      },
+      {
+        "closingDualBond": 84,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197534,
+        "axis": [
+          0.5,
+          0.8660254037844387,
+          -1.1355132960123724e-16
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.3322676295501878e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-15
+      },
+      {
+        "closingDualBond": 85,
+        "dualEdges": 18,
+        "angleRadians": 1.2556654656628767,
+        "trace": 1.6198817817299316,
+        "axis": [
+          -0.2873284125093521,
+          0.836366556533356,
+          -0.46683333908086755
+        ],
+        "orthogonalityResidual": 4.884981308350689e-15,
+        "determinantError": 6.439293542825908e-15,
+        "spinTwoDoubleAngleResidual": 5.10702591327572e-15
+      },
+      {
+        "closingDualBond": 87,
+        "dualEdges": 18,
+        "angleRadians": 2.6356286981109047,
+        "trace": -0.7494153981102446,
+        "axis": [
+          0.18026002896540536,
+          -0.3589217774490284,
+          0.9157955446660687
+        ],
+        "orthogonalityResidual": 4.440892098500626e-15,
+        "determinantError": 6.217248937900877e-15,
+        "spinTwoDoubleAngleResidual": 5.551115123125783e-16
+      },
+      {
+        "closingDualBond": 88,
+        "dualEdges": 5,
+        "angleRadians": 0.12838822047570583,
+        "trace": 2.9835390946502076,
+        "axis": [
+          1.0838990552845388e-16,
+          0.577350269189626,
+          -0.8164965809277259
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 2.1094237467877974e-15
+      },
+      {
+        "closingDualBond": 90,
+        "dualEdges": 11,
+        "angleRadians": 2.4060701076980555,
+        "trace": -0.48296047915008444,
+        "axis": [
+          0.651821658159049,
+          -0.41602040224178427,
+          -0.6340785052920275
+        ],
+        "orthogonalityResidual": 3.3306690738754696e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 1.4432899320127035e-15
+      },
+      {
+        "closingDualBond": 94,
+        "dualEdges": 17,
+        "angleRadians": 2.5383789234761727,
+        "trace": -0.6470334949166847,
+        "axis": [
+          -0.24993043194370318,
+          -0.8462574415105776,
+          0.47051367873464145
+        ],
+        "orthogonalityResidual": 5.329070518200751e-15,
+        "determinantError": 6.217248937900877e-15,
+        "spinTwoDoubleAngleResidual": 2.220446049250313e-15
+      },
+      {
+        "closingDualBond": 97,
+        "dualEdges": 17,
+        "angleRadians": 1.9638884183259586,
+        "trace": 0.23390700691619937,
+        "axis": [
+          -0.3729081216140689,
+          0.018145200200304884,
+          -0.9276908345693397
+        ],
+        "orthogonalityResidual": 5.329070518200751e-15,
+        "determinantError": 6.661338147750939e-15,
+        "spinTwoDoubleAngleResidual": 2.220446049250313e-15
+      },
+      {
+        "closingDualBond": 105,
+        "dualEdges": 6,
+        "angleRadians": 2.3023658864501053,
+        "trace": -0.3360768175582992,
+        "axis": [
+          0.34412360080584253,
+          0.06622661785325212,
+          -0.936585811581694
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 7.632783294297951e-16
+      },
+      {
+        "closingDualBond": 106,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164875,
+        "trace": 1.4197530864197536,
+        "axis": [
+          -0.5000000000000001,
+          -0.28867513459481287,
+          -0.8164965809277259
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.3322676295501878e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-15
+      },
+      {
+        "closingDualBond": 109,
+        "dualEdges": 15,
+        "angleRadians": 1.2742714751291069,
+        "trace": 1.584396985777387,
+        "axis": [
+          0.720669049434945,
+          0.47833651656853693,
+          -0.5018269603196011
+        ],
+        "orthogonalityResidual": 4.6629367034256575e-15,
+        "determinantError": 5.773159728050814e-15,
+        "spinTwoDoubleAngleResidual": 5.10702591327572e-15
+      },
+      {
+        "closingDualBond": 112,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          -0.5000000000000002,
+          0.8660254037844386,
+          -1.0598124096115478e-16
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 6.661338147750939e-16,
+        "spinTwoDoubleAngleResidual": 5.551115123125783e-16
+      },
+      {
+        "closingDualBond": 113,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164877,
+        "trace": 1.4197530864197532,
+        "axis": [
+          -0.49999999999999994,
+          -0.8660254037844385,
+          0
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 6.661338147750939e-16,
+        "spinTwoDoubleAngleResidual": 6.661338147750939e-16
+      },
+      {
+        "closingDualBond": 114,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 6.661338147750939e-16,
+        "spinTwoDoubleAngleResidual": 5.551115123125783e-16
+      },
+      {
+        "closingDualBond": 115,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          0.5,
+          -0.8660254037844387,
+          1.0598124096115478e-16
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 6.661338147750939e-16,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 117,
+        "dualEdges": 5,
+        "angleRadians": 2.959899148624924,
+        "trace": -0.9670781893004119,
+        "axis": [
+          0.48311746980062265,
+          -0.2417376010743213,
+          0.8415226928611473
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 3.3306690738754696e-16
+      },
+      {
+        "closingDualBond": 118,
+        "dualEdges": 6,
+        "angleRadians": 2.6553347228686044,
+        "trace": -0.7681755829903982,
+        "axis": [
+          0.9983605053187297,
+          0.015578478553893743,
+          0.05507823913013695
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-16
+      },
+      {
+        "closingDualBond": 119,
+        "dualEdges": 5,
+        "angleRadians": 0.12838822047570758,
+        "trace": 2.983539094650207,
+        "axis": [
+          0.4999999999999999,
+          0.8660254037844387,
+          -2.167798110569075e-16
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 1.5543122344752192e-15
+      },
+      {
+        "closingDualBond": 124,
+        "dualEdges": 7,
+        "angleRadians": 1.4271847609640724,
+        "trace": 1.2862368541380895,
+        "axis": [
+          0.9963915685868218,
+          0.08487545021437506,
+          -7.011068859579586e-17
+        ],
+        "orthogonalityResidual": 1.5543122344752192e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 1.7763568394002505e-15
+      },
+      {
+        "closingDualBond": 125,
+        "dualEdges": 5,
+        "angleRadians": 0.12838822047570758,
+        "trace": 2.983539094650207,
+        "axis": [
+          0.49999999999999933,
+          -0.8660254037844389,
+          1.0838990552845387e-16
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.3322676295501878e-15,
+        "spinTwoDoubleAngleResidual": 1.2212453270876722e-15
+      },
+      {
+        "closingDualBond": 126,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          -1.0598124096115476e-16,
+          -0.5773502691896254,
+          -0.8164965809277264
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 128,
+        "dualEdges": 10,
+        "angleRadians": 1.1787950561768974,
+        "trace": 1.7640772917407597,
+        "axis": [
+          0.8271231099898005,
+          0.5561222407457291,
+          -0.08121215591738354
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 3.552713678800501e-15
+      },
+      {
+        "closingDualBond": 129,
+        "dualEdges": 10,
+        "angleRadians": 3.1251315623897793,
+        "trace": -0.9997290385950661,
+        "axis": [
+          0.06402006629284315,
+          0.43010330190769674,
+          -0.900506846614703
+        ],
+        "orthogonalityResidual": 3.3306690738754696e-15,
+        "determinantError": 3.9968028886505635e-15,
+        "spinTwoDoubleAngleResidual": 4.440892098500626e-16
+      },
+      {
+        "closingDualBond": 130,
+        "dualEdges": 11,
+        "angleRadians": 2.3371834885857186,
+        "trace": -0.387074011978753,
+        "axis": [
+          0.8301025130450038,
+          -0.3510597469817651,
+          -0.43322842922120003
+        ],
+        "orthogonalityResidual": 3.3306690738754696e-15,
+        "determinantError": 3.9968028886505635e-15,
+        "spinTwoDoubleAngleResidual": 1.2351231148954867e-15
+      },
+      {
+        "closingDualBond": 131,
+        "dualEdges": 9,
+        "angleRadians": 3.040747880414655,
+        "trace": -0.9898389473149433,
+        "axis": [
+          -0.777916825030354,
+          -0.11537296948142522,
+          0.6176847830793082
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 3.1086244689504383e-15,
+        "spinTwoDoubleAngleResidual": 2.220446049250313e-16
+      },
+      {
+        "closingDualBond": 132,
+        "dualEdges": 9,
+        "angleRadians": 2.2894679493596994,
+        "trace": -0.3167708174566891,
+        "axis": [
+          0.18394774993848667,
+          -0.9829360229905951,
+          3.687561723105711e-17
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 3.1086244689504383e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 134,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          0.5000000000000002,
+          0.8660254037844386,
+          1.0598124096115478e-16
+        ],
+        "orthogonalityResidual": 6.661338147750939e-16,
+        "determinantError": 6.661338147750939e-16,
+        "spinTwoDoubleAngleResidual": 5.551115123125783e-16
+      },
+      {
+        "closingDualBond": 135,
+        "dualEdges": 5,
+        "angleRadians": 2.959899148624927,
+        "trace": -0.967078189300413,
+        "axis": [
+          0.5153253011206653,
+          -0.6322368028097614,
+          0.5785468513420382
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 2.4424906541753444e-15,
+        "spinTwoDoubleAngleResidual": 9.992007221626409e-16
+      },
+      {
+        "closingDualBond": 136,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          -0.5000000000000001,
+          -0.288675134594813,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.5543122344752192e-15,
+        "spinTwoDoubleAngleResidual": 1.5543122344752192e-15
+      },
+      {
+        "closingDualBond": 138,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          -1.0598124096115476e-16,
+          -0.5773502691896254,
+          -0.8164965809277264
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 144,
+        "dualEdges": 5,
+        "angleRadians": 2.9598991486249235,
+        "trace": -0.9670781893004117,
+        "axis": [
+          -0.5153253011206645,
+          0.3347136014875213,
+          0.7889275245573254
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.3322676295501878e-15,
+        "spinTwoDoubleAngleResidual": 7.771561172376096e-16
+      },
+      {
+        "closingDualBond": 146,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          0.5000000000000001,
+          -0.28867513459481287,
+          -0.816496580927726
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 1.3322676295501878e-15
+      },
+      {
+        "closingDualBond": 148,
+        "dualEdges": 3,
+        "angleRadians": 2.590307055157263,
+        "trace": -0.7037037037037042,
+        "axis": [
+          1.0598124096115476e-16,
+          0.5773502691896254,
+          -0.8164965809277264
+        ],
+        "orthogonalityResidual": 1.1102230246251565e-15,
+        "determinantError": 1.1102230246251565e-15,
+        "spinTwoDoubleAngleResidual": 4.996003610813204e-16
+      },
+      {
+        "closingDualBond": 152,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          0.5000000000000001,
+          0.288675134594813,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.5543122344752192e-15,
+        "spinTwoDoubleAngleResidual": 1.5543122344752192e-15
+      },
+      {
+        "closingDualBond": 158,
+        "dualEdges": 8,
+        "angleRadians": 2.3561238808650966,
+        "trace": -0.41411370217954735,
+        "axis": [
+          0.5669467095138407,
+          -0.7637626158259734,
+          0.3086066999241837
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 1.8916075303354596e-15
+      },
+      {
+        "closingDualBond": 160,
+        "dualEdges": 11,
+        "angleRadians": 0.8841852326553247,
+        "trace": 2.2678397037488667,
+        "axis": [
+          -0.44427307584565245,
+          0.8817228060203425,
+          -0.15870200824897124
+        ],
+        "orthogonalityResidual": 3.1086244689504383e-15,
+        "determinantError": 3.552713678800501e-15,
+        "spinTwoDoubleAngleResidual": 4.08006961549745e-15
+      },
+      {
+        "closingDualBond": 163,
+        "dualEdges": 9,
+        "angleRadians": 1.2991657372449144,
+        "trace": 1.5366051922979227,
+        "axis": [
+          0.5656461453307515,
+          -0.768814225683845,
+          0.298276926125056
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 2.4424906541753444e-15,
+        "spinTwoDoubleAngleResidual": 1.7763568394002505e-15
+      },
+      {
+        "closingDualBond": 165,
+        "dualEdges": 7,
+        "angleRadians": 1.6032665954895664,
+        "trace": 0.9350708733424784,
+        "axis": [
+          -0.47618204050059004,
+          0.8763197057862705,
+          -0.0729001889939849
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 9.992007221626409e-16
+      },
+      {
+        "closingDualBond": 166,
+        "dualEdges": 13,
+        "angleRadians": 1.0118038369630402,
+        "trace": 2.060664620657173,
+        "axis": [
+          0.39223174646295395,
+          -0.8765699666347546,
+          -0.27888949542886415
+        ],
+        "orthogonalityResidual": 3.1086244689504383e-15,
+        "determinantError": 3.9968028886505635e-15,
+        "spinTwoDoubleAngleResidual": 4.3298697960381105e-15
+      },
+      {
+        "closingDualBond": 167,
+        "dualEdges": 13,
+        "angleRadians": 1.6888172772219399,
+        "trace": 0.7645056867397642,
+        "axis": [
+          -0.7542842664649144,
+          0.655064250299913,
+          -0.04411432128570976
+        ],
+        "orthogonalityResidual": 3.1086244689504383e-15,
+        "determinantError": 3.9968028886505635e-15,
+        "spinTwoDoubleAngleResidual": 2.4424906541753444e-15
+      },
+      {
+        "closingDualBond": 168,
+        "dualEdges": 6,
+        "angleRadians": 2.3023658864501058,
+        "trace": -0.3360768175582998,
+        "axis": [
+          0.3441236008058424,
+          -0.8609460320922784,
+          -0.374634324632678
+        ],
+        "orthogonalityResidual": 1.9984014443252818e-15,
+        "determinantError": 2.6645352591003757e-15,
+        "spinTwoDoubleAngleResidual": 2.095545958979983e-15
+      },
+      {
+        "closingDualBond": 169,
+        "dualEdges": 7,
+        "angleRadians": 2.333530614205836,
+        "trace": -0.3818015546410606,
+        "axis": [
+          0.5000000000000002,
+          0.288675134594813,
+          -0.8164965809277258
+        ],
+        "orthogonalityResidual": 2.220446049250313e-15,
+        "determinantError": 3.1086244689504383e-15,
+        "spinTwoDoubleAngleResidual": 3.7470027081099033e-16
+      },
+      {
+        "closingDualBond": 181,
+        "dualEdges": 8,
+        "angleRadians": 2.356123880865096,
+        "trace": -0.41411370217954635,
+        "axis": [
+          -0.1889822365046135,
+          -0.32732683535398877,
+          0.9258200997725514
+        ],
+        "orthogonalityResidual": 1.7763568394002505e-15,
+        "determinantError": 1.9984014443252818e-15,
+        "spinTwoDoubleAngleResidual": 7.615165008995062e-16
+      },
+      {
+        "closingDualBond": 182,
+        "dualEdges": 7,
+        "angleRadians": 2.7149966689556995,
+        "trace": -0.8207590306355745,
+        "axis": [
+          0.4157041699540493,
+          0.3031666287489102,
+          -0.8574847160712753
+        ],
+        "orthogonalityResidual": 1.5543122344752192e-15,
+        "determinantError": 1.7763568394002505e-15,
+        "spinTwoDoubleAngleResidual": 3.3306690738754696e-16
+      },
+      {
+        "closingDualBond": 183,
+        "dualEdges": 8,
+        "angleRadians": 1.3981675989703533,
+        "trace": 1.3435451912818177,
+        "axis": [
+          0.2984440079997105,
+          -0.46992744097271927,
+          -0.8307222004436263
+        ],
+        "orthogonalityResidual": 2.220446049250313e-15,
+        "determinantError": 2.220446049250313e-15,
+        "spinTwoDoubleAngleResidual": 1.3322676295501878e-15
+      },
+      {
+        "closingDualBond": 186,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          0.5000000000000001,
+          -0.288675134594813,
+          0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.5543122344752192e-15,
+        "spinTwoDoubleAngleResidual": 1.5543122344752192e-15
+      },
+      {
+        "closingDualBond": 190,
+        "dualEdges": 4,
+        "angleRadians": 1.3593476378164873,
+        "trace": 1.419753086419754,
+        "axis": [
+          0.5000000000000001,
+          0.288675134594813,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.3322676295501878e-15,
+        "determinantError": 1.5543122344752192e-15,
+        "spinTwoDoubleAngleResidual": 1.5543122344752192e-15
+      },
+      {
+        "closingDualBond": 195,
+        "dualEdges": 8,
+        "angleRadians": 2.3158641202442847,
+        "trace": -0.35604328608443925,
+        "axis": [
+          -0.34309840797214763,
+          0.9024006984723685,
+          0.26068460223718465
+        ],
+        "orthogonalityResidual": 2.6645352591003757e-15,
+        "determinantError": 2.886579864025407e-15,
+        "spinTwoDoubleAngleResidual": 1.1102230246251565e-15
+      },
+      {
+        "closingDualBond": 196,
+        "dualEdges": 5,
+        "angleRadians": 0.12838822047570583,
+        "trace": 2.9835390946502076,
+        "axis": [
+          -0.4999999999999998,
+          0.28867513459481275,
+          -0.8164965809277261
+        ],
+        "orthogonalityResidual": 1.5543122344752192e-15,
+        "determinantError": 1.9984014443252818e-15,
+        "spinTwoDoubleAngleResidual": 2.4424906541753444e-15
+      }
+    ]
   },
   "effectiveSpinTwoSolution": {
     "effectiveEquation": "box(bar(h)_mu_nu) = -16*pi*G*T_mu_nu/c^4",
@@ -242,8 +1441,10 @@
     "orientableManifoldSubcomplexSupportsMasslessTTHessian": true,
     "causalManifoldSelectionIsParameterFree": true,
     "localSpinTwoParallelTransportClosed": true,
+    "closedLoopHolonomyConnectionDerived": true,
+    "nontrivialDiscreteCurvatureDetected": true,
     "infraredCandidateSelfConsistent": true,
     "derivationComplete": false,
-    "requiredChange": "Derive the causal admissibility rule as a canonical variational equation, close curvature holonomy around dual loops, and derive the gauge-null Lorentzian collective dynamics and universal source coupling."
+    "requiredChange": "Derive the causal admissibility rule variationally, match loop holonomy to dimensionful Regge/Einstein curvature, and derive the gauge-null Lorentzian collective dynamics and universal source coupling."
   }
 }

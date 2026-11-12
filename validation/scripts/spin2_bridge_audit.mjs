@@ -10,7 +10,10 @@ import { spinTwoInfraredAudit } from '../../src/modules/subqg_spin2_ir.mjs';
 import { simplexTensorKinematicsAudit } from '../../src/modules/subqg_simplex_tensor_bridge.mjs';
 import { simplexRadiativeGaugeAudit } from '../../src/modules/subqg_simplex_gauge_bridge.mjs';
 import { collectiveSpinTwoHessianAudit } from '../../src/modules/subqg_collective_spin2_hessian.mjs';
-import { canonicalSimplexParallelTransportAudit } from '../../src/modules/subqg_simplex_parallel_transport.mjs';
+import {
+  canonicalDualHolonomyAudit,
+  canonicalSimplexParallelTransportAudit
+} from '../../src/modules/subqg_simplex_parallel_transport.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'spin2_bridge_audit.json');
@@ -22,6 +25,7 @@ const tensorKinematics = simplexTensorKinematicsAudit(world);
 const radiativeGaugeBridge = simplexRadiativeGaugeAudit();
 const collectiveHessian = collectiveSpinTwoHessianAudit(world);
 const parallelTransport = canonicalSimplexParallelTransportAudit(world);
+const holonomy = canonicalDualHolonomyAudit(world);
 const effectiveSpinTwoSolution = linearizedSpinTwoStaticDustClosure(1e-9);
 const bridge = microToSpinTwoBridgeAudit();
 const infraredCandidate = spinTwoInfraredAudit();
@@ -40,6 +44,7 @@ const result = {
   radiativeGaugeBridge,
   collectiveHessian,
   parallelTransport,
+  holonomy,
   effectiveSpinTwoSolution,
   infraredCandidate,
   bridge,
@@ -56,9 +61,11 @@ const result = {
       collectiveHessian.causalParameterFreeSelectionImplemented,
     localSpinTwoParallelTransportClosed:
       parallelTransport.localFrameTransportClosed && parallelTransport.spinTwoNormPreservingTransportClosed,
+    closedLoopHolonomyConnectionDerived: holonomy.holonomyConnectionMathematicallyClosed,
+    nontrivialDiscreteCurvatureDetected: holonomy.nontrivialDiscreteCurvatureDetected,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
-    requiredChange: 'Derive the causal admissibility rule as a canonical variational equation, close curvature holonomy around dual loops, and derive the gauge-null Lorentzian collective dynamics and universal source coupling.'
+    requiredChange: 'Derive the causal admissibility rule variationally, match loop holonomy to dimensionful Regge/Einstein curvature, and derive the gauge-null Lorentzian collective dynamics and universal source coupling.'
   }
 };
 

@@ -38,7 +38,11 @@ int main(){
   require(collective.find("\"fullCanonicalHessianMatchingClosed\":false")!=std::string::npos,"canonical collective-Hessian caveat");
   std::string transport=runtime.invoke("subqg_simplex_parallel_transport","canonicalSimplexParallelTransportAuditDefault");
   require(transport.find("\"localFrameTransportClosed\":true")!=std::string::npos,"canonical simplex frame transport");
-  require(transport.find("\"curvatureHolonomyAndPathIndependenceDerived\":false")!=std::string::npos,"canonical holonomy caveat");
+  require(transport.find("\"closedLoopHolonomyIncludedInThisLocalAudit\":false")!=std::string::npos,"canonical holonomy audit separation");
+  std::string holonomy=runtime.invoke("subqg_simplex_parallel_transport","canonicalDualHolonomyAuditDefault");
+  require(holonomy.find("\"fundamentalLoopsTested\":84")!=std::string::npos,"canonical dual-loop basis");
+  require(holonomy.find("\"holonomyConnectionMathematicallyClosed\":true")!=std::string::npos,"canonical holonomy closure");
+  require(holonomy.find("\"einsteinReggeCurvatureMatchingDerived\":false")!=std::string::npos,"canonical curvature-matching caveat");
   auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");
   std::string a0=runtime.get(proof,"a0"); require(!a0.empty()&&a0!="null","proof-engine a0");
   std::string gravity=runtime.call(proof,"effectiveGravitationalAcceleration","[20,0.4]");

@@ -110,8 +110,11 @@ connected orientable sector of 116 tetrahedra on 28 original nodes. Its dual FPV
 Hessian is positive semidefinite and has one exact uniform zero mode for each
 of the plus and cross amplitudes. Orientation-preserving local frame transport
 and norm-preserving plus/cross transport close on all 199 shared faces.
-Derivation of the admissibility rule as a variational equation and closed-loop
-curvature holonomy remain open.
+The 199-edge dual graph has cycle rank 84; all 84 fundamental-loop SO(3)
+holonomies close numerically and are non-identity, while their spin-2 action
+obeys the double-angle representation. Derivation of the admissibility rule as
+a variational equation and dimensionful Regge/Einstein curvature matching
+remain open.
 
 ---
 
@@ -178,9 +181,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **334 unit tests**:
-- **Total Tests:** 334
-- **Passing:** 334 (100%)
+SubQG 1.0 features an automated test battery with **335 unit tests**:
+- **Total Tests:** 335
+- **Passing:** 335 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -195,7 +198,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 334 unit tests via `node --test` |
+| `npm test` | Runs all 335 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |
