@@ -342,3 +342,21 @@ dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
 SHA-256 `CBCD4FB43616E93DBF060C1AFF1A97873BA1AAFD7090D5BF2CE992AAEC0EA49E`.
+
+## Test 10: Kosmologische Entwicklung der Beschleunigungsskala
+
+Die bereits im Projekt vorhandene Hypothese `a0(z) proportional H(z)` wird
+ohne Nachanpassung gegen MUSE-DARK III getestet. Die Modellsekante über den
+beobachteten Bereich `0,33<z<1,44` beträgt `1,123e-10 m/s^2` pro
+Rotverschiebung und liegt außerhalb des publizierten 95-Prozent-Intervalls
+`[1,49;1,70]e-10 m/s^2`. Diese kosmologische Brückenannahme ist damit
+falsifiziert; Gate G7 ist nicht bestanden. Das Ergebnis wird nicht durch eine
+nachträgliche Änderung der Skalierung entfernt.
+
+```powershell
+npm run validation:cosmology
+```
+
+Methodik, Quelle und Beweisgrenze stehen in `COSMOLOGY_VALIDATION.md`.
+Die byteidentisch reproduzierte Ergebnisdatei `cosmology_validation.json` hat
+SHA-256 `569A76FEDAA40A60C5C34518C308F4B6445B3BC98C1755080F0251193A7935C6`.

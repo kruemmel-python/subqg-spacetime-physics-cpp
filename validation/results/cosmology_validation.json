@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "testedHypothesis": "a0(z) = [arccos(2*Theta-1)/(2*pi)] * c * H(z)",
+  "source": {
+    "title": "MUSE-DARK III: The evolution of the radial acceleration relation at intermediate redshifts",
+    "authors": "Ciocan et al.",
+    "journal": "Astronomy & Astrophysics 709, L16 (2026)",
+    "doi": "10.1051/0004-6361/202659230",
+    "arxiv": "2604.22613",
+    "sourceValuesAre95PercentIntervals": true
+  },
+  "modelInputs": {
+    "threshold": 0.75,
+    "h0KmPerSecMpc": 70,
+    "omegaM": 0.315,
+    "omegaLambda": 0.685,
+    "omegaParametersDerivedFromSubQG": false
+  },
+  "prediction": {
+    "a0AtZero": 1.1334880538543564e-10,
+    "derivativeAtZero": 5.355731054461834e-11,
+    "sampleRedshiftInterval": [
+      0.33,
+      1.44
+    ],
+    "secantSlopeAcrossObservedInterval": 1.1227526523836657e-10,
+    "a0AtZ1": 2.0292285514891785e-10,
+    "hubbleRatioAtZ1": 1.7902513789968157
+  },
+  "observation": {
+    "sample": "79 MUSE HUDF star-forming galaxies, 0.33 < z < 1.44",
+    "a0AtRepresentativeZ": 2.38e-10,
+    "a0AtRepresentativeZ95Low": 2.28e-10,
+    "a0AtRepresentativeZ95High": 2.5e-10,
+    "fittedIntercept": 1e-10,
+    "fittedIntercept95HalfWidth": 4e-12,
+    "fittedLinearSlope": 1.59e-10,
+    "fittedLinearSlope95Low": 1.49e-10,
+    "fittedLinearSlope95High": 1.7e-10,
+    "confidenceLevel": 0.95
+  },
+  "comparison": {
+    "predictedSlopeInsidePublished95Interval": false,
+    "nominalSecantSlopeResidualSigma": 8.721950488838237,
+    "primaryTestUsesPublishedIntervalNotNominalSigma": true
+  },
+  "verdict": {
+    "existingHubbleScalingHypothesisPasses": false,
+    "status": "FALSIFIED_BY_PUBLISHED_95_PERCENT_INTERVAL",
+    "cosmologyGatePassed": false,
+    "fullSubQGGravityModelDisprovedByThisTest": false,
+    "interpretation": "The existing a0 proportional to H(z) bridge evolves too slowly; it must not be used as a validated SubQG cosmology.",
+    "requiredNextTheory": "Derive H(z), the acceleration-scale evolution, and perturbation growth from SubQG dynamics before any CMB/BAO claim."
+  }
+}

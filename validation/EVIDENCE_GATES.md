@@ -13,7 +13,7 @@ werden. Kein einzelnes Gate reicht allein aus.
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | bedingt bestanden: formale Vorhersage `eta=0` liegt 0,546 Sigma vom finalen MICROSCOPE-Wert; Eöt-Wash-Nullbefund im gesättigten terrestrischen Regime kompatibel; Standardmodell-zu-SubQG-Materiekopplung und direkter Apparatefit offen |
 | G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | INPOP10a/EPM2011 bestanden; führende parameterfreie Doppelpulsar-Quadrupolvorhersage 0,359 Sigma vom Messwert; vollständige starke-Feld-Mikro-Closure offen |
 | G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Plus/Kreuz sind als Simplex-Kantenstörungen rekonstruiert, Fierz-Pauli-on-shell und über geschlossene Schleifen als Spin-2-Doppelwinkel transportiert; vollständiges Wirkungs-Matching und universelle Quellenkopplung bleiben offen |
-| G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | offen |
+| G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | nicht bestanden: der erste unabhängige Hochrotverschiebungstest falsifiziert die bisherige Ansatzskalierung `a0(z) proportional H(z)` am publizierten 95-%-Intervall von MUSE-DARK III; eine eigene SubQG-Friedmann- und Störungsgleichung fehlt |
 | G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | offen |
 
 ## Verbindliche Regeln

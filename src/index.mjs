@@ -2,7 +2,7 @@
  * Subquantum Graphity (SubQG 1.0)
  * =====================================================================
  * A first-principles framework for emergent quantum gravity, relational
- * spacetime, and dark-matter-free cosmological dynamics.
+ * spacetime, and candidate cosmological dynamics with explicit falsification audits.
  *
  * Core Concept:
  * - Fundamental Pre-Geometric State: Subquantum oscillators & phase fields
@@ -113,6 +113,11 @@ export {
   canonicalSimplexParallelTransportAudit,
   canonicalSimplexParallelTransportAuditDefault
 } from './modules/subqg_simplex_parallel_transport.mjs';
+export {
+  subqgHubbleScaledAcceleration,
+  museDarkIIIHScalingAudit,
+  museDarkIIIHScalingAuditDefault
+} from './modules/subqg_cosmology.mjs';
 export {
   SubQGAppleWorld,
   SubQGAppleExperiment,

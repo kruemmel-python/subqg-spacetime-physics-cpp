@@ -222,6 +222,9 @@ export function canonicalDualHolonomyAudit(world: any): any;
 export function canonicalDualHolonomyAuditDefault(): any;
 export function canonicalSimplexParallelTransportAudit(world: any): any;
 export function canonicalSimplexParallelTransportAuditDefault(): any;
+export function subqgHubbleScaledAcceleration(z: number, options?: any): any;
+export function museDarkIIIHScalingAudit(options?: any): any;
+export function museDarkIIIHScalingAuditDefault(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

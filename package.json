@@ -1,7 +1,7 @@
 {
   "name": "subqg-core",
   "version": "1.0.0",
-  "description": "Subquantum Graphity (SubQG 1.0) - First-principles relational quantum gravity, emergent spacetime & dark-matter-free cosmological dynamics",
+  "description": "Subquantum Graphity (SubQG 1.0) - relational gravity research runtime with explicitly audited empirical limits",
   "type": "module",
   "main": "src/index.mjs",
   "types": "src/index.d.ts",
@@ -22,7 +22,8 @@
     "validation:binary-pulsar": "node validation/scripts/binary_pulsar_validation.mjs",
     "validation:gravitational-waves": "node validation/scripts/gravitational_wave_validation.mjs",
     "validation:simplex-tensor-bridge": "node validation/scripts/simplex_tensor_bridge.mjs",
-    "validation:collective-spin2-hessian": "node validation/scripts/collective_spin2_hessian.mjs"
+    "validation:collective-spin2-hessian": "node validation/scripts/collective_spin2_hessian.mjs",
+    "validation:cosmology": "node validation/scripts/cosmology_validation.mjs"
   },
   "keywords": [
     "quantum-gravity",

@@ -6,6 +6,11 @@ causal order, graph waves, Genesis cosmologies, MOND-like gravity,
 multiverse-phase analysis, the apple experiment, and the associated validation
 engines.
 
+The included Genesis cosmologies are model sectors, not an empirically
+validated cosmology. The first independent redshift-evolution test rejects the
+existing `a0(z) proportional H(z)` bridge; the negative result is preserved in
+`validation/COSMOLOGY_VALIDATION.md` and in the canonical runtime tests.
+
 ## What is included
 
 - Native C++ 2D rigid-body physics with hybrid and pure-SubQG modes.

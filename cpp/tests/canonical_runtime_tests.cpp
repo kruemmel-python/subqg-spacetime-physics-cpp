@@ -14,7 +14,7 @@ int main(){
   CanonicalRuntime runtime({node?node:"node.exe",root,bridge});
   require(runtime.running(),"canonical runtime process");
   std::string modules=runtime.inventory();
-  for(const char* required:{"subqg_action","subqg_causal","subqg_waves","subqg_genesis","subqg_multiverse_phases","subqg_graph_coupled_gravity","subqg_apple_experiment","subqg_unified_proof_engine","subqg_weak_field_metric","subqg_spin2_ir","subqg_solar_system","subqg_local_gravity","subqg_binary_pulsar","subqg_gw_observations","subqg_simplex_tensor_bridge","subqg_simplex_gauge_bridge","subqg_collective_spin2_hessian","subqg_simplex_parallel_transport"})
+  for(const char* required:{"subqg_action","subqg_causal","subqg_waves","subqg_genesis","subqg_multiverse_phases","subqg_graph_coupled_gravity","subqg_apple_experiment","subqg_unified_proof_engine","subqg_weak_field_metric","subqg_spin2_ir","subqg_solar_system","subqg_local_gravity","subqg_binary_pulsar","subqg_gw_observations","subqg_simplex_tensor_bridge","subqg_simplex_gauge_bridge","subqg_collective_spin2_hessian","subqg_simplex_parallel_transport","subqg_cosmology"})
    require(modules.find(required)!=std::string::npos,"canonical module missing from inventory");
   require(runtime.invoke("subqg_fpv","overlap","[0,0]")=="1","canonical overlap result");
   std::string bonds=runtime.invoke("subqg_fpv","buildBonds","[[0,0],0.7]");
@@ -47,6 +47,9 @@ int main(){
   require(holonomy.find("\"fundamentalLoopsTested\":84")!=std::string::npos,"canonical dual-loop basis");
   require(holonomy.find("\"holonomyConnectionMathematicallyClosed\":true")!=std::string::npos,"canonical holonomy closure");
   require(holonomy.find("\"einsteinReggeCurvatureMatchingDerived\":false")!=std::string::npos,"canonical curvature-matching caveat");
+  std::string cosmology=runtime.invoke("subqg_cosmology","museDarkIIIHScalingAuditDefault");
+  require(cosmology.find("\"status\":\"FALSIFIED_BY_PUBLISHED_95_PERCENT_INTERVAL\"")!=std::string::npos,"cosmology falsification must be preserved");
+  require(cosmology.find("\"cosmologyGatePassed\":false")!=std::string::npos,"cosmology gate caveat");
   auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");
   std::string a0=runtime.get(proof,"a0"); require(!a0.empty()&&a0!="null","proof-engine a0");
   std::string gravity=runtime.call(proof,"effectiveGravitationalAcceleration","[20,0.4]");
