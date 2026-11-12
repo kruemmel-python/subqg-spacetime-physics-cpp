@@ -4,6 +4,7 @@ import { MicroActionWorld } from '../src/modules/subqg_microaction.mjs';
 import {
   tetrahedralIncidenceAudit,
   extractOrientableManifoldSubcomplex,
+  extractCausalManifoldSector,
   applyDualGraphHessian,
   dualGraphQuadraticAction,
   collectiveSpinTwoHessianAudit
@@ -32,8 +33,20 @@ test('deterministic extraction finds a connected orientable face-manifold', () =
   assert.equal(manifold.orientable, true);
 });
 
-test('dual TT Hessian has an exact massless uniform mode', () => {
-  const manifold = extractOrientableManifoldSubcomplex(canonicalWorld());
+test('canonical birth order selects a parameter-free connected manifold sector', () => {
+  const manifold = extractCausalManifoldSector(canonicalWorld());
+  assert.equal(manifold.cells.length, 116);
+  assert.equal(manifold.vertices, 28);
+  assert.equal(manifold.dualBonds.length, 199);
+  assert.equal(manifold.maximumFaceIncidence, 2);
+  assert.equal(manifold.connected, true);
+  assert.equal(manifold.orientable, true);
+  assert.equal(manifold.fittedParameters, 0);
+  assert.equal(manifold.selectionRandomSeedUsed, false);
+});
+
+test('causally selected dual TT Hessian has an exact massless uniform mode', () => {
+  const manifold = extractCausalManifoldSector(canonicalWorld());
   const uniform = Array(manifold.cells.length).fill(1);
   assert.deepEqual(applyDualGraphHessian(uniform, manifold.dualBonds), Array(uniform.length).fill(0));
   assert.equal(dualGraphQuadraticAction(uniform, manifold.dualBonds), 0);
@@ -44,7 +57,8 @@ test('collective audit reports two modes and preserves selection caveat', () => 
   assert.equal(audit.twoIndependentMasslessUniformModes, 2);
   assert.equal(audit.manifoldSupportedMasslessTTSector, true);
   assert(audit.nonconstantProbeAction > 0);
-  assert.equal(audit.dynamicSelectionOfThisSubcomplexDerived, false);
+  assert.equal(audit.causalParameterFreeSelectionImplemented, true);
+  assert.equal(audit.selectionRuleDerivedAsCanonicalEulerLagrangeEquation, false);
   assert.equal(audit.fullCanonicalHessianMatchingClosed, false);
 });
 

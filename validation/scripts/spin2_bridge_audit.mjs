@@ -10,6 +10,7 @@ import { spinTwoInfraredAudit } from '../../src/modules/subqg_spin2_ir.mjs';
 import { simplexTensorKinematicsAudit } from '../../src/modules/subqg_simplex_tensor_bridge.mjs';
 import { simplexRadiativeGaugeAudit } from '../../src/modules/subqg_simplex_gauge_bridge.mjs';
 import { collectiveSpinTwoHessianAudit } from '../../src/modules/subqg_collective_spin2_hessian.mjs';
+import { canonicalSimplexParallelTransportAudit } from '../../src/modules/subqg_simplex_parallel_transport.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'spin2_bridge_audit.json');
@@ -20,6 +21,7 @@ const microscopicSpectrum = world.linearizedMetricSpectrumAudit();
 const tensorKinematics = simplexTensorKinematicsAudit(world);
 const radiativeGaugeBridge = simplexRadiativeGaugeAudit();
 const collectiveHessian = collectiveSpinTwoHessianAudit(world);
+const parallelTransport = canonicalSimplexParallelTransportAudit(world);
 const effectiveSpinTwoSolution = linearizedSpinTwoStaticDustClosure(1e-9);
 const bridge = microToSpinTwoBridgeAudit();
 const infraredCandidate = spinTwoInfraredAudit();
@@ -37,6 +39,7 @@ const result = {
   tensorKinematics,
   radiativeGaugeBridge,
   collectiveHessian,
+  parallelTransport,
   effectiveSpinTwoSolution,
   infraredCandidate,
   bridge,
@@ -49,9 +52,13 @@ const result = {
     edgeDerivedRadiativeModesSolveFierzPauli: radiativeGaugeBridge.radiativeEdgeToSpinTwoBridgeClosed,
     orientableManifoldSubcomplexSupportsMasslessTTHessian:
       collectiveHessian.manifoldSupportedMasslessTTSector,
+    causalManifoldSelectionIsParameterFree:
+      collectiveHessian.causalParameterFreeSelectionImplemented,
+    localSpinTwoParallelTransportClosed:
+      parallelTransport.localFrameTransportClosed && parallelTransport.spinTwoNormPreservingTransportClosed,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
-    requiredChange: 'Tensor kinematics is now derived from tetrahedral edge lengths. Derive the gauge-null Lorentzian collective dynamics whose infrared quadratic action is Fierz-Pauli; the positive anchored static action alone cannot supply it.'
+    requiredChange: 'Derive the causal admissibility rule as a canonical variational equation, close curvature holonomy around dual loops, and derive the gauge-null Lorentzian collective dynamics and universal source coupling.'
   }
 };
 

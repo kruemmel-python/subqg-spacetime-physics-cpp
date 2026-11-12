@@ -96,11 +96,16 @@ offene Brücke betrifft damit nicht mehr die Repräsentation des Spin-2-Sektors,
 sondern ausschließlich seine Herleitung als kollektiver Wirkungs-Hessian.
 
 Der globale Konsistenztest zeigt, dass nicht alle 1.003 Tetraedercliquen
-gleichzeitig einen Mannigfaltigkeitskomplex bilden. Ein deterministisch
-extrahierter verbundener, orientierbarer Unterkomplex aus 186 Tetraedern trägt
-jedoch einen dualen FPV-Dirichlet-Hessian mit zwei exakten masselosen
-TT-Nullmoden. Offen ist nun die dynamische Auswahl dieses Unterkomplexes und
-der Paralleltransport der lokalen TT-Rahmen.
+gleichzeitig einen Mannigfaltigkeitskomplex bilden. Die parameterfreie kausale
+Auswahl in kanonischer Kantenentstehungsreihenfolge liefert als größten
+flächenverbundenen Sektor einen orientierbaren Unterkomplex aus 116 Tetraedern
+und 199 inneren Flächen. Sein dualer FPV-Dirichlet-Hessian trägt zwei exakte
+masselose TT-Nullmoden. Auf allen 199 Dualbindungen ist der lokale
+SO(3)-Rahmentransport sowie der induzierte normerhaltende SO(2)-Transport der
+Plus-/Kreuzmoden geschlossen. Noch nicht hergeleitet sind die Auswahlregel als
+Euler-Lagrange-Gleichung der kanonischen Wirkung und die globale
+Krümmungsholonomie auf geschlossenen Dualschleifen. Der frühere deterministisch
+gesuchte 186-Zellen-Unterkomplex bleibt lediglich ein Existenznachweis.
 
 Lean formalisiert auch diesen Befund:
 

@@ -16,3 +16,5 @@ results/
 coverage/
 __pycache__/
 *.pyc
+.work-temp/
+.npm-cache/

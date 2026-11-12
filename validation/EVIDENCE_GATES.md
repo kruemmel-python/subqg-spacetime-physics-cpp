@@ -9,10 +9,10 @@ werden. Kein einzelnes Gate reicht allein aus.
 |---|---|---|
 | G1 Interne Mathematik | Formale Konsistenz der verwendeten Gleichungen | bestanden, Lean- und Numeriknachweise vorhanden |
 | G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | SPARC-Holdout und LITTLE-THINGS-Außentest ausgeführt: klar besser als Newton; gegenüber RAR statistisch noch nicht eindeutig; externe Reproduktion offen |
-| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | Spin-2-No-Slip `gamma=1` formal bewiesen und mit 80 starken Linsen kompatibel; lokale Tensor-Kinematik sowie masseloser TT-Hessian auf orientierbarem Subkomplex hergeleitet; dynamische Komplexauswahl und Rohdatentest offen |
+| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | Spin-2-No-Slip `gamma=1` formal bewiesen und mit 80 starken Linsen kompatibel; lokale Tensor-Kinematik, parameterfreie kausale 116-Zellen-Auswahl, masseloser TT-Hessian und lokaler Spin-2-Paralleltransport hergeleitet; variationale Herleitung der Auswahl, globale Holonomie und Rohdatentest offen |
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | bedingt bestanden: formale Vorhersage `eta=0` liegt 0,546 Sigma vom finalen MICROSCOPE-Wert; Eöt-Wash-Nullbefund im gesättigten terrestrischen Regime kompatibel; Standardmodell-zu-SubQG-Materiekopplung und direkter Apparatefit offen |
 | G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | INPOP10a/EPM2011 bestanden; führende parameterfreie Doppelpulsar-Quadrupolvorhersage 0,359 Sigma vom Messwert; vollständige starke-Feld-Mikro-Closure offen |
-| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Plus/Kreuz jetzt direkt als Simplex-Kantenstörungen rekonstruiert und Fierz-Pauli-on-shell; Wirkungs-Hessian und universelles Quellenmatching bleiben offen |
+| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Plus/Kreuz sind als Simplex-Kantenstörungen rekonstruiert, Fierz-Pauli-on-shell und lokal normerhaltend transportiert; globale Holonomie, vollständiges Wirkungs-Matching und universelle Quellenkopplung bleiben offen |
 | G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | offen |
 | G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | offen |
 

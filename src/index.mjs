@@ -97,11 +97,19 @@ export {
 export {
   tetrahedralIncidenceAudit,
   extractOrientableManifoldSubcomplex,
+  extractCausalManifoldSector,
   applyDualGraphHessian,
   dualGraphQuadraticAction,
   collectiveSpinTwoHessianAudit,
   canonicalCollectiveSpinTwoHessianAudit
 } from './modules/subqg_collective_spin2_hessian.mjs';
+export {
+  orientedRegularTetrahedronCoordinates,
+  sharedFaceFrameTransport,
+  spinTwoFrameTransport,
+  canonicalSimplexParallelTransportAudit,
+  canonicalSimplexParallelTransportAuditDefault
+} from './modules/subqg_simplex_parallel_transport.mjs';
 export {
   SubQGAppleWorld,
   SubQGAppleExperiment,

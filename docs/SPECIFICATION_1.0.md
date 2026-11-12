@@ -105,11 +105,13 @@ collective Hessian of the canonical action rather than supply it separately.
 
 A global incidence audit prevents treating every tetrahedral clique as a
 spatial cell: the full clique complex is non-manifold.  Nevertheless, the
-same frozen canonical graph contains a deterministic connected orientable
-subcomplex of 186 tetrahedra on 41 original nodes.  Its dual FPV Dirichlet
+same frozen canonical graph contains a parameter-free causally selected,
+connected orientable sector of 116 tetrahedra on 28 original nodes. Its dual FPV Dirichlet
 Hessian is positive semidefinite and has one exact uniform zero mode for each
-of the plus and cross amplitudes.  Dynamic selection of this admissible
-subcomplex and frame parallel transport remain to be derived.
+of the plus and cross amplitudes. Orientation-preserving local frame transport
+and norm-preserving plus/cross transport close on all 199 shared faces.
+Derivation of the admissibility rule as a variational equation and closed-loop
+curvature holonomy remain open.
 
 ---
 
@@ -176,9 +178,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **328 unit tests**:
-- **Total Tests:** 328
-- **Passing:** 328 (100%)
+SubQG 1.0 features an automated test battery with **334 unit tests**:
+- **Total Tests:** 334
+- **Passing:** 334 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -193,7 +195,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 328 unit tests via `node --test` |
+| `npm test` | Runs all 334 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

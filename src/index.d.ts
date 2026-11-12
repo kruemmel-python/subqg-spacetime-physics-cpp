@@ -206,10 +206,19 @@ export function extractOrientableManifoldSubcomplex(world: any, options?: {
   trials?: number;
   searchSeed?: number;
 }): any;
+export function extractCausalManifoldSector(world: any): any;
 export function applyDualGraphHessian(amplitudes: number[], bonds: any[], stiffness?: number): number[];
 export function dualGraphQuadraticAction(amplitudes: number[], bonds: any[], stiffness?: number): number;
 export function collectiveSpinTwoHessianAudit(world: any): any;
 export function canonicalCollectiveSpinTwoHessianAudit(): any;
+export function orientedRegularTetrahedronCoordinates(orientation?: number): number[][];
+export function sharedFaceFrameTransport(
+  cellA: number[], orientationA: number, cellB: number[], orientationB: number,
+  face: string | number[]
+): any;
+export function spinTwoFrameTransport(rotationBToA: number[][], directionInA?: number[]): any;
+export function canonicalSimplexParallelTransportAudit(world: any): any;
+export function canonicalSimplexParallelTransportAuditDefault(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

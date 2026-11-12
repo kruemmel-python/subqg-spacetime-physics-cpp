@@ -29,12 +29,39 @@
     "fullCliqueComplexIsFaceManifold": false
   },
   "selectedManifold": {
-    "tetrahedralCells": 186,
-    "vertices": 41,
-    "internalFacesAndDualBonds": 324,
+    "selectionRule": "canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector",
+    "fittedParameters": 0,
+    "selectionRandomSeedUsed": false,
+    "acceptedAcrossAllComponents": 264,
+    "componentSizes": [
+      116,
+      41,
+      23,
+      9,
+      9,
+      8,
+      8,
+      7,
+      6,
+      5,
+      5,
+      5,
+      5,
+      4,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "tetrahedralCells": 116,
+    "vertices": 28,
+    "internalFacesAndDualBonds": 199,
     "faceIncidenceHistogram": {
-      "1": 96,
-      "2": 324
+      "1": 66,
+      "2": 199
     },
     "maximumFaceIncidence": 2,
     "connected": true,
@@ -46,18 +73,34 @@
   "physicalPolarizations": 2,
   "exactUniformHessianResidual": 0,
   "exactFlatDeformationAction": 0,
-  "nonconstantProbeAction": 90.14043057984678,
+  "nonconstantProbeAction": 121.82133335078522,
   "twoIndependentMasslessUniformModes": 2,
   "hessianPositiveSemidefiniteOnProbe": true,
   "manifoldSupportedMasslessTTSector": true,
-  "dynamicSelectionOfThisSubcomplexDerived": false,
+  "causalParameterFreeSelectionImplemented": true,
+  "selectionRuleDerivedAsCanonicalEulerLagrangeEquation": false,
   "fullCanonicalHessianMatchingClosed": false,
+  "parallelTransport": {
+    "selectedCells": 116,
+    "sharedFacesTested": 199,
+    "construction": "orientation-preserving SO(3) face-frame transport and induced two-polarization spin-2 transport",
+    "maximumFrameOrthogonalityResidual": 4.440892098500626e-16,
+    "maximumFrameDeterminantError": 4.440892098500626e-16,
+    "maximumFaceMatchResidual": 2.220446049250313e-16,
+    "maximumPolarizationOrthogonalityResidual": 1.3322676295501878e-15,
+    "maximumPolarizationDeterminantError": 1.3322676295501878e-15,
+    "localFrameTransportClosed": true,
+    "spinTwoNormPreservingTransportClosed": true,
+    "curvatureHolonomyAndPathIndependenceDerived": false
+  },
   "verdict": {
     "fullCliqueComplexAdmissibleAsSpatialManifold": false,
     "orientableManifoldSubcomplexExists": true,
     "constrainedTTHessianMassless": true,
     "constrainedTTHessianPositiveSemidefinite": true,
+    "localFrameTransportClosed": true,
+    "spinTwoNormPreservingTransportClosed": true,
     "fullCanonicalDerivationClosed": false,
-    "nextNecessaryProof": "Derive the manifold-subcomplex selection and parallel transport from the canonical dynamics rather than the deterministic extraction audit."
+    "nextNecessaryProof": "Derive the parameter-free causal admissibility rule as a canonical variational equation and compute curvature holonomy around closed dual loops."
   }
 }

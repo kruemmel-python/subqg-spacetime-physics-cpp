@@ -137,6 +137,114 @@ export function extractOrientableManifoldSubcomplex(world, {
   };
 }
 
+function connectedComponents(cellCount, bonds) {
+  const adjacency = Array.from({ length: cellCount }, () => []);
+  for (const bond of bonds) {
+    adjacency[bond.i].push(bond.j);
+    adjacency[bond.j].push(bond.i);
+  }
+  const seen = new Set();
+  const components = [];
+  for (let start = 0; start < cellCount; start++) if (!seen.has(start)) {
+    const component = [start];
+    seen.add(start);
+    for (let cursor = 0; cursor < component.length; cursor++) {
+      for (const next of adjacency[component[cursor]]) if (!seen.has(next)) {
+        seen.add(next);
+        component.push(next);
+      }
+    }
+    components.push(component);
+  }
+  return components.sort((left, right) => right.length - left.length || left[0] - right[0]);
+}
+
+/** Parameter-free selection from canonical link-birth order. */
+export function extractCausalManifoldSector(world) {
+  const cells = tetrahedralCells(world);
+  if (cells.length === 0) return {
+    cells: [], originalCellIndices: [], orientations: [], dualBonds: [], vertices: 0,
+    faceIncidenceHistogram: {}, connected: false, orientable: false,
+    maximumFaceIncidence: 0, acceptedAcrossAllComponents: 0, componentSizes: [],
+    selectionRule: 'canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector',
+    fittedParameters: 0,
+    selectionRandomSeedUsed: false
+  };
+  const { faces, faceCells } = incidence(cells);
+  const linkBirth = new Map([...world.links.entries()].map(([key, edge]) => [key, edge.born]));
+  const linkKey = (a, b) => a < b ? `${a}:${b}` : `${b}:${a}`;
+  const birth = cell => {
+    const ticks = [];
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) {
+      const tick = linkBirth.get(linkKey(cell[i], cell[j]));
+      if (!Number.isInteger(tick)) throw new Error('tetrahedral edge has no canonical birth tick');
+      ticks.push(tick);
+    }
+    return Math.max(...ticks);
+  };
+  const order = cells.map((cell, index) => ({ index, birth: birth(cell), key: cell.join(':') }))
+    .sort((left, right) => left.birth - right.birth || left.key.localeCompare(right.key));
+  const selected = new Set();
+  const orientations = new Map();
+  const faceCounts = new Map();
+  for (const { index } of order) {
+    if (!faces[index].every(face => (faceCounts.get(face) ?? 0) < 2)) continue;
+    const requirements = [];
+    for (let omitted = 0; omitted < 4; omitted++) {
+      const face = faces[index][omitted];
+      for (const neighbor of faceCells.get(face)) if (selected.has(neighbor)) {
+        const neighborOmitted = faces[neighbor].indexOf(face);
+        const parity = (omitted - neighborOmitted) % 2 === 0 ? 1 : -1;
+        requirements.push(-orientations.get(neighbor) * parity);
+      }
+    }
+    if (requirements.length > 0 && !requirements.every(value => value === requirements[0])) continue;
+    selected.add(index);
+    orientations.set(index, requirements[0] ?? 1);
+    for (const face of faces[index]) faceCounts.set(face, (faceCounts.get(face) ?? 0) + 1);
+  }
+  const accepted = [...selected];
+  const acceptedLocal = new Map(accepted.map((original, index) => [original, index]));
+  const acceptedBonds = [];
+  for (const [face, count] of faceCounts) if (count === 2) {
+    const pair = faceCells.get(face).filter(index => selected.has(index));
+    if (pair.length === 2) acceptedBonds.push({
+      i: acceptedLocal.get(pair[0]), j: acceptedLocal.get(pair[1]), w: 1, face
+    });
+  }
+  const components = connectedComponents(accepted.length, acceptedBonds);
+  const largest = components[0] ?? [];
+  const retainedAcceptedIndices = new Set(largest);
+  const retainedOriginal = largest.map(index => accepted[index]);
+  const retainedLocal = new Map(retainedOriginal.map((original, index) => [original, index]));
+  const retainedFaceCounts = new Map();
+  for (const original of retainedOriginal) {
+    for (const face of faces[original]) retainedFaceCounts.set(face, (retainedFaceCounts.get(face) ?? 0) + 1);
+  }
+  const dualBonds = acceptedBonds
+    .filter(bond => retainedAcceptedIndices.has(bond.i) && retainedAcceptedIndices.has(bond.j))
+    .map(bond => ({
+      i: retainedLocal.get(accepted[bond.i]), j: retainedLocal.get(accepted[bond.j]), w: bond.w, face: bond.face
+    }));
+  const selectedCells = retainedOriginal.map(index => cells[index]);
+  return {
+    cells: selectedCells,
+    originalCellIndices: retainedOriginal,
+    orientations: retainedOriginal.map(index => orientations.get(index)),
+    dualBonds,
+    vertices: new Set(selectedCells.flat()).size,
+    faceIncidenceHistogram: histogram([...retainedFaceCounts.values()]),
+    connected: selectedCells.length > 0 && connectedComponents(selectedCells.length, dualBonds).length === 1,
+    orientable: retainedOriginal.every(index => orientations.has(index)),
+    maximumFaceIncidence: Math.max(0, ...retainedFaceCounts.values()),
+    acceptedAcrossAllComponents: accepted.length,
+    componentSizes: components.map(component => component.length),
+    selectionRule: 'canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector',
+    fittedParameters: 0,
+    selectionRandomSeedUsed: false
+  };
+}
+
 export function applyDualGraphHessian(amplitudes, bonds, stiffness = 1) {
   if (!Array.isArray(amplitudes) || amplitudes.some(value => !Number.isFinite(value))) {
     throw new RangeError('amplitudes must be finite');
@@ -163,7 +271,7 @@ export function dualGraphQuadraticAction(amplitudes, bonds, stiffness = 1) {
 
 export function collectiveSpinTwoHessianAudit(world) {
   const fullComplex = tetrahedralIncidenceAudit(world);
-  const manifold = extractOrientableManifoldSubcomplex(world);
+  const manifold = extractCausalManifoldSector(world);
   const count = manifold.cells.length;
   const uniform = Array(count).fill(1);
   const uniformResidual = Math.max(0, ...applyDualGraphHessian(uniform, manifold.dualBonds).map(Math.abs));
@@ -173,6 +281,11 @@ export function collectiveSpinTwoHessianAudit(world) {
   return {
     fullComplex,
     selectedManifold: {
+      selectionRule: manifold.selectionRule,
+      fittedParameters: manifold.fittedParameters,
+      selectionRandomSeedUsed: manifold.selectionRandomSeedUsed,
+      acceptedAcrossAllComponents: manifold.acceptedAcrossAllComponents,
+      componentSizes: manifold.componentSizes,
       tetrahedralCells: count,
       vertices: manifold.vertices,
       internalFacesAndDualBonds: manifold.dualBonds.length,
@@ -194,7 +307,9 @@ export function collectiveSpinTwoHessianAudit(world) {
     manifoldSupportedMasslessTTSector:
       manifold.connected && manifold.orientable && manifold.maximumFaceIncidence <= 2 &&
       uniformResidual === 0 && probeAction >= 0,
-    dynamicSelectionOfThisSubcomplexDerived: false,
+    causalParameterFreeSelectionImplemented:
+      manifold.fittedParameters === 0 && !manifold.selectionRandomSeedUsed,
+    selectionRuleDerivedAsCanonicalEulerLagrangeEquation: false,
     fullCanonicalHessianMatchingClosed: false
   };
 }

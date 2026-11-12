@@ -17,11 +17,11 @@ verschiedene Dreiecksflächen. Der vollständige Clique-Komplex ist jedoch kein
 Dieser negative Befund wird ausdrücklich erhalten. Die 1.003 Cliquen dürfen
 nicht ungeprüft als räumliches Gitter behandelt werden.
 
-## Orientierbarer Mannigfaltigkeits-Unterkomplex
+## Orientierbare Mannigfaltigkeits-Unterkomplexe
 
-Eine deterministische Suche mit festem Suchseed extrahiert aus demselben
-Graphen einen verbundenen und konsistent orientierbaren tetraedrischen
-Pseudomannigfaltigkeits-Unterkomplex mit Rand:
+Eine reine Existenzsuche extrahiert aus demselben Graphen einen verbundenen
+und konsistent orientierbaren tetraedrischen Pseudomannigfaltigkeits-
+Unterkomplex mit Rand:
 
 - 186 Tetraeder;
 - 41 ursprüngliche SubQG-Knoten;
@@ -33,9 +33,26 @@ Beim Hinzufügen jeder Zelle werden sowohl die Inzidenzschranke als auch die
 entgegengesetzte induzierte Orientierung an jeder gemeinsamen Fläche geprüft.
 Der Unterkomplex ist durch gemeinsame Dreiecksflächen verbunden.
 
+Diese Existenzsuche verwendet jedoch einen Suchseed und ist deshalb nicht die
+physikalische Auswahlregel. Der aktive Audit verarbeitet stattdessen jede
+Zelle beim ersten kanonischen Tick, an dem alle sechs Links existieren.
+Gleichzeitige Zellen werden ausschließlich lexikografisch geordnet. Eine
+Zelle wird genau dann aufgenommen, wenn Flächeninzidenz und bereits induzierte
+Orientierungen konsistent bleiben. Es gibt keine Schwelle, keinen Fit und
+keinen Zufallsseed.
+
+Die kausale Regel akzeptiert 264 Zellen in mehreren Komponenten. Der größte
+durch gemeinsame Flächen verbundene Raumsektor besitzt:
+
+- 116 Tetraeder;
+- 28 ursprüngliche SubQG-Knoten;
+- 199 innere Dreiecksflächen;
+- 66 Randflächen;
+- maximale Flächeninzidenz zwei.
+
 ## Kollektiver TT-Hessian
 
-Auf dem Dualgraphen der 186 Zellen werden die bereits aus Kanten konstruierten
+Auf dem Dualgraphen der 116 kausal ausgewählten Zellen werden die bereits aus Kanten konstruierten
 TT-Amplituden `q_C^+` und `q_C^x` in die kanonische FPV-Dirichlet-Form
 eingesetzt:
 
@@ -59,15 +76,31 @@ ankerfreie uniforme Nullmoden. Ein nichtkonstanter deterministischer
 Prüfvektor besitzt strikt positive Wirkung. Das ist der endliche
 graphentheoretische Masselosigkeitsnachweis des eingeschränkten TT-Sektors.
 
-## Noch offene Auswahlbrücke
+## Lokaler Rahmen- und Spin-2-Paralleltransport
+
+Jede gemeinsame Dreiecksfläche definiert in beiden regulären Tetraedern einen
+orthonormalen Flächenrahmen. Deren Abbildung liefert ohne äußere Koordinaten
+eine eindeutige orientierungserhaltende `SO(3)`-Rotation vom lokalen Rahmen
+der Nachbarzelle in den aktuellen Rahmen. Auf allen 199 inneren Flächen gilt
+bis unter `1e-12`:
+
+- `R R^T = I`;
+- `det(R) = +1`;
+- die beiden gemeinsamen Kantenvektoren werden identisch abgebildet.
+
+Die induzierte Abbildung der Plus-/Kreuz-Basis ist eine orientierungs- und
+normerhaltende `SO(2)`-Matrix. Damit können die beiden TT-Amplituden über den
+gesamten kausalen Sektor kovariant verglichen werden.
+
+## Noch offene Auswahl- und Holonomiebrücke
 
 Die verwendete Dirichlet-Form ist dieselbe quadratische FPV-Wellenwirkung, die
-bereits im kanonischen Projekt vorhanden ist. Nicht hergeleitet ist bislang,
-warum die fundamentale Dynamik genau den gefundenen orientierbaren
-Unterkomplex auswählt und wie lokale TT-Rahmen über gemeinsame Flächen
-parallel transportiert werden. Der Audit beweist die Existenz eines
-konsistenten masselosen Sektors im kanonischen Graphen, nicht schon seine
-dynamische Eindeutigkeit.
+bereits im kanonischen Projekt vorhanden ist. Die Auswahl ist nun
+parameterfrei an die vorhandene kausale Entstehungsordnung gebunden und der
+lokale Paralleltransport ist konstruiert. Noch nicht bewiesen ist, dass die
+Zulassungsregel selbst als Euler-Lagrange-Bedingung der fundamentalen Wirkung
+folgt. Außerdem muss die Holonomie um geschlossene Dualschleifen ausgewertet
+und mit der diskreten Krümmung identifiziert werden.
 
 ## Reproduktion
 
@@ -77,5 +110,5 @@ npm run validation:collective-spin2-hessian
 
 Ergebnisdatei: `validation/results/collective_spin2_hessian.json`.
 
-SHA-256: `4073A5FCE3EB5D1079736E2281B5D92BEBE94BD985517FB053F9CADB1838FB12`.
+SHA-256: `5AC02453572258E200B3BF134A42623906EF6EAE8D789BAC7E2264D8C88F9226`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.

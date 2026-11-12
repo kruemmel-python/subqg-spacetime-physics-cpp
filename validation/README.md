@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`F0219655D337E0D5DA1669FBFCE9A32CD89040735F2E497AEB4A9D959DE2AA34`.
+`D0AE87BF10B0BB469444F4603C0FF3C8927A88C9492FA681C1EBAE7D847AE2C0`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -315,10 +315,12 @@ Die deterministische Ergebnisdatei `simplex_tensor_bridge.json` hat SHA-256
 ## Test 9: Globaler Simplex-Komplex und TT-Hessian
 
 Der vollständige `K4`-Komplex wird ausdrücklich als nicht mannigfaltig
-erkannt. Aus demselben kanonischen Graphen wird deterministisch ein verbundener
-orientierbarer Unterkomplex mit 186 Tetraedern und höchstens zwei Zellen pro
-Dreiecksfläche extrahiert. Sein dualer FPV-Hessian besitzt für Plus und Kreuz
-zwei exakte ankerfreie Nullmoden und eine nichtnegative Dirichlet-Wirkung.
+erkannt. Die parameterfreie kanonische Link-Entstehungsordnung wählt daraus
+einen verbundenen orientierbaren Raumsektor mit 116 Tetraedern und höchstens
+zwei Zellen pro Dreiecksfläche. Sein dualer FPV-Hessian besitzt für Plus und
+Kreuz zwei exakte ankerfreie Nullmoden. Der lokale `SO(3)`-Rahmentransport und
+die induzierte normerhaltende Plus-/Kreuz-Abbildung bestehen auf allen 199
+inneren Flächen.
 
 ```powershell
 npm run validation:collective-spin2-hessian
@@ -328,4 +330,4 @@ Der negative Vollkomplexbefund, die Orientierungsprüfung und die offene
 dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
-SHA-256 `4073A5FCE3EB5D1079736E2281B5D92BEBE94BD985517FB053F9CADB1838FB12`.
+SHA-256 `5AC02453572258E200B3BF134A42623906EF6EAE8D789BAC7E2264D8C88F9226`.
