@@ -218,12 +218,37 @@ npm run validation:solar-system
 Das aus dem SPARC-Training eingefrorene Dual-Strain-Surrogat wird durch die
 INPOP10a-Perihelgrenzen eindeutig ausgeschlossen; der größte Widerspruch
 beträgt beim Mars `13.120,63 Sigma`. Die mikroskopische Fluxgleichung erreicht
-dagegen bereits am Aphel jedes geprüften Planeten exakt `C_SubQG=1`, sagt
-daher keine zusätzliche Perihelpräzession voraus und liegt für alle sechs
+dagegen bereits am Aphel jedes geprüften Planeten die numerische
+Hochfeldklemme `C_SubQG=1`; die zusätzlich gespeicherte analytische
+Defizitgrenze liegt weit unter jeder Ephemeridengenauigkeit. Sie sagt daher
+keine numerisch auflösbare zusätzliche Perihelpräzession voraus und liegt für alle sechs
 Planeten innerhalb `0,98 Sigma` der INPOP10a-Werte. Gegen die unabhängigen
 EPM2011-Werte beträgt der größte Abstand `2,074 Sigma`. Es wurde kein lokaler
 Parameter gefittet.
 
 Die deterministische Ergebnisdatei
 `validation/results/solar_system_perihelion_validation.json` hat SHA-256
-`BD2C99EB3D1B930EB3C0C5918E0596CF85F3F1AFE13AA073F03560F8ED8B5B7A`.
+`36383224F3F5C9E4B65C2B6D4EB93D3A14277C7930753C41A5716DF3C89D6647`.
+
+## Test 5: Lokale Gravitation
+
+Die formale SubQG-Paketdynamik sagt für beliebige zwei nichtleere
+Dichteprofile im selben konstanten Feld exakt `eta=0` voraus. Gegen das finale
+MICROSCOPE-Ergebnis für Ti/Pt liegt diese parameterfreie Vorhersage
+`0,546 Sigma` vom Messzentrum entfernt. Im terrestrischen Hintergrundfeld ist
+die mikroskopische Leitfähigkeit exponentiell ununterscheidbar von eins und
+damit mit dem Eöt-Wash-Test des inversen Quadratgesetzes zwischen `52 µm` und
+`3 mm` kompatibel.
+
+```powershell
+npm run validation:local-gravity
+```
+
+Herleitung, Geltungsbereich und offene Materiekopplung stehen in
+`LOCAL_GRAVITY.md`. G4 bleibt bedingt, bis die chemische Zusammensetzung aus
+der zugrunde liegenden SubQG-Mikrophysik abgeleitet und die vollständige
+Torsionswaagengeometrie direkt ausgewertet ist.
+
+Die deterministische Ergebnisdatei
+`validation/results/local_gravity_validation.json` hat SHA-256
+`9F47969315E2F5804BEDE0AB7E90F215021BC2B1F20E619EA8EE72BA288F946D`.

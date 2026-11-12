@@ -161,6 +161,10 @@ export function constantRadialAccelerationPrecession(options: {
   centralMu: number;
   acceleration: number;
 }): any;
+export function eotvosParameter(accelerationA: number, accelerationB: number): number;
+export function universalFreeFallPrediction(fieldAcceleration: number, objectNorms: number[]): any;
+export function combinedIndependentUncertainty(statistical: number, systematic: number): number;
+export function standardizedResidual(predicted: number, observed: number, uncertainty: number): number;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

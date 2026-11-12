@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "theoryPrediction": {
+    "forceLaw": "F_metric = objectNorm * fieldGradient; inertialMass = objectNorm",
+    "acceleration": "F_metric / inertialMass = fieldGradient",
+    "eotvosParameter": 0,
+    "formalTheorem": "SubQG.universal_free_fall_eotvos_zero",
+    "theoremScope": "Any two nonzero packet-density functions in the same nonzero constant metric gradient."
+  },
+  "microscope": {
+    "source": {
+      "citation": "Touboul et al. (2022), MICROSCOPE mission final results",
+      "arxiv": "2209.15487",
+      "compositionPair": "Ti/Al/V versus Pt/Rh",
+      "meanOrbitalFrequencyHz": 0.00016818
+    },
+    "earthConstantsSource": {
+      "citation": "IERS Conventions, Table 1.1 numerical standards",
+      "url": "https://iers-conventions.obspm.fr/conventions/content/tn36.pdf"
+    },
+    "fixedInputs": {
+      "earthMuMetersCubedPerSecondSquared": 398600441800000,
+      "testMassesKg": [
+        0.401706,
+        0.300939
+      ]
+    },
+    "derivedEnvironment": {
+      "orbitalRadiusMeters": 7093759.289149834,
+      "earthFieldMetersPerSecondSquared": 7.921088773887292,
+      "conductivity": 1,
+      "analyticLog10UpperBoundOnConductivityDeficit": -1956936511794.4036,
+      "analyticLog10UpperBoundOnConductivityDerivative": -1956936511792.6077
+    },
+    "observation": {
+      "eta": -1.5e-15,
+      "statisticalOneSigma": 2.3e-15,
+      "systematicOneSigma": 1.5e-15,
+      "combinedOneSigmaAssumingIndependence": 2.7459060435491964e-15
+    },
+    "prediction": {
+      "eta": 0,
+      "standardizedResidual": 0.5462677805469223
+    }
+  },
+  "inverseSquare": {
+    "source": {
+      "citation": "Lee et al. (2020), New Test of the Gravitational 1/r^2 Law at Separations down to 52 micrometers",
+      "arxiv": "2002.11761",
+      "separationRangeMeters": [
+        0.000052,
+        0.003
+      ],
+      "publishedConclusion": "Newtonian gravity gives an excellent fit; alpha=1 Yukawa ranges must be below 38.6 micrometers at 95% confidence."
+    },
+    "terrestrialEnvironment": {
+      "reference": "IERS Conventions, mean equatorial gravity",
+      "backgroundAccelerationMetersPerSecondSquared": 9.7803278,
+      "conductivity": 1,
+      "analyticLog10UpperBoundOnConductivityDeficit": -2416268913974.4297,
+      "analyticLog10UpperBoundOnConductivityDerivative": -2416268913972.634
+    },
+    "prediction": {
+      "underTotalGradientClosure": "The microscopic conductivity and its derivative are indistinguishable from unity; incremental laboratory gravity is Newtonian inverse-square.",
+      "newYukawaTerm": false,
+      "publishedSensitivityScale": "percent-level determination of Newtonian gravity at about 50 micrometers",
+      "compatibilityCriterion": "both conductivity-deficit and derivative bounds below 1e-2",
+      "compatibleWithPublishedNullResult": true
+    }
+  },
+  "verdict": {
+    "microscopeCompatibleWithinFiveSigma": true,
+    "inverseSquarePublishedConstraintCompatible": true,
+    "conditionalLocalGravityGatePassed": true,
+    "fullG4Closed": false,
+    "openDerivation": "The canonical packet model proves universality for arbitrary density profiles, but it does not yet derive from Standard-Model microphysics that chemically different Ti and Pt bodies map only to that universal density coupling. A direct nonlinear reconstruction of the Eot-Wash apparatus geometry is also open."
+  }
+}

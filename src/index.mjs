@@ -62,6 +62,12 @@ export {
   constantRadialAccelerationPrecession
 } from './modules/subqg_solar_system.mjs';
 export {
+  eotvosParameter,
+  universalFreeFallPrediction,
+  combinedIndependentUncertainty,
+  standardizedResidual
+} from './modules/subqg_local_gravity.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,

@@ -607,6 +607,31 @@ export class SubQGGraphCoupledEngine {
   }
 
   /**
+   * Analytic upper bound on the unsaturated conductivity deficit before the
+   * numerical logistic shortcut/clamp is applied.  For every microscopic
+   * mode, 1-delta_m < exp(-x_m) when x_m > 0.  Reporting the base-10
+   * logarithm keeps the bound meaningful in terrestrial fields where the
+   * exponential itself underflows to zero.
+   */
+  boundMicroChannelDeficit(g) {
+    if (!Number.isFinite(g) || g < 0) throw new RangeError('gradient magnitude g must be finite and nonnegative');
+    const minOverlap = Math.min(...this.microOverlaps);
+    const minimumLogisticArgument = (minOverlap + g - this.threshold) / this._bw;
+    const normalization = 1.0 - this._rawZeroBaseline;
+    const log10UpperBound = minimumLogisticArgument > 0
+      ? Math.min(0, (-minimumLogisticArgument - Math.log(normalization)) / Math.LN10)
+      : 0;
+    const log10DerivativeUpperBound = Math.min(0, log10UpperBound - Math.log10(this._bw));
+    return {
+      minimumLogisticArgument,
+      log10UpperBound,
+      upperBound: log10UpperBound < -323 ? 0 : 10 ** log10UpperBound,
+      log10DerivativeUpperBound,
+      derivativeUpperBound: log10DerivativeUpperBound < -323 ? 0 : 10 ** log10DerivativeUpperBound
+    };
+  }
+
+  /**
    * Evaluates the microscopic SubQG mode nucleation free-energy functional:
    *   F_micro({delta_m}; Lambda, g) = (1/M) * sum_{m=1}^M [ (Theta - Lambda*omega_m - g)*delta_m
    *                                   + tau*(delta_m*ln(delta_m) + (1-delta_m)*ln(1-delta_m)) ]

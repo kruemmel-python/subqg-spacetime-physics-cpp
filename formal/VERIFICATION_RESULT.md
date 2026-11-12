@@ -9,7 +9,7 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
 - Lean-Version: **4.34.1**
 - Unbewiesene Platzhalter (`sorry`, `admit`, `sorryAx`): **keine (0)**
 - Axiomatische Grundlage: Ausschließlich Lean 4 Kernaxiome `[propext, Classical.choice, Quot.sound]`
-- `npm test`: **300 von 300 Tests bestanden**
+- `npm test`: **304 von 304 Tests bestanden**
 - Fehlgeschlagene, übersprungene oder abgebrochene Tests: **0**
 - Spezifische Tests der `SubQGExactGlitchEngine`: **3 von 3 bestanden**
 
@@ -30,6 +30,11 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
    folgt die untere Spektralschranke; bei positivem Anker ist kein Nullmodus
    möglich (`SubQG.anchored_metric_hessian_lower_bound`,
    `SubQG.positive_anchor_excludes_zero_metric_mode`).
+8. **Exaktes schwaches Äquivalenzprinzip im Paketmodell**: Für zwei beliebige
+   nichtleere Dichteprofile im selben nichtverschwindenden konstanten
+   Metrikgradienten kürzt sich die jeweilige Objektnorm aus metrischer Kraft
+   und Trägheitsmasse. Lean beweist damit direkt
+   `eta_AB = 0` (`SubQG.universal_free_fall_eotvos_zero`).
 
 ## Numerische Umsetzung (Weg A: Emergentes Actio = Reactio & Hartree-Korrektur)
 

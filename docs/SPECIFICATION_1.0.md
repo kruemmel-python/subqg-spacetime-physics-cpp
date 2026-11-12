@@ -56,10 +56,22 @@ Flat rotation curves satisfy the baryonic Tully-Fisher relation identically:
 $$v_{\mathrm{flat}} = (G M a_0)^{1/4} \propto M^{0.25}$$
 
 The surviving cross-scale equation is the microscopic variational flux law
-$C_{\mathrm{SubQG}}(g)g=g_N$. Its channel occupation saturates exactly to
-$C_{\mathrm{SubQG}}=1$ at high field, producing $g=g_N$ throughout the tested
-planetary orbits without a Solar-System fit. The dual-strain expression is
-retained as a falsified local extrapolation and useful galactic surrogate.
+$C_{\mathrm{SubQG}}(g)g=g_N$. Its analytic channel occupation approaches
+$C_{\mathrm{SubQG}}=1$ exponentially at high field; the finite-precision
+runtime clamps the indistinguishable remainder to one. The analytic deficit
+bound is retained separately so numerical underflow is not presented as an
+exact physical theorem. This produces $g=g_N$ to vastly beyond observational
+precision throughout the tested planetary orbits without a Solar-System fit.
+The dual-strain expression is retained as a falsified local extrapolation and
+useful galactic surrogate.
+
+For ideal localized matter packets, the same density norm defines both
+metric force and inertial mass. Lean therefore proves composition-independent
+free fall and an exactly vanishing Eötvös ratio for any two nonzero packet
+profiles in a common constant metric gradient. The prediction agrees with the
+final MICROSCOPE Ti/Pt result at `0.546` combined standard deviations. The
+mapping from Standard-Model chemical composition to this universal packet
+density remains an explicit open microscopic bridge.
 
 ---
 

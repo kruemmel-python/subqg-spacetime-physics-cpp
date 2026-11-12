@@ -53,6 +53,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.027225993777477513,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -6726290116.571989,
+        "analyticLog10UpperBoundOnConductivityDerivative": -6726290114.776109,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": -0.6666666666666667,
         "residualSigmaEpm2011": 0.6666666666666666
@@ -84,6 +86,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.011181877457315597,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -2762527315.3984165,
+        "analyticLog10UpperBoundOnConductivityDerivative": -2762527313.6025367,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": -0.13333333333333333,
         "residualSigmaEpm2011": -1.625
@@ -115,6 +119,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.005736715359402581,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -1417278344.4130177,
+        "analyticLog10UpperBoundOnConductivityDerivative": -1417278342.6171377,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": 0.22222222222222224,
         "residualSigmaEpm2011": -1
@@ -146,6 +152,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.0021364981858566353,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -527830360.8731135,
+        "analyticLog10UpperBoundOnConductivityDerivative": -527830359.0772335,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": 0.26666666666666666,
         "residualSigmaEpm2011": 0.5405405405405406
@@ -177,6 +185,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.0001993101418199848,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -49240343.53564406,
+        "analyticLog10UpperBoundOnConductivityDerivative": -49240341.73976404,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": 0.9761904761904762,
         "residualSigmaEpm2011": -2.0742049469964665
@@ -208,6 +218,8 @@
         "conductivityAtMinimumField": 1,
         "accelerationAtMinimumField": 0.00005870829152973279,
         "saturatedAcrossOrbit": true,
+        "analyticLog10UpperBoundOnConductivityDeficit": -14504096.749878272,
+        "analyticLog10UpperBoundOnConductivityDerivative": -14504094.953998255,
         "predictedMasPerCentury": 0,
         "residualSigmaInpop10a": -0.23076923076923075,
         "residualSigmaEpm2011": 0.6808510638297873

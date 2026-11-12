@@ -88,3 +88,29 @@ Unabhängige Ephemeriden-Replikation:
 - verwendete Daten: EPM2011 Tabelle 4, zusätzliche Perihelraten aus ungefähr
   678.000 Beobachtungen von Planeten und Raumfahrzeugen
 - Einheitenumrechnung: `mas/Jahr * 100 = mas/Jahrhundert`
+
+## Lokale Gravitation
+
+Äquivalenzprinzip:
+
+- Primärpublikation: Touboul et al., *Classical and Quantum Gravity* 39,
+  204009 (2022)
+- Preprint: <https://arxiv.org/abs/2209.15487>
+- verwendeter Endwert:
+  `eta(Ti,Pt) = [-1.5 ± 2.3 (stat) ± 1.5 (syst)] * 10^-15`
+- Testkörper: Pt/Rh(90/10) und Ti/Al/V(90/6/4)
+- verwendete mittlere Umlauffrequenz: `0.16818 mHz`
+- geozentrische Gravitationskonstante und mittlere Äquatorgravitation:
+  IERS Conventions, Tabelle 1.1,
+  <https://iers-conventions.obspm.fr/conventions/content/tn36.pdf>
+
+Inverses Quadratgesetz:
+
+- Primärpublikation: Lee et al., *Physical Review Letters* 124, 101101
+  (2020)
+- Preprint: <https://arxiv.org/abs/2002.11761>
+- Messbereich: `52 µm` bis `3.0 mm`
+- veröffentlichte Grenze: Yukawa-Kopplung mit `alpha=1` hat bei 95 %
+  Konfidenz eine Reichweite kleiner als `38.6 µm`
+- Die aktuelle Prüfung verwendet den publizierten Nullbefund; sie ist noch
+  kein Refit der 95 Torsionsmessungen und 17 Apparateparameter.

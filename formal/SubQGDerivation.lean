@@ -271,6 +271,27 @@ theorem constant_metric_gradient_gives_universal_acceleration
   rw [objectAcceleration, metricForce_constant_gradient]
   simp [inertialMass, hnorm]
 
+/-- Eötvös ratio used in composition-dependent free-fall tests. -/
+def eotvosRatio (accelerationA accelerationB : ℝ) : ℝ :=
+  2 * (accelerationA - accelerationB) / (accelerationA + accelerationB)
+
+/--
+For any two nonzero packet densities in the same nonzero constant metric
+gradient, the ideal SubQG matter model predicts an exactly vanishing Eötvös
+ratio.  The densities may have different shapes and norms.
+-/
+theorem universal_free_fall_eotvos_zero
+    (densityA densityB : Vertex → ℝ) (g : ℝ)
+    (hnormA : objectNorm densityA ≠ 0)
+    (hnormB : objectNorm densityB ≠ 0)
+    (_hg : g ≠ 0) :
+    eotvosRatio
+      (objectAcceleration densityA (fun _ => -g))
+      (objectAcceleration densityB (fun _ => -g)) = 0 := by
+  rw [constant_metric_gradient_gives_universal_acceleration densityA g hnormA]
+  rw [constant_metric_gradient_gives_universal_acceleration densityB g hnormB]
+  simp [eotvosRatio]
+
 /-- Holding force is proportional to the packet norm in the same field. -/
 theorem holding_force_is_mass_proportional
     (density : Vertex → ℝ) (g : ℝ) :
@@ -641,6 +662,7 @@ end LinearizedSpinTwoClosure
 #print axioms stationary_energy_balance
 #print axioms metricForce_constant_gradient
 #print axioms constant_metric_gradient_gives_universal_acceleration
+#print axioms universal_free_fall_eotvos_zero
 #print axioms holding_force_is_mass_proportional
 #print axioms universal_free_fall_step
 #print axioms bumpGlue_contDiff

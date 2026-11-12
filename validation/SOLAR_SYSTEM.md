@@ -33,11 +33,13 @@ Die Pipeline integriert für Dual-Strain die vollständige radiusabhängige
 Beschleunigung numerisch über 65.536 Punkte je Umlauf. Der Test reproduziert
 die analytische Konstantbeschleunigungsformel auf besser als `1e-12` relativ.
 
-Die mikroskopische Leitfähigkeit ist dagegen schon beim jeweils kleinsten
-Newtonfeld am Aphel aller sechs Planeten exakt `C_SubQG = 1`. Da die
-mikroskopische Besetzungsfunktion monoton mit dem Feld wächst und bei `1`
-gekappt ist, gilt dies auf dem gesamten Umlauf. Die Fluxgleichung reduziert
-sich dort exakt auf `g = g_N`.
+Die mikroskopische Leitfähigkeit erreicht dagegen schon beim jeweils kleinsten
+Newtonfeld am Aphel aller sechs Planeten die numerische Hochfeldklemme
+`C_SubQG = 1`. Da die mikroskopische Besetzungsfunktion monoton mit dem Feld
+wächst, gilt dies auf dem gesamten Umlauf. Zusätzlich wird die analytische
+exponentielle Obergrenze für `1-C_SubQG` gespeichert. Damit wird numerischer
+Unterlauf nicht als exakte mathematische Null ausgegeben; die Abweichung von
+`g = g_N` liegt dennoch unvorstellbar weit unter der Ephemeridengenauigkeit.
 
 ## Beobachtungen
 
@@ -84,7 +86,7 @@ npm run validation:solar-system
 ```
 
 Ergebnisdatei: `validation/results/solar_system_perihelion_validation.json`
-SHA-256: `BD2C99EB3D1B930EB3C0C5918E0596CF85F3F1AFE13AA073F03560F8ED8B5B7A`.
+SHA-256: `36383224F3F5C9E4B65C2B6D4EB93D3A14277C7930753C41A5716DF3C89D6647`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.
 
 Quellen:

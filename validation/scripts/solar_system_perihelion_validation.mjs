@@ -38,12 +38,13 @@ const rows = planets.map(planet => {
     anomalousInwardAcceleration: gNewton => dualStrainAnomalousAcceleration(gNewton, frozenA0)
   });
 
-  // The minimum Newtonian field occurs at aphelion. If the microscopic
-  // conductivity is exactly one there, it is already saturated throughout
-  // the closer/higher-field remainder of the orbit.
+  // The minimum Newtonian field occurs at aphelion. The runtime reaches its
+  // high-field clamp there; retain the analytic exponential deficit bound so
+  // floating-point saturation is not confused with a mathematical identity.
   const aphelion = semiMajorAxis * (1 + planet.e);
   const minimumGNewton = solarMu / aphelion ** 2;
   const microscopicAtMinimumField = graphEngine.predictPhysicalAccelerationFromBaryonic(minimumGNewton);
+  const microscopicDeficitBound = graphEngine.boundMicroChannelDeficit(microscopicAtMinimumField.gSubQGDimless);
   const microscopicSaturated = microscopicAtMinimumField.conductivity === 1;
   const microscopicPrediction = microscopicSaturated ? 0 : null;
 
@@ -64,6 +65,8 @@ const rows = planets.map(planet => {
       conductivityAtMinimumField: microscopicAtMinimumField.conductivity,
       accelerationAtMinimumField: microscopicAtMinimumField.acceleration,
       saturatedAcrossOrbit: microscopicSaturated,
+      analyticLog10UpperBoundOnConductivityDeficit: microscopicDeficitBound.log10UpperBound,
+      analyticLog10UpperBoundOnConductivityDerivative: microscopicDeficitBound.log10DerivativeUpperBound,
       predictedMasPerCentury: microscopicPrediction,
       residualSigmaInpop10a: microscopicPrediction === null ? null : (microscopicPrediction - planet.inpop[0]) / planet.inpop[1],
       residualSigmaEpm2011: microscopicPrediction === null ? null : (microscopicPrediction - planet.epm[0]) / planet.epm[1]
