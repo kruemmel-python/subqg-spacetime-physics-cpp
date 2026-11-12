@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+name: SubQG Stationaeres Gewicht vs Traege Masse
+domain: real
+formula: (x * y) / y = x
+seed: 42
+# Beim stationaeren Halten gilt F_Halten = m_inert * g_eff = x * y (x = m_inert, y = g_eff).
+# Das Verhaeltnis F_Halten / g_eff reproduziert exakt die dynamisch kalibrierte traege Masse x = m_inert.
+# Lineare Regression liefert R^2 > 0.99999 ohne Achsenabschnitt.

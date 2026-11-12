@@ -1,0 +1,17 @@
+dist/
+cpp/build*/
+cpp/*.o
+*.obj
+*.pdb
+*.ilk
+.vs/
+.vscode/
+.idea/
+node_modules/
+.env
+.env.*
+*.log
+results/
+coverage/
+__pycache__/
+*.pyc

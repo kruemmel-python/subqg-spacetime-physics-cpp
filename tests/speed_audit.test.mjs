@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {CausalWaveWorld} from '../src/modules/subqg_causal_waves.mjs';
+import {auditSignalSpeed} from '../src/modules/subqg_speed_audit.mjs';
+const make=()=>{const w=new CausalWaveWorld({seed:42});w.run(90);w.solveJoint({iterations:300});return w;};
+const sources=()=>{const w=make();return [...new Set(w.edgesOrdered().slice(0,8).flatMap(e=>[e.a,e.b]))].slice(0,2);};
+test('audit generates complete parameter grid',()=>{const a=auditSignalSpeed(make,{sources:sources(),thresholds:[1e-10,1e-12],dts:[.01,.005]});assert.equal(a.rows.length,8);});
+test('all measured arrival fractions lie within unit interval',()=>{const a=auditSignalSpeed(make,{sources:sources(),thresholds:[1e-12],dts:[.005]});assert.ok(a.rows.every(r=>r.coverage===null||(r.coverage>=0&&r.coverage<=1)));});
+test('deterministic audit',()=>{const o={sources:sources(),thresholds:[1e-12],dts:[.01]};assert.deepEqual(auditSignalSpeed(make,o),auditSignalSpeed(make,o));});
+test('invalid source selection rejected',()=>assert.throws(()=>auditSignalSpeed(make,{sources:[]}),RangeError));
+test('duplicate sources rejected',()=>assert.throws(()=>auditSignalSpeed(make,{sources:[0,0]}),RangeError));
+test('invalid threshold rejected',()=>assert.throws(()=>auditSignalSpeed(make,{sources:[0],thresholds:[0]}),RangeError));
+test('incompatible integration duration rejected',()=>assert.throws(()=>auditSignalSpeed(make,{sources:[0],dts:[.03]}),RangeError));
+test('no invented physical speed',()=>{const a=auditSignalSpeed(make,{sources:[sources()[0]],thresholds:[1e-12],dts:[.01]});assert.ok(a.limitations.some(s=>s.includes('not emergent physical time')));});

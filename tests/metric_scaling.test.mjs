@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {weightedAdjacency,shortestWeighted,ballProfile,runMetricScaling} from '../src/modules/subqg_metric_scaling.mjs';
+const path=[[1],[0,2],[1,3],[2]];
+test('weighted path distances',()=>assert.deepEqual(shortestWeighted(weightedAdjacency(path,()=>2),0),[0,2,4,6]));
+test('disconnected nodes stay infinite',()=>assert.equal(shortestWeighted(weightedAdjacency([[1],[0],[]]),0)[2],Infinity));
+test('invalid weights rejected',()=>assert.throws(()=>weightedAdjacency(path,()=>0),RangeError));
+test('source bounds checked',()=>assert.throws(()=>shortestWeighted(weightedAdjacency(path),-1),RangeError));
+test('symmetric distances',()=>{const g=weightedAdjacency(path,(i,j)=>1+Math.abs(i-j));assert.equal(shortestWeighted(g,0)[3],shortestWeighted(g,3)[0]);});
+test('empty graph handled',()=>assert.equal(ballProfile([]).dimension,null));
+test('ball volume nondecreasing',()=>{const p=ballProfile(weightedAdjacency(Array.from({length:40},(_,i)=>[i-1,i+1].filter(j=>j>=0&&j<40)))).profiles;assert.ok(p.every((v,i)=>!i||v.meanVolume>=p[i-1].meanVolume));});
+test('ensemble deterministic',()=>{const a={caps:[40],seeds:[42],steps:600,sources:5};assert.deepEqual(runMetricScaling(a),runMetricScaling(a));});

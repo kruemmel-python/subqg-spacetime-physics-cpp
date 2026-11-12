@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {overlap,buildBonds,force,energy,integrate,experiment} from '../src/modules/subqg_fpv.mjs';
+test('overlap symmetry and bounds',()=>{for(const a of [-3,0,1,4]) for(const b of [-2,0,2]) {assert.ok(Math.abs(overlap(a,b)-overlap(b,a))<1e-14);assert.ok(overlap(a,b)>=0&&overlap(a,b)<=1);}});
+test('orthogonal phase produces no bond',()=>assert.equal(buildBonds([0,Math.PI],0.7).length,0));
+test('coincident phases produce a bond',()=>assert.equal(buildBonds([0,0],0.7).length,1));
+test('no force without bonds',()=>assert.deepEqual(force([1,-1],[]),[0,0]));
+test('force obeys action derivative and total force zero',()=>{const b=buildBonds([0,0]);const q=[1,-1],a=force(q,b),h=1e-6;assert.ok(Math.abs(a[0]+a[1])<1e-12);const qp=[q[0]+h,q[1]],qm=[q[0]-h,q[1]];assert.ok(Math.abs(a[0]+(energy(qp,[0,0],b)-energy(qm,[0,0],b))/(2*h))<1e-8);});
+test('two-node analytic solution and second-order convergence',()=>{const r=experiment();assert.ok(r.runs.every(x=>x.energyDrift<0.01));for(let i=0;i<r.runs.length-1;i++){const ratio=r.runs[i].error/r.runs[i+1].error;assert.ok(ratio>3.7&&ratio<4.3,`ratio ${ratio}`);}});
+test('null model cannot transfer excitation',()=>{const r=experiment();assert.deepEqual(r.nullModel,{bondCount:0,q:[1,-1]});});
+test('energy nonnegative and zero for constant state',()=>{const b=buildBonds([0,0]);assert.equal(energy([1,1],[0,0],b),0);assert.ok(energy([1,-1],[0,0],b)>0);});
+test('reject malformed input',()=>{assert.throws(()=>buildBonds([NaN]));assert.throws(()=>integrate([0],[0],[],{dt:0}));});

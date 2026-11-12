@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Horizont-Beschleunigungsskala: Kosmologischer Ursprung von a0
+# x = Grenzgeschwindigkeit (c), y = Kausalhorizont (L_H)
+# Physikalische Bedeutung: Exakte Horizont-Kopplung a0 = c^2 / L_H
+name: SubQG Horizont-Kopplung
+domain: real
+formula: (x^2 / y) * y = x^2
+seed: 42

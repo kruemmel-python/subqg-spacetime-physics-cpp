@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Dual Overlapping Multiverse — Orthogonal Spacetimes at the Same Location</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background: #020208;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Cinematic Film Vignette & Post-Processing Overlays */
+    .film-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: radial-gradient(circle at center, transparent 40%, rgba(2, 2, 8, 0.75) 85%, rgba(0, 0, 3, 0.95) 100%);
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
+    }
+    .cinematic-bars {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 38px;
+      background: #000;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .top-bar { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .bottom-bar { bottom: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+    /* Compact Header */
+    header {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      z-index: 20;
+      pointer-events: none;
+      background: rgba(4, 7, 18, 0.75);
+      backdrop-filter: blur(10px);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .title-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    /* Telemetry HUD Panel (oben rechts, kompakt) */
+    .hud-panel {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(8, 12, 24, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 270px;
+      font-size: 0.78rem;
+    }
+    .hud-panel h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #38bdf8;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      font-size: 0.76rem;
+    }
+    .metric-label {
+      color: #94a3b8;
+    }
+    .metric-val {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+    .metric-val.cyan {
+      color: #38bdf8;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
+    .metric-val.magenta {
+      color: #f43f5e;
+      text-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+    }
+    .metric-val.gold {
+      color: #fbbf24;
+    }
+
+    /* Subtitle Bar */
+    .narrative-ticker {
+      position: absolute;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #f1f5f9;
+      text-align: center;
+      max-width: 820px;
+      background: rgba(4, 7, 18, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 6px 18px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+
+    /* Controls Bar unten */
+    .controls-bottom {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      background: rgba(8, 12, 24, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 5px 12px;
+    }
+    .btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+    }
+    .btn.magenta-active {
+      background: #be123c;
+      color: #fff;
+      border-color: #f43f5e;
+    }
+  </style>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div class="cinematic-bars top-bar"></div>
+  <div class="cinematic-bars bottom-bar"></div>
+  <div class="film-overlay"></div>
+
+  <header>
+    <div class="title-sub">Subquantum Graphity (SubQG) Multiverse Simulation</div>
+    <h1>Dual Overlapping Spacetimes (Orthogonal Kanten-Multiplex)</h1>
+  </header>
+
+  <div class="hud-panel">
+    <h3>
+      <span>Orthogonale Phasen-Telemetrie</span>
+      <div class="pulse-dot"></div>
+    </h3>
+    <div class="metric-row">
+      <span class="metric-label">Geteilte Subquanten-Knoten V:</span>
+      <span class="metric-val gold">100% Identisch</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Phasen-Orthogonalität ⟨A|B⟩:</span>
+      <span class="metric-val gold">0.0000 (Vollkommen Entkoppelt)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Welt A (Cyan Planet & Asteroid):</span>
+      <span class="metric-val cyan">Metrik Trichter A aktiv</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Welt B (Magenta Pulsar & Schiff):</span>
+      <span class="metric-val magenta">Metrik Trichter B aktiv</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Kreuz-Gravitation F_AB:</span>
+      <span class="metric-val gold">0.000000 J₀/L₀ (Kein Einfluss)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Licht-Übertragung T_AB:</span>
+      <span class="metric-val gold">0.0000% (Völlig Unsichtbar)</span>
+    </div>
+  </div>
+
+  <div class="narrative-ticker" id="narrative-text">
+    Beide Universen nutzen exakt dieselben Knoten am selben Ort. Welt A (Cyan) krümmt nur Gitter A; Welt B (Magenta) krümmt nur Gitter B. Sie durchdringen sich widerstandslos.
+  </div>
+
+  <div class="controls-bottom">
+    <button class="btn active" id="btn-both">Beide Welten (Überlappung)</button>
+    <button class="btn" id="btn-only-a">Nur Welt A (Cyan)</button>
+    <button class="btn" id="btn-only-b">Nur Welt B (Magenta)</button>
+    <button class="btn" id="btn-cam-orbit">Orbit-Kamera</button>
+    <button class="btn" id="btn-cam-cross">Kollisions-Fokus</button>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    // =========================================================================
+    // 1. THREE.JS SCENE SETUP
+    // =========================================================================
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x02020a, 0.007);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 32, 68);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
+    container.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Beleuchtung
+    const ambientLight = new THREE.AmbientLight(0x0a1026, 1.4);
+    scene.add(ambientLight);
+
+    const lightCyan = new THREE.PointLight(0x38bdf8, 3.5, 90, 1.3);
+    lightCyan.position.set(-18, 0, 0);
+    scene.add(lightCyan);
+
+    const lightMagenta = new THREE.PointLight(0xf43f5e, 3.5, 90, 1.3);
+    lightMagenta.position.set(18, 0, 0);
+    scene.add(lightMagenta);
+
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    topLight.position.set(30, 50, 40);
+    scene.add(topLight);
+
+    // =========================================================================
+    // 2. DIE GEMEINSAMEN SUBQUANTEN-KNOTEN V (DER FUNDAMENTALE GRUNDZUSTAND)
+    // =========================================================================
+    const GRID_SIZE = 42;
+    const GRID_STEP = 2.4;
+    const nodeCoords = [];
+
+    // Alle Knoten existieren am exakt selben Ort
+    for (let i = -GRID_SIZE / 2; i <= GRID_SIZE / 2; i++) {
+      for (let j = -GRID_SIZE / 2; j <= GRID_SIZE / 2; j++) {
+        nodeCoords.push({
+          x: i * GRID_STEP,
+          z: j * GRID_STEP,
+          u: i,
+          v: j
+        });
+      }
+    }
+
+    // Leuchtende Basisknoten (Punkte, die die gemeinsame Substanz visualisieren)
+    const nodeGeo = new THREE.BufferGeometry();
+    const nodePos = new Float32Array(nodeCoords.length * 3);
+    for (let k = 0; k < nodeCoords.length; k++) {
+      nodePos[k * 3 + 0] = nodeCoords[k].x;
+      nodePos[k * 3 + 1] = 0;
+      nodePos[k * 3 + 2] = nodeCoords[k].z;
+    }
+    nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePos, 3));
+    const nodeMat = new THREE.PointsMaterial({
+      color: 0x64748b,
+      size: 0.9,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+    const nodePoints = new THREE.Points(nodeGeo, nodeMat);
+    scene.add(nodePoints);
+
+    // =========================================================================
+    // 3. MULTIPLEX-KANTENNETZWERKE (ORTHOGONAL: WELT A & WELT B)
+    // =========================================================================
+    // Welt A hat ein Gravitationszentrum bei x = -16, z = 0 (Planet A)
+    // Welt B hat ein Gravitationszentrum bei x = +16, z = 0 (Pulsar/Planet B)
+    const centerA = { x: -16, z: 0 };
+    const centerB = { x: 16, z: 0 };
+    const lambda = 11.0;
+
+    function buildSpacetimeGrid(center, colorHex, isA) {
+      const positions = [];
+      const colors = [];
+      const nodeCountX = GRID_SIZE + 1;
+
+      for (let i = 0; i < GRID_SIZE; i++) {
+        for (let j = 0; j < GRID_SIZE; j++) {
+          const idx0 = i * nodeCountX + j;
+          const idxR = idx0 + 1;
+          const idxD = idx0 + nodeCountX;
+
+          const n0 = nodeCoords[idx0];
+          const nR = nodeCoords[idxR];
+          const nD = nodeCoords[idxD];
+
+          const dist0 = Math.hypot(n0.x - center.x, n0.z - center.z);
+          const distR = Math.hypot(nR.x - center.x, nR.z - center.z);
+          const distD = Math.hypot(nD.x - center.x, nD.z - center.z);
+
+          // SubQG Kantenkontraktion nur im eigenen Subgraphen
+          const y0 = -0.52 * Math.exp(-dist0 / lambda) * 11.0;
+          const yR = -0.52 * Math.exp(-distR / lambda) * 11.0;
+          const yD = -0.52 * Math.exp(-distD / lambda) * 11.0;
+
+          // Horizontale Kante
+          positions.push(n0.x, y0, n0.z, nR.x, yR, nR.z);
+          // Vertikale Kante
+          positions.push(n0.x, y0, n0.z, nD.x, yD, nD.z);
+
+          const c0 = Math.min(1.0, Math.exp(-dist0 / lambda) * 2.5);
+          if (isA) {
+            // Cyan Palette
+            colors.push(0.05 + c0 * 0.2, 0.4 + c0 * 0.55, 0.7 + c0 * 0.3);
+            colors.push(0.05 + c0 * 0.2, 0.4 + c0 * 0.55, 0.7 + c0 * 0.3);
+            colors.push(0.05 + c0 * 0.2, 0.4 + c0 * 0.55, 0.7 + c0 * 0.3);
+            colors.push(0.05 + c0 * 0.2, 0.4 + c0 * 0.55, 0.7 + c0 * 0.3);
+          } else {
+            // Magenta Palette
+            colors.push(0.7 + c0 * 0.3, 0.08 + c0 * 0.2, 0.35 + c0 * 0.55);
+            colors.push(0.7 + c0 * 0.3, 0.08 + c0 * 0.2, 0.35 + c0 * 0.55);
+            colors.push(0.7 + c0 * 0.3, 0.08 + c0 * 0.2, 0.35 + c0 * 0.55);
+            colors.push(0.7 + c0 * 0.3, 0.08 + c0 * 0.2, 0.35 + c0 * 0.55);
+          }
+        }
+      }
+
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+      const mat = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.48,
+        blending: THREE.AdditiveBlending
+      });
+      return new THREE.LineSegments(geom, mat);
+    }
+
+    const gridMeshA = buildSpacetimeGrid(centerA, 0x38bdf8, true);
+    const gridMeshB = buildSpacetimeGrid(centerB, 0xf43f5e, false);
+    scene.add(gridMeshA);
+    scene.add(gridMeshB);
+
+    // =========================================================================
+    // 4. OBJEKTE IN WELT A (PLANET A & BLAUER ASTEROID)
+    // =========================================================================
+    const groupWorldA = new THREE.Group();
+    scene.add(groupWorldA);
+
+    // Planet A (Cyan)
+    const planetAGeo = new THREE.SphereGeometry(5.2, 32, 32);
+    const planetAMat = new THREE.MeshStandardMaterial({
+      color: 0x075985,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.7,
+      roughness: 0.4
+    });
+    const planetA = new THREE.Mesh(planetAGeo, planetAMat);
+    planetA.position.set(centerA.x, -5.2, centerA.z);
+    groupWorldA.add(planetA);
+
+    // Asteroid A (Cyan Einhüllende)
+    const astAGeo = new THREE.DodecahedronGeometry(2.0, 1);
+    const astAMat = new THREE.MeshStandardMaterial({
+      color: 0xbae6fd,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.5,
+      flatShading: true
+    });
+    const asteroidA = new THREE.Mesh(astAGeo, astAMat);
+    groupWorldA.add(asteroidA);
+
+    // Asteroid A Trajektorien-Trail
+    const TRAIL_LEN = 120;
+    const trailPosA = new Float32Array(TRAIL_LEN * 3);
+    const trailGeoA = new THREE.BufferGeometry();
+    trailGeoA.setAttribute('position', new THREE.BufferAttribute(trailPosA, 3));
+    const trailMatA = new THREE.LineBasicMaterial({
+      color: 0x38bdf8,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.75
+    });
+    const trailLineA = new THREE.Line(trailGeoA, trailMatA);
+    groupWorldA.add(trailLineA);
+
+    // =========================================================================
+    // 5. OBJEKTE IN WELT B (PULSAR B & MAGENTA SCHIFF/RESONANZPAKET)
+    // =========================================================================
+    const groupWorldB = new THREE.Group();
+    scene.add(groupWorldB);
+
+    // Planet/Pulsar B (Magenta)
+    const planetBGeo = new THREE.SphereGeometry(5.2, 32, 32);
+    const planetBMat = new THREE.MeshStandardMaterial({
+      color: 0x9f1239,
+      emissive: 0xe11d48,
+      emissiveIntensity: 0.7,
+      roughness: 0.4
+    });
+    const planetB = new THREE.Mesh(planetBGeo, planetBMat);
+    planetB.position.set(centerB.x, -5.2, centerB.z);
+    groupWorldB.add(planetB);
+
+    // Asteroid/Objekt B (Magenta)
+    const astBGeo = new THREE.OctahedronGeometry(2.2, 1);
+    const astBMat = new THREE.MeshStandardMaterial({
+      color: 0xfecdd3,
+      emissive: 0xf43f5e,
+      emissiveIntensity: 0.5,
+      flatShading: true
+    });
+    const asteroidB = new THREE.Mesh(astBGeo, astBMat);
+    groupWorldB.add(asteroidB);
+
+    // Asteroid B Trajektorien-Trail
+    const trailPosB = new Float32Array(TRAIL_LEN * 3);
+    const trailGeoB = new THREE.BufferGeometry();
+    trailGeoB.setAttribute('position', new THREE.BufferAttribute(trailPosB, 3));
+    const trailMatB = new THREE.LineBasicMaterial({
+      color: 0xf43f5e,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.75
+    });
+    const trailLineB = new THREE.Line(trailGeoB, trailMatB);
+    groupWorldB.add(trailLineB);
+
+    // =========================================================================
+    // 6. PHYSIK-SIMULATION: BEIDE OBJEKTE KREUZEN SICH AM EXAKT GLEICHEN ORT
+    // =========================================================================
+    // Asteroid A fliegt von links oben nach rechts unten (beeinflusst NUR von Planet A)
+    let stateA = {
+      x: -45.0,
+      z: -20.0,
+      vx: 0.42,
+      vz: 0.12
+    };
+
+    // Asteroid B fliegt von rechts oben nach links unten (beeinflusst NUR von Planet B)
+    let stateB = {
+      x: 45.0,
+      z: -20.0,
+      vx: -0.42,
+      vz: 0.12
+    };
+
+    function resetStates() {
+      stateA.x = -45.0; stateA.z = -20.0; stateA.vx = 0.42; stateA.vz = 0.12;
+      stateB.x = 45.0;  stateB.z = -20.0; stateB.vx = -0.42; stateB.vz = 0.12;
+      for (let i = 0; i < TRAIL_LEN; i++) {
+        trailPosA[i * 3 + 0] = stateA.x; trailPosA[i * 3 + 1] = 0; trailPosA[i * 3 + 2] = stateA.z;
+        trailPosB[i * 3 + 0] = stateB.x; trailPosB[i * 3 + 1] = 0; trailPosB[i * 3 + 2] = stateB.z;
+      }
+      trailGeoA.attributes.position.needsUpdate = true;
+      trailGeoB.attributes.position.needsUpdate = true;
+    }
+    resetStates();
+
+    function computeAccA(x, z) {
+      // Nur Planet A wirkt auf Asteroid A! Planet B ist für ihn nicht existent!
+      const dx = x - centerA.x;
+      const dz = z - centerA.z;
+      const r = Math.hypot(dx, dz);
+      if (r < 1.0) return { ax: 0, az: 0, y: -5.2 };
+      const GM = 45.0;
+      const gEff = GM / (r * r + 15.0);
+      const y = -0.52 * Math.exp(-r / lambda) * 11.0;
+      return { ax: -gEff * (dx / r), az: -gEff * (dz / r), y };
+    }
+
+    function computeAccB(x, z) {
+      // Nur Planet B wirkt auf Asteroid B! Planet A ist für ihn nicht existent!
+      const dx = x - centerB.x;
+      const dz = z - centerB.z;
+      const r = Math.hypot(dx, dz);
+      if (r < 1.0) return { ax: 0, az: 0, y: -5.2 };
+      const GM = 45.0;
+      const gEff = GM / (r * r + 15.0);
+      const y = -0.52 * Math.exp(-r / lambda) * 11.0;
+      return { ax: -gEff * (dx / r), az: -gEff * (dz / r), y };
+    }
+
+    // =========================================================================
+    // 7. KONTROLLEN & KAMERA-MODI
+    // =========================================================================
+    let camMode = 'orbit';
+
+    const btnBoth = document.getElementById('btn-both');
+    const btnOnlyA = document.getElementById('btn-only-a');
+    const btnOnlyB = document.getElementById('btn-only-b');
+    const btnCamOrbit = document.getElementById('btn-cam-orbit');
+    const btnCamCross = document.getElementById('btn-cam-cross');
+    const narrativeText = document.getElementById('narrative-text');
+
+    btnBoth.addEventListener('click', () => {
+      gridMeshA.visible = true; groupWorldA.visible = true;
+      gridMeshB.visible = true; groupWorldB.visible = true;
+      setActiveBtn(btnBoth);
+      narrativeText.textContent = 'Überlappung: Beide Welten existieren am selben Ort. Ihre Kanten sind orthogonal (⟨A|B⟩ = 0) – daher durchdringen sie sich ohne Kollision.';
+    });
+
+    btnOnlyA.addEventListener('click', () => {
+      gridMeshA.visible = true; groupWorldA.visible = true;
+      gridMeshB.visible = false; groupWorldB.visible = false;
+      setActiveBtn(btnOnlyA);
+      narrativeText.textContent = 'Perspektive Welt A (Cyan): Beobachter hier sehen nur Planet A und ihren eigenen Asteroiden. Welt B ist vollkommen unsichtbar.';
+    });
+
+    btnOnlyB.addEventListener('click', () => {
+      gridMeshA.visible = false; groupWorldA.visible = false;
+      gridMeshB.visible = true; groupWorldB.visible = true;
+      setActiveBtn(btnOnlyB);
+      narrativeText.textContent = 'Perspektive Welt B (Magenta): Beobachter hier registrieren nur Planet B. Die Kanten von Welt A leiten kein Licht in ihre Augen.';
+    });
+
+    btnCamOrbit.addEventListener('click', () => {
+      camMode = 'orbit';
+      setActiveCamBtn(btnCamOrbit);
+    });
+
+    btnCamCross.addEventListener('click', () => {
+      camMode = 'cross';
+      setActiveCamBtn(btnCamCross);
+    });
+
+    function setActiveBtn(btn) {
+      [btnBoth, btnOnlyA, btnOnlyB].forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function setActiveCamBtn(btn) {
+      [btnCamOrbit, btnCamCross].forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // =========================================================================
+    // 8. RENDER LOOP
+    // =========================================================================
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
+
+      // Schritt Asteroid A
+      const accA = computeAccA(stateA.x, stateA.z);
+      stateA.vx += accA.ax * delta;
+      stateA.vz += accA.az * delta;
+      stateA.x += stateA.vx * delta * 24.0;
+      stateA.z += stateA.vz * delta * 24.0;
+      asteroidA.position.set(stateA.x, accA.y, stateA.z);
+      asteroidA.rotation.x += 1.2 * delta;
+      asteroidA.rotation.y += 0.8 * delta;
+
+      // Schritt Asteroid B
+      const accB = computeAccB(stateB.x, stateB.z);
+      stateB.vx += accB.ax * delta;
+      stateB.vz += accB.az * delta;
+      stateB.x += stateB.vx * delta * 24.0;
+      stateB.z += stateB.vz * delta * 24.0;
+      asteroidB.position.set(stateB.x, accB.y, stateB.z);
+      asteroidB.rotation.x += 0.8 * delta;
+      asteroidB.rotation.z += 1.4 * delta;
+
+      // Trails aktualisieren
+      for (let i = 0; i < TRAIL_LEN - 1; i++) {
+        trailPosA[i * 3 + 0] = trailPosA[(i + 1) * 3 + 0];
+        trailPosA[i * 3 + 1] = trailPosA[(i + 1) * 3 + 1];
+        trailPosA[i * 3 + 2] = trailPosA[(i + 1) * 3 + 2];
+
+        trailPosB[i * 3 + 0] = trailPosB[(i + 1) * 3 + 0];
+        trailPosB[i * 3 + 1] = trailPosB[(i + 1) * 3 + 1];
+        trailPosB[i * 3 + 2] = trailPosB[(i + 1) * 3 + 2];
+      }
+      trailPosA[(TRAIL_LEN - 1) * 3 + 0] = stateA.x;
+      trailPosA[(TRAIL_LEN - 1) * 3 + 1] = accA.y;
+      trailPosA[(TRAIL_LEN - 1) * 3 + 2] = stateA.z;
+
+      trailPosB[(TRAIL_LEN - 1) * 3 + 0] = stateB.x;
+      trailPosB[(TRAIL_LEN - 1) * 3 + 1] = accB.y;
+      trailPosB[(TRAIL_LEN - 1) * 3 + 2] = stateB.z;
+
+      trailGeoA.attributes.position.needsUpdate = true;
+      trailGeoB.attributes.position.needsUpdate = true;
+
+      // Reset-Schleife
+      if (stateA.x > 50 || stateA.z > 50 || stateB.x < -50 || stateB.z > 50) {
+        resetStates();
+      }
+
+      // Planetenrotation
+      planetA.rotation.y += 0.2 * delta;
+      planetB.rotation.y -= 0.25 * delta;
+
+      // Kamera
+      if (camMode === 'orbit') {
+        const camAngle = elapsed * 0.12;
+        camera.position.x = Math.sin(camAngle) * 65;
+        camera.position.z = Math.cos(camAngle) * 65;
+        camera.position.y = 30 + Math.sin(elapsed * 0.2) * 5;
+        camera.lookAt(0, -2, 0);
+      } else if (camMode === 'cross') {
+        // Fokus auf die Mitte, wo sich beide Flugbahnen kreuzen
+        camera.position.set(0, 18, 36);
+        camera.lookAt(0, -2, 0);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

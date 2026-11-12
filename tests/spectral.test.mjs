@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {spectralAudit,spectralWorld} from '../src/modules/subqg_spectral.mjs';
+import {buildControl} from '../src/modules/subqg_dimension.mjs';
+test('empty graph',()=>assert.equal(spectralAudit([]).dimension,null));
+test('reject invalid parameters',()=>assert.throws(()=>spectralAudit([[1],[0]],{laziness:1}),RangeError));
+test('reject directed graph',()=>assert.throws(()=>spectralAudit([[1],[]]),RangeError));
+test('isolated node remains at source',()=>assert.ok(spectralAudit([[]],{maxSteps:8}).curves.every(x=>x.returnProbability===1)));
+test('return probabilities bounded',()=>{const r=spectralAudit(buildControl('cycle',100));assert.ok(r.curves.every(x=>x.returnProbability>0&&x.returnProbability<=1));});
+test('reproducible',()=>assert.deepEqual(spectralAudit(buildControl('grid',100)),spectralAudit(buildControl('grid',100))));
+test('finite control dimension',()=>assert.ok(Number.isFinite(spectralAudit(buildControl('grid',400)).dimension)));
+test('world reproducible',()=>assert.deepEqual(spectralWorld({steps:300}),spectralWorld({steps:300})));

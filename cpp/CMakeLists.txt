@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.16)
+project(SubQGPhysics VERSION 1.0.0 LANGUAGES CXX)
+option(SUBQG_BUILD_SHARED "Build SubQGPhysics shared library" ON)
+option(SUBQG_BUILD_TESTS "Build native parity tests" ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(SUBQG_SOURCES src/physics.cpp src/canonical_runtime.cpp)
+add_library(subqg_physics_static STATIC ${SUBQG_SOURCES})
+target_include_directories(subqg_physics_static PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+set_target_properties(subqg_physics_static PROPERTIES OUTPUT_NAME subqg_physics)
+
+if(SUBQG_BUILD_SHARED)
+  add_library(subqg_physics SHARED ${SUBQG_SOURCES})
+  target_include_directories(subqg_physics PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+  target_compile_definitions(subqg_physics PRIVATE SUBQG_BUILDING SUBQG_SHARED PUBLIC SUBQG_SHARED)
+endif()
+
+if(SUBQG_BUILD_TESTS)
+  enable_testing()
+  add_executable(subqg_native_tests tests/parity_tests.cpp)
+  target_link_libraries(subqg_native_tests PRIVATE subqg_physics_static)
+  add_test(NAME subqg_native_parity COMMAND subqg_native_tests)
+endif()
+
+include(GNUInstallDirs)
+install(TARGETS subqg_physics_static EXPORT SubQGPhysicsTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(SUBQG_BUILD_SHARED)
+  install(TARGETS subqg_physics EXPORT SubQGPhysicsTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(EXPORT SubQGPhysicsTargets FILE SubQGPhysicsTargets.cmake NAMESPACE SubQG:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SubQGPhysics)

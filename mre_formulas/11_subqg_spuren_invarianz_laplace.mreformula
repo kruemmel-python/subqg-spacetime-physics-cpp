@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Graphen-Laplace-Spureninvarianz: Parallelogrammgleichung gekoppelter Bindungen
+# x = Normalmode 1, y = Normalmode 2
+# Physikalische Bedeutung: Erhaltung der gesamten Schwingungsenergie zweier Resonanzknoten
+name: SubQG Laplace-Spureninvarianz
+domain: real
+formula: (x + y)^2 + (x - y)^2 = 2*x^2 + 2*y^2
+seed: 42

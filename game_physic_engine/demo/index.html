@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Game Physics Engine - Interactive Sandbox & Laboratory</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f141d;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #1a2234;
+      border-bottom: 1px solid #2d3748;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .title-group h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #63b3ed;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      background: #2b6cb0;
+      color: #ebf8ff;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-subqg {
+      background: #805ad5;
+      color: #faf5ff;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select, button {
+      background: #2d3748;
+      color: #edf2f7;
+      border: 1px solid #4a5568;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    select:hover, button:hover {
+      background: #4a5568;
+      border-color: #63b3ed;
+    }
+    button.btn-primary {
+      background: #3182ce;
+      border-color: #4299e1;
+    }
+    button.btn-primary:hover {
+      background: #2b6cb0;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-label input {
+      cursor: pointer;
+    }
+    #main-container {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #canvas-wrap {
+      flex: 1;
+      position: relative;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #090d16;
+    }
+    #overlay-hud {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      pointer-events: none;
+      min-width: 240px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .hud-title {
+      font-weight: 700;
+      color: #90cdf4;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 4px;
+    }
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hud-val {
+      font-family: monospace;
+      font-weight: 600;
+      color: #68d391;
+    }
+    .hud-val-subqg {
+      color: #d6bcfa;
+    }
+    #instructions {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      pointer-events: none;
+    }
+    #tool-panel {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tool-btn {
+      width: 100%;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>
+        SubQG Game Physics Engine
+        <span class="badge">Production 2D</span>
+        <span class="badge badge-subqg">Emergent Subquantum Graphity</span>
+      </h1>
+    </div>
+
+    <div class="controls">
+      <label for="scene-select" style="font-size:0.85rem; color:#a0aec0;">Szene:</label>
+      <select id="scene-select">
+        <option value="stackingTower">1. Kistenturm & Stapel-Stabilität</option>
+        <option value="bouncingBalls">2. Bälle, Rampen & Elastizität</option>
+        <option value="ropeBridge">3. Hängebrücke (Tragfähig - Fängt Felsen ab)</option>
+        <option value="ropeBridgeBreakable">3b. Hängebrücke (Zerstörbar - Reißt & Zersplittert bei 450 N)</option>
+        <option value="vehicleTerrain">4. Motorisiertes Geländefahrzeug</option>
+        <option value="catapult">5. Katapult & Trebuchet</option>
+        <option value="sensorsAndTrays">6. Sensor-Radar & Triggers</option>
+      </select>
+
+      <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:600; color:#cbd5e1;">
+        <span>Physik-Modus:</span>
+        <select id="engine-mode-select" style="background:#1e293b; color:#63b3ed; font-weight:700; border:1px solid #3182ce; border-radius:6px; padding:4px 8px;">
+          <option value="hybrid" selected>⚡ Hybrid-Modus (SubQG Metrikgitter + Impulssolver - Empfohlen für Spiele)</option>
+          <option value="pure-subqg">★ SubQG Pure (100% First-Principles - Kantenbarriere ohne Impulssolver)</option>
+        </select>
+      </label>
+
+      <button id="btn-reset" class="btn-primary">Neu starten</button>
+      <button id="btn-fire-catapult" style="display:none; background:#e53e3e; color:white; font-weight:700; padding:5px 12px; border-radius:6px; border:none; cursor:pointer; box-shadow:0 0 8px rgba(229,62,62,0.6);">🚀 Katapult abfeuern (Leertaste)</button>
+      <button id="btn-reload-catapult" style="display:none; background:#4a5568; color:white; font-weight:700; padding:5px 10px; border-radius:6px; border:none; cursor:pointer;">🔄 Nachladen</button>
+
+      <label class="checkbox-label" title="Aktiviert Materialbruch bei definierter Belastungsgrenze">
+        <input type="checkbox" id="chk-breakable" checked>
+        <span style="color:#f6ad55; font-weight:600;">Materialbruch</span>
+      </label>
+
+      <label class="checkbox-label" title="Schaltet die visuelle Anzeige des internen SubQG-Kantennetzwerks ein">
+        <input type="checkbox" id="chk-subqg" checked>
+        <span style="color:#d6bcfa; font-weight:600;">SubQG Gitter</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="chk-gravity" checked>
+        <span>Gravitation</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="chk-contacts" checked>
+        <span>Kontakte</span>
+      </label>
+    </div>
+  </header>
+
+  <div id="main-container">
+    <div id="canvas-wrap">
+      <canvas id="physics-canvas"></canvas>
+
+      <div id="overlay-hud">
+        <div class="hud-title">LIVE TELEMETRIE & SUBQG AUDIT</div>
+        <div class="hud-row"><span>Physik-Modus:</span><span id="hud-mode" class="hud-val" style="color:#d6bcfa; font-weight:700;">PURE SUBQG (100%)</span></div>
+        <div class="hud-row"><span>Kontakt-Solver:</span><span id="hud-contact-solver" class="hud-val" style="color:#68d391;">0 (Pure SubQG)</span></div>
+        <div class="hud-row"><span>Gelenk-Solver:</span><span id="hud-joint-solver" class="hud-val" style="color:#63b3ed;">0 Aufrufe</span></div>
+        <div class="hud-row"><span>FPS:</span><span id="hud-fps" class="hud-val">60</span></div>
+        <div class="hud-row"><span>Körper (Bodies):</span><span id="hud-bodies" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Gelenke (Joints):</span><span id="hud-joints" class="hud-val">0 intakt</span></div>
+        <div class="hud-row"><span>Material-Status:</span><span id="hud-material" class="hud-val" style="color:#68d391;">Intakt</span></div>
+        <div class="hud-row"><span>Aktive Kontakte:</span><span id="hud-contacts" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Schlafend (Sleeping):</span><span id="hud-sleeping" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Kinetische Energie:</span><span id="hud-energy" class="hud-val">0 J</span></div>
+        <div style="margin: 6px 0 4px; border-top: 1px dashed #4a5568;"></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">SubQG Kantenwirkung:</span><span id="hud-action" class="hud-val hud-val-subqg">0.00</span></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">Max. Kantenverzerrung:</span><span id="hud-strain" class="hud-val hud-val-subqg">0.00%</span></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">Relationale Kanten:</span><span id="hud-edges" class="hud-val hud-val-subqg">0</span></div>
+      </div>
+
+      <div id="tool-panel">
+        <div style="font-size:0.75rem; color:#90cdf4; font-weight:700; margin-bottom:2px;">SPAWN OBJEKTE</div>
+        <button class="tool-btn" id="btn-spawn-box">+ Kiste (Holz)</button>
+        <button class="tool-btn" id="btn-spawn-ball">+ Ball (Gummi)</button>
+        <button class="tool-btn" id="btn-spawn-boulder">+ Felsblock (Schwer)</button>
+        <button class="tool-btn" id="btn-spawn-capsule">+ Kapsel</button>
+      </div>
+
+      <div id="instructions">
+        <strong>Bedienung:</strong> Linksklick & Ziehen = Körper greifen & werfen | Rechtsklick & Ziehen = Laser-Raycast | Mausrad = Zoom
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { World, Vec2, Material, CanvasRenderer, SubQGInspector } from '../index.mjs';
+    import { DemoScenes } from './demo_scenes.mjs';
+
+    const canvas = document.getElementById('physics-canvas');
+    let world, renderer, inspector;
+    let dragBody = null;
+    let dragLocalAnchor = new Vec2();
+    let rightClickRayStart = null;
+    let mousePosWorld = new Vec2();
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function loadScene(sceneKey) {
+      const mode = document.getElementById('engine-mode-select').value;
+      world = new World({
+        engineMode: mode,
+        gravity: document.getElementById('chk-gravity').checked ? new Vec2(0, -9.81) : new Vec2(0, 0),
+        enableSubQGLattice: true,
+        velocityIterations: 10
+      });
+
+      renderer = new CanvasRenderer(canvas, world, {
+        scale: 32.0,
+        camera: new Vec2(0, 5),
+        showSubQGLattice: document.getElementById('chk-subqg').checked,
+        showContacts: document.getElementById('chk-contacts').checked
+      });
+
+      inspector = new SubQGInspector(world);
+
+      const breakable = document.getElementById('chk-breakable').checked;
+      if (sceneKey === 'ropeBridge') {
+        DemoScenes.ropeBridge(world, { breakable: false });
+      } else if (sceneKey === 'ropeBridgeBreakable') {
+        DemoScenes.ropeBridge(world, { breakable: true, breakingForce: 450 });
+      } else if (DemoScenes[sceneKey]) {
+        DemoScenes[sceneKey](world);
+      }
+
+      // Zeige Katapult-Steuerung nur in Szene 5
+      const isCatapult = sceneKey === 'catapult';
+      document.getElementById('btn-fire-catapult').style.display = isCatapult ? 'inline-block' : 'none';
+      document.getElementById('btn-reload-catapult').style.display = isCatapult ? 'inline-block' : 'none';
+    }
+
+    const sceneSelect = document.getElementById('scene-select');
+    const modeSelect = document.getElementById('engine-mode-select');
+    sceneSelect.addEventListener('change', () => loadScene(sceneSelect.value));
+    modeSelect.addEventListener('change', () => loadScene(sceneSelect.value));
+    document.getElementById('btn-reset').addEventListener('click', () => loadScene(sceneSelect.value));
+
+    // Katapult Manuelle Steuerung
+    document.getElementById('btn-fire-catapult').addEventListener('click', () => {
+      if (world.catapultController) world.catapultController.fire();
+    });
+    document.getElementById('btn-reload-catapult').addEventListener('click', () => {
+      if (world.catapultController) world.catapultController.reload();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && sceneSelect.value === 'catapult') {
+        e.preventDefault();
+        if (world.catapultController) world.catapultController.fire();
+      }
+    });
+
+    document.getElementById('chk-breakable').addEventListener('change', () => {
+      const curScene = sceneSelect.value;
+      if (curScene === 'ropeBridge' || curScene === 'ropeBridgeBreakable') {
+        loadScene(document.getElementById('chk-breakable').checked ? 'ropeBridgeBreakable' : 'ropeBridge');
+      }
+    });
+
+    document.getElementById('chk-subqg').addEventListener('change', (e) => {
+      renderer.showSubQGLattice = e.target.checked;
+    });
+
+    document.getElementById('chk-contacts').addEventListener('change', (e) => {
+      renderer.showContacts = e.target.checked;
+    });
+
+    document.getElementById('chk-gravity').addEventListener('change', (e) => {
+      world.setGravity(0, e.target.checked ? -9.81 : 0);
+      for (const b of world.bodies) b.wakeUp();
+    });
+
+    // Spawning Buttons - Alle 4 Materialien besitzen vollaktive Destruction Physics!
+    document.getElementById('btn-spawn-box').addEventListener('click', () => {
+      world.createBox(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 1.0, 1.0, {
+        isDestructible: true,
+        fractureForce: 150.0,
+        userData: 'Kiste (Holz)',
+        material: Material.wood()
+      });
+    });
+
+    document.getElementById('btn-spawn-ball').addEventListener('click', () => {
+      world.createCircle(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 0.5, {
+        isDestructible: true,
+        fractureForce: 450.0,
+        userData: 'Ball (Gummi)',
+        material: Material.rubber()
+      });
+    });
+
+    document.getElementById('btn-spawn-boulder').addEventListener('click', () => {
+      world.createCircle(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 0.8, {
+        isDestructible: true,
+        fractureForce: 400.0,
+        userData: 'Felsblock',
+        material: new Material({ density: 8.0, friction: 0.6, restitution: 0.05 })
+      });
+    });
+
+    document.getElementById('btn-spawn-capsule').addEventListener('click', () => {
+      world.createCapsule(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 1.4, 0.35, {
+        isDestructible: true,
+        fractureForce: 180.0,
+        userData: 'Kapsel',
+        material: Material.wood()
+      });
+    });
+
+    // Mouse Interactions (Pick & Drag / Laser Raycast)
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const wPos = renderer.screenToWorld(sx, sy);
+
+      if (e.button === 0) { // Linksklick: Drag
+        const hits = world.queryPoint(wPos);
+        if (hits.length > 0) {
+          const hit = hits[hits.length - 1];
+          if (hit.body.type === 'dynamic') {
+            dragBody = hit.body;
+            dragLocalAnchor = dragBody.transform.inverseTransformPoint(wPos);
+            dragBody.wakeUp();
+          }
+        }
+      } else if (e.button === 2) { // Rechtsklick: Raycast
+        rightClickRayStart = wPos.clone();
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      mousePosWorld = renderer.screenToWorld(sx, sy);
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragBody = null;
+      rightClickRayStart = null;
+    });
+
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      renderer.scale = Math.max(10.0, Math.min(100.0, renderer.scale * zoomFactor));
+    });
+
+    // Initial Scene
+    loadScene('stackingTower');
+
+    // Main Game Loop
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let fpsTime = 0;
+
+    function loop(time) {
+      const dt = Math.min(0.033, (time - lastTime) / 1000.0);
+      lastTime = time;
+
+      // Maus-Drag-Federkraft anwenden
+      if (dragBody) {
+        const targetWorld = mousePosWorld;
+        const currentWorld = dragBody.transform.transformPoint(dragLocalAnchor);
+        const delta = Vec2.sub(targetWorld, currentWorld);
+        const springK = 150.0;
+        const dampingK = 20.0;
+        const fSpring = Vec2.scale(delta, springK * dragBody.mass);
+        const vAtPoint = dragBody.getVelocityAtPoint(currentWorld);
+        const fDamping = Vec2.scale(vAtPoint, dampingK * dragBody.mass);
+        const fTotal = Vec2.sub(fSpring, fDamping);
+
+        dragBody.applyForceAtPoint(fTotal, currentWorld);
+      }
+
+      // Rechtsklick Laser-Raycast
+      if (rightClickRayStart) {
+        const dir = Vec2.sub(mousePosWorld, rightClickRayStart);
+        const len = dir.length();
+        if (len > 0.05) {
+          const hit = world.raycast(rightClickRayStart, dir.clone().normalize(), len);
+          renderer.addDebugRay({ origin: rightClickRayStart, direction: dir.normalize(), maxDistance: len }, hit);
+        }
+      }
+
+      // Physikschritt
+      world.step(1.0 / 60.0);
+
+      // Rendern
+      renderer.render(dt);
+
+      // HUD Telemetrie aktualisieren
+      frameCount++;
+      fpsTime += dt;
+      if (fpsTime >= 0.25) {
+        const fps = Math.round(frameCount / fpsTime);
+        document.getElementById('hud-fps').textContent = fps;
+        frameCount = 0;
+        fpsTime = 0;
+
+        const isPure = world.engineMode === 'pure-subqg';
+        const modeEl = document.getElementById('hud-mode');
+        modeEl.textContent = isPure ? 'PURE SUBQG (100%)' : 'HYBRID';
+        modeEl.style.color = isPure ? '#d6bcfa' : '#63b3ed';
+
+        const contactCalls = isPure ? '0 (Pure SubQG)' : world.contactSolverCalls + ' Aufrufe';
+        const contactEl = document.getElementById('hud-contact-solver');
+        contactEl.textContent = contactCalls;
+        contactEl.style.color = isPure ? '#68d391' : '#f6ad55';
+
+        const jointEl = document.getElementById('hud-joint-solver');
+        jointEl.textContent = world.jointSolverCalls + ' Aufrufe';
+
+        const jointsEl = document.getElementById('hud-joints');
+        jointsEl.textContent = world.joints.length + ' intakt';
+
+        const matEl = document.getElementById('hud-material');
+        if (world.brokenJointsCount > 0) {
+          matEl.textContent = 'BRUCH (' + world.brokenJointsCount + ' gerissen)';
+          matEl.style.color = '#fc8181';
+        } else {
+          matEl.textContent = 'Intakt';
+          matEl.style.color = '#68d391';
+        }
+
+        let sleepingCount = 0;
+        for (const b of world.bodies) if (b.isSleeping) sleepingCount++;
+
+        const audit = inspector.computeFullEnergyAudit();
+        document.getElementById('hud-bodies').textContent = world.bodies.length;
+        document.getElementById('hud-contacts').textContent = world.contactManifolds.size;
+        document.getElementById('hud-sleeping').textContent = sleepingCount;
+        document.getElementById('hud-energy').textContent = audit.kineticEnergy.toFixed(1) + ' J';
+
+        document.getElementById('hud-action').textContent = audit.subqgEdgeAction.toFixed(3);
+        document.getElementById('hud-strain').textContent = (audit.maxMetricStrain * 100.0).toFixed(2) + '%';
+        document.getElementById('hud-edges').textContent = audit.activeEdges;
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

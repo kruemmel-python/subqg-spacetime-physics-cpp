@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildBonds} from '../src/modules/subqg_fpv.mjs';
+import {initialConstraint} from '../src/modules/subqg_relational_clock.mjs';
+import {clockAngle,unwrapAngle,evolveInternalClock,experiment} from '../src/modules/subqg_internal_clock.mjs';
+test('internal clock extracted from existing state',()=>{const s=initialConstraint([1,-1],[0,0],buildBonds([0,0]));assert.ok(Math.abs(clockAngle(s).angle)<1e-12)});
+test('zero amplitude has no clock',()=>assert.throws(()=>clockAngle(initialConstraint([0,0],[0,0],buildBonds([0,0])))));
+test('disconnected oscillator has no clock',()=>assert.throws(()=>clockAngle(initialConstraint([1,-1],[0,0],buildBonds([0,Math.PI])))));
+test('angle unwrap across branch cut',()=>assert.ok(unwrapAngle(3.1,-3.1)>3.1));
+test('internal clock monotonic in tested oscillator sector',()=>assert.ok(experiment().summary.every(r=>r.maxMonotonicViolation===0)));
+test('same effective step yields identical relational outcome',()=>{const r=experiment().summary;assert.ok(Math.abs(r[0].clockTime-r[1].clockTime)<1e-12);assert.ok(Math.abs(r[0].q0-r[1].q0)<1e-12)});
+test('smaller integration step agrees with analytic relational orbit',()=>assert.ok(experiment().summary[2].analyticError<1e-4));
+test('internal clock tracks approximately two units',()=>assert.ok(Math.abs(experiment().summary[0].clockTime-2)<1e-4));
+test('invalid evolution rejected',()=>assert.throws(()=>evolveInternalClock({dLambda:-1,lapse:1,steps:1})));
+test('no claim of physical emergence',()=>assert.match(experiment().limitations.join(' '),/not derived/));

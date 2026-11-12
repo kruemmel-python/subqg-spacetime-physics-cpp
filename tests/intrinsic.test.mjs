@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {IntrinsicWorld} from '../src/modules/subqg_intrinsic.mjs';
+const config={seed:92,threshold:0.12,linkThreshold:0.22,maxNodes:65};
+test('seed produces identical intrinsic states',()=>{const a=new IntrinsicWorld(config),b=new IntrinsicWorld(config);a.run(250);b.run(250);assert.deepEqual(a.snapshot(),b.snapshot());});
+test('no intersections implies no geometry and no clocks',()=>{const w=new IntrinsicWorld({threshold:2});w.run(200);assert.equal(w.nodes.length,0);assert.equal(w.faces.size,0);assert.equal(w.clocks.size,0);});
+test('faces are three mutually linked nodes',()=>{const w=new IntrinsicWorld(config);w.run(350);assert.ok(w.faces.size>0);for(const f of w.faces.values()){assert.equal(new Set(f.ids).size,3);for(let i=0;i<3;i++)for(let j=i+1;j<3;j++)assert.ok(w.links.has(w.key(f.ids[i],f.ids[j])));}});
+test('clock increments only with new faces and exactly 3 per face',()=>{const w=new IntrinsicWorld(config);let last=0;for(const s of w.run(300)){assert.equal(s.totalClock-last,3*s.formed);last=s.totalClock;}assert.equal(last,3*w.faces.size);});
+test('intrinsic distance symmetric and obeys triangle inequality',()=>{const w=new IntrinsicWorld(config);w.run(350);const ds=w.nodes.map(n=>w.distances(n.id));for(let i=0;i<ds.length;i++)for(let j=0;j<ds.length;j++){assert.equal(ds[i][j],ds[j][i]);for(let k=0;k<ds.length;k++)if(Number.isFinite(ds[i][k]+ds[k][j]))assert.ok(ds[i][j]<=ds[i][k]+ds[k][j]);}});
+test('curvature proxy finite and bounded',()=>{const w=new IntrinsicWorld(config);w.run(350);for(const n of w.nodes){const c=w.curvatureProxy(n.id);assert.ok(Number.isFinite(c)&&c>=0&&c<=1);}});
+test('node cap respected',()=>{const w=new IntrinsicWorld(config);w.run(2000);assert.equal(w.nodes.length,65);});

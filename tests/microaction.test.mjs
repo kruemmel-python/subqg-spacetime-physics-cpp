@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {MicroActionWorld} from '../src/modules/subqg_microaction.mjs';
+const build=(options={})=>{const w=new MicroActionWorld({seed:42,...options});w.run(400);return w;};
+test('no geometry means no metric or time',()=>{const w=new MicroActionWorld();const r=w.solveMicroAction();assert.equal(r.edges,0);assert.equal(r.finalAction,0);});
+test('zero excitation has unit lengths',()=>{const w=build();const r=w.solveMicroAction();assert.equal(r.meanLength,1);assert.equal(r.residual,0);});
+test('source gives a stationary minimum and lower action',()=>{const w=build();w.setMass(w.edgesOrdered()[0].a,1);const r=w.solveMicroAction();assert.ok(r.converged);assert.ok(r.finalAction<r.initialAction);assert.ok(r.meanLength<1);});
+test('overlap coupling changes effective response',()=>{const a=build({stiffness:0}),b=build({stiffness:2});const id=a.edgesOrdered()[0].a;a.setMass(id,1);b.setMass(id,1);a.solveMicroAction();b.solveMicroAction();assert.notEqual(a.microAction(),b.microAction());});
+test('same seed reproduces bitwise result',()=>{const a=build(),b=build();const id=a.edgesOrdered()[0].a;a.setMass(id,1);b.setMass(id,1);assert.deepEqual(a.solveMicroAction(),b.solveMicroAction());});
+test('removing excitation restores reference metric',()=>{const w=build();const id=w.edgesOrdered()[0].a;w.setMass(id,1);w.solveMicroAction();w.setMass(id,0);const r=w.solveMicroAction();assert.ok(r.converged);assert.ok(Math.abs(r.meanLength-1)<1e-9);});
+test('causal clock is unaffected by static solver',()=>{const w=build();const before=JSON.stringify(w.causalSnapshot());w.solveMicroAction();assert.equal(JSON.stringify(w.causalSnapshot()),before);});
+test('reject invalid overlap floor',()=>assert.throws(()=>new MicroActionWorld({overlapFloor:0}),RangeError));
+test('reject invalid solver options',()=>assert.throws(()=>build().solveMicroAction({iterations:0}),RangeError));
+test('bounded metric is not silently clipped',()=>{const w=build({minLog:-0.001,maxLog:0.001});w.setMass(w.edgesOrdered()[0].a,10);assert.throws(()=>w.solveMicroAction(),RangeError);});

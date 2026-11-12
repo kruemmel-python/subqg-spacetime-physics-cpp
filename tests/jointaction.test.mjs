@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {JointActionWorld} from '../src/modules/subqg_joint_action.mjs';
+const build=()=>{const w=new JointActionWorld({seed:42});w.run(200);return w;};
+test('empty network has zero action',()=>{const w=new JointActionWorld();assert.equal(w.solveJoint().finalAction,0);});
+test('joint solver lowers energy',()=>{const w=build();w.setMass(w.edgesOrdered()[0].a,1);const r=w.solveJoint();assert.ok(r.finalAction<=r.initialAction+1e-10);});
+test('deterministic replay',()=>{const a=build(),b=build();a.setMass(0,1);b.setMass(0,1);assert.deepEqual(a.solveJoint(),b.solveJoint());});
+test('metric changes under excitation',()=>{const w=build();w.setMass(w.edgesOrdered()[0].a,1);assert.ok(w.solveJoint().meanLength<1);});
+test('phase states evolve from original state',()=>{const w=build();w.solveJoint();assert.ok(w.nodes.some(n=>Math.abs(JointActionWorld.angle(w.phaseState.get(n.id)-n.phase))>1e-7));});
+test('solver does not create causal events',()=>{const w=build(),before=JSON.stringify(w.causalSnapshot());w.solveJoint();assert.equal(JSON.stringify(w.causalSnapshot()),before);});
+test('invalid parameters rejected',()=>{assert.throws(()=>new JointActionWorld({phasePin:-1}),RangeError);assert.throws(()=>build().solveJoint({iterations:0}),RangeError);});
+test('action is unchanged when angles shift by 2pi',()=>{const w=build(),a=w.jointAction();w.phaseState.set(0,w.nodes[0].phase+2*Math.PI);assert.ok(Math.abs(w.jointAction()-a)<1e-9);});

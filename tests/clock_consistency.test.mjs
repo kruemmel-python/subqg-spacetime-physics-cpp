@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {makeClock,advanceClock,compareClocks,experiment} from '../src/modules/subqg_clock_consistency.mjs';
+test('bonded clock available',()=>assert.ok(makeClock(0)));
+test('unbonded clock unavailable',()=>assert.equal(makeClock(Math.PI),null));
+test('zero-amplitude clock rejected',()=>assert.throws(()=>makeClock(0,{amplitude:0})));
+test('clock evolves monotonically in the tested sector',()=>{const c=makeClock(0);let last=0;for(let i=0;i<100;i++){const t=advanceClock(c,0.01);assert.ok(t>last);last=t;}});
+test('identical clocks agree',()=>{const r=compareClocks({phaseB:0});assert.ok(r.disagreement<1e-12);});
+test('distinct clocks have distinct natural frequencies',()=>{const r=compareClocks();assert.notEqual(r.omegaA,r.omegaB);});
+test('both internal clocks approximate same elapsed numerical parameter',()=>{const r=compareClocks();assert.ok(Math.abs(r.clockA-2)<1e-4);assert.ok(Math.abs(r.clockB-2)<1e-4);});
+test('refining step improves calibration error',()=>{const a=compareClocks();const b=compareClocks({dt:0.001,steps:2000});assert.ok(Math.abs(b.clockA-2)<Math.abs(a.clockA-2));assert.ok(Math.abs(b.clockB-2)<Math.abs(a.clockB-2));});
+test('unbound control prevents clock comparison',()=>assert.equal(compareClocks({phaseB:Math.PI}).available,false));
+test('invalid step rejected',()=>assert.throws(()=>compareClocks({dt:0})));
+test('no physical universality is claimed',()=>assert.equal(experiment().distinct.universalTimeProven,false));

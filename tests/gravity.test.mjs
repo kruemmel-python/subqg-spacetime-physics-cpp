@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {GravityWorld} from '../src/modules/subqg_gravity.mjs';
+const cfg={seed:92,threshold:0.12,linkThreshold:0.22,maxNodes:55};
+const make=()=>{const w=new GravityWorld(cfg);w.run(350);return w;};
+test('deterministic relational world',()=>{assert.deepEqual(make().snapshot(),make().snapshot());});
+test('empty world potential and geometry',()=>{const w=new GravityWorld({threshold:2});w.run(50);assert.deepEqual(w.solvePotential().potential,[]);});
+test('reject invalid excitation and parameters',()=>{const w=make();assert.throws(()=>w.setMass(-1,1));assert.throws(()=>w.setMass(0,-1));assert.throws(()=>w.setMass(0,Infinity));assert.throws(()=>new GravityWorld({softening:0}));});
+test('zero excitation gives zero potential',()=>{const w=make();const r=w.solvePotential();assert.ok(r.converged);assert.ok(r.potential.every(x=>x===0));});
+test('positive excitation locally contracts adjacent intrinsic edge lengths',()=>{const w=make();const edge=[...w.links.values()][0];assert.ok(edge);const before=w.edgeLength(edge);w.setMass(edge.a,3);assert.ok(w.edgeLength(edge)<before);});
+test('weighted graph distance symmetry, triangle inequality and disconnected infinity',()=>{const w=make();w.setMass(0,2);const d=w.nodes.map(n=>w.weightedDistances(n.id));for(let i=0;i<d.length;i++)for(let j=0;j<d.length;j++){assert.ok(Math.abs(d[i][j]-d[j][i])<1e-9||(!Number.isFinite(d[i][j])&&!Number.isFinite(d[j][i])));for(let k=0;k<d.length;k++)if(Number.isFinite(d[i][k]+d[k][j]))assert.ok(d[i][j]<=d[i][k]+d[k][j]+1e-9);}});
+test('mass creates nontrivial finite potential and Poisson residual converges',()=>{const w=make();const edge=[...w.links.values()][0];w.setMass(edge.a,2);const r=w.solvePotential({iterations:8000,tolerance:1e-8});assert.ok(r.converged,`residual ${r.residual}`);assert.ok(r.potential.some(x=>Math.abs(x)>1e-5));assert.ok(r.potential.every(Number.isFinite));});
+test('uniform mass on a connected component has no sourced potential',()=>{const w=make();for(const n of w.nodes)w.setMass(n.id,2);const r=w.solvePotential();assert.ok(r.potential.every(x=>Math.abs(x)<1e-9));});
+test('each connected component has zero-mean potential gauge',()=>{const w=make();w.setMass(0,3);const r=w.solvePotential({iterations:8000});for(const c of w.components())assert.ok(Math.abs(c.reduce((s,i)=>s+r.potential[i],0))<1e-8);});
+test('local event time is independent of solving the field',()=>{const w=make();const before=[...w.clocks];w.setMass(0,2);w.solvePotential();assert.deepEqual([...w.clocks],before);});
+test('edge field is antisymmetric under reversed orientation',()=>{const w=make(),e=[...w.links.values()][0];w.setMass(e.a,2);const p=w.solvePotential({iterations:8000}).potential;assert.ok(Math.abs(w.edgeField(e,p)+w.edgeField({a:e.b,b:e.a},p))<1e-10);});

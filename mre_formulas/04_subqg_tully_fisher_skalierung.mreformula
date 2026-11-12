@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Tully-Fisher 4-Potenz-Skalierung
+# x = Asymptotische Rotationsgeschwindigkeit (v_flat)
+# Physikalische Bedeutung: Universelle MOND-Skalierung v_flat^4 = G * M * a0
+name: SubQG Tully-Fisher Skalierung
+domain: real
+formula: (x^2)^2 = x^4
+seed: 42

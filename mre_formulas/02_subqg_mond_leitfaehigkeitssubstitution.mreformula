@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Leitfaehigkeitssubstitution: Harmonische Brueckengleichung der Graphen-Filamente
+# x = ungesaettigter Fluss (g_N), y = Saettigungskonstante (a0)
+# Physikalische Bedeutung: Exakte Transformation der nichtlinearen Graphenleitfaehigkeit
+name: SubQG Leitfaehigkeitssubstitution
+domain: real
+formula: x / (1 + x/y) = (x * y) / (x + y)
+seed: 42

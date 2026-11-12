@@ -1,0 +1,29 @@
+#include "subqg/canonical_runtime.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+using namespace subqg;
+static void require(bool v,const char*m){if(!v)throw std::runtime_error(m);}
+int main(){
+ try{
+  const char* root=std::getenv("SUBQG_CANONICAL_DEVELOPER_ROOT");
+  const char* bridge=std::getenv("SUBQG_CANONICAL_BRIDGE");
+  const char* node=std::getenv("SUBQG_NODE_EXECUTABLE");
+  require(root&&bridge,"canonical runtime test environment missing");
+  CanonicalRuntime runtime({node?node:"node.exe",root,bridge});
+  require(runtime.running(),"canonical runtime process");
+  std::string modules=runtime.inventory();
+  for(const char* required:{"subqg_action","subqg_causal","subqg_waves","subqg_genesis","subqg_multiverse_phases","subqg_graph_coupled_gravity","subqg_apple_experiment","subqg_unified_proof_engine"})
+   require(modules.find(required)!=std::string::npos,"canonical module missing from inventory");
+  require(runtime.invoke("subqg_fpv","overlap","[0,0]")=="1","canonical overlap result");
+  std::string bonds=runtime.invoke("subqg_fpv","buildBonds","[[0,0],0.7]");
+  require(bonds.find("\"w\":1")!=std::string::npos,"canonical bond construction");
+  auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");
+  std::string a0=runtime.get(proof,"a0"); require(!a0.empty()&&a0!="null","proof-engine a0");
+  std::string gravity=runtime.call(proof,"effectiveGravitationalAcceleration","[20,0.4]");
+  require(gravity.find("\"localExponent\"")!=std::string::npos,"proof-engine gravity response");
+  runtime.destroy(proof);runtime.stop();
+  std::cout<<"Canonical FPV6 runtime tests passed\n";return 0;
+ }catch(const std::exception&e){std::cerr<<"FAILED: "<<e.what()<<"\n";return 1;}
+}

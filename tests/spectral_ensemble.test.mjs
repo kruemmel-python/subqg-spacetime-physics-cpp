@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {lattice,summarize,windowDimension,analyzeGraph,ensemble} from '../src/modules/subqg_spectral_ensemble.mjs';
+test('3D lattice has 27 sites',()=>assert.equal(lattice(3,3).length,27));
+test('lattice symmetric',()=>{const a=lattice(3,4);a.forEach((ns,i)=>ns.forEach(j=>assert.ok(a[j].includes(i))));});
+test('lattice rejects bad dimension',()=>assert.throws(()=>lattice(4,5),RangeError));
+test('summary empty',()=>assert.equal(summarize([]).median,null));
+test('summary correct',()=>assert.equal(summarize([1,3,2]).median,2));
+test('window rejects reversed range',()=>assert.throws(()=>windowDimension([],5,4),RangeError));
+test('3D control has finite diagnostics',()=>assert.ok(Number.isFinite(analyzeGraph(lattice(3,7),{sources:12}).windows[0].dimension)));
+test('ensemble reproducible',()=>{const p={seeds:[2],steps:[100],maxNodes:70,sources:8,maxSteps:30};assert.deepEqual(ensemble(p),ensemble(p));});

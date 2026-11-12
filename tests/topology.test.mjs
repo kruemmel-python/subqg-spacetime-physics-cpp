@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateGraph,degreePreservingNull,topologyMetrics,runTopologyAudit} from '../src/modules/subqg_topology_audit.mjs';
+const ring=Array.from({length:10},(_,i)=>[(i+9)%10,(i+1)%10]);
+const clique=Array.from({length:5},(_,i)=>Array.from({length:5},(_,j)=>j).filter(j=>j!==i));
+test('validates undirected simple graph',()=>assert.equal(validateGraph(ring),true));
+test('rejects asymmetric graph',()=>assert.throws(()=>validateGraph([[1],[]])));
+test('rejects self loops',()=>assert.throws(()=>validateGraph([[0]])));
+test('ring clustering zero',()=>assert.equal(topologyMetrics(ring).transitivity,0));
+test('clique clustering one',()=>assert.equal(topologyMetrics(clique).meanLocalClustering,1));
+test('ring mean path positive',()=>assert.ok(topologyMetrics(ring).meanShortestPath>1));
+test('rewiring retains exact degree sequence',()=>{const a=degreePreservingNull(ring,7).adj;assert.deepEqual(a.map(x=>x.length),ring.map(x=>x.length));});
+test('rewiring deterministic',()=>assert.deepEqual(degreePreservingNull(ring,7),degreePreservingNull(ring,7)));
+test('rewiring does not change edges',()=>assert.equal(topologyMetrics(degreePreservingNull(ring,4).adj).edges,10));
+test('isolated graph handled',()=>assert.equal(topologyMetrics([[],[]]).largestFraction,.5));
+test('audit emits four models',()=>assert.equal(runTopologyAudit({caps:[20],seeds:[42],steps:100}).groups.length,4));

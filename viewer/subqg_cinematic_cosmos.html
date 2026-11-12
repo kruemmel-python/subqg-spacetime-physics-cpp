@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Cinematic Cosmos: Asteroid Flight, Quantum Vacuum & Emergent Gravity</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background: #020208;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Cinematic Film Vignette & Post-Processing Overlays */
+    .film-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: radial-gradient(circle at center, transparent 40%, rgba(2, 2, 8, 0.75) 85%, rgba(0, 0, 3, 0.95) 100%);
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
+    }
+    .cinematic-bars {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background: #000;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .top-bar { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .bottom-bar { bottom: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+    /* Layout & Panels: Kompakt am Rand angeordnet, damit die 3D-Bühne frei bleibt */
+    header {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      z-index: 20;
+      pointer-events: none;
+      background: rgba(4, 7, 18, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .title-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .subtitle {
+      display: none; /* Ausblenden, um den Sichtbereich nicht zu verdecken */
+    }
+
+    /* Telemetrie-Panel kompakt oben rechts */
+    .hud-panel {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(8, 12, 24, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 250px;
+      font-size: 0.78rem;
+    }
+    .hud-panel h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      font-size: 0.76rem;
+    }
+
+    /* Steuerungsleiste unten kompakt */
+    .controls-bottom {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      background: rgba(8, 12, 24, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+    .btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+    }
+
+    /* Untertitel sauber über der Menüleiste platziert */
+    .narrative-ticker {
+      position: absolute;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #f1f5f9;
+      text-align: center;
+      max-width: 750px;
+      background: rgba(4, 7, 18, 0.65);
+      backdrop-filter: blur(6px);
+      padding: 5px 16px;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+  </style>
+  <!-- Three.js from CDN for high-end cinematic WebGL rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div class="cinematic-bars top-bar"></div>
+  <div class="cinematic-bars bottom-bar"></div>
+  <div class="film-overlay"></div>
+
+  <header>
+    <div class="title-sub">Subquantum Graphity (SubQG) Cosmos Engine</div>
+    <h1>Emergence of Spacetime, Gravity & Vacuum</h1>
+    <div class="subtitle">
+      Der Raum ist kein leeres Vakuum, sondern ein aktives Quantennetzwerk.
+      Kantenkontraktion $L_e = L_0 e^{x_e}$ krümmt die Asteroidenbahn ohne Dunkle Materie.
+    </div>
+  </header>
+
+  <div class="hud-panel">
+    <h3>
+      <span>SubQG Real-Time Telemetry</span>
+      <div class="pulse-dot"></div>
+    </h3>
+    <div class="metric-row">
+      <span class="metric-label">Vakuum-Phase Überlappung (w_e):</span>
+      <span class="metric-val highlight" id="hud-we">0.9994 (Kondensiert)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Metrische Kontraktion (x_e):</span>
+      <span class="metric-val gold" id="hud-xe">-0.4284 (ΔL/L₀: -34.8%)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Gravitationsfeld (g_eff):</span>
+      <span class="metric-val" id="hud-geff">0.0248 J₀/L₀</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Flugzustand (Asteroid):</span>
+      <span class="metric-val highlight" id="hud-regime">Hyperbolischer Flyby</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Reibungswiderstand (F_drag):</span>
+      <span class="metric-val" id="hud-drag">0.00000 (Suprafluid)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Asteroiden-Geschwindigkeit (v/c):</span>
+      <span class="metric-val" id="hud-v">0.420 c</span>
+    </div>
+  </div>
+
+  <div class="narrative-ticker" id="narrative-text">
+    Phase 1: Der Asteroid durchquert das suprafluide SubQG-Vakuum. Ohne Reibung gleitet das kohärente Resonanzpaket geradlinig mit $v = \mathrm{const}$.
+  </div>
+
+  <div class="controls-bottom">
+    <button class="btn active" id="btn-cam-fly">Cinematic Orbit Cam</button>
+    <button class="btn" id="btn-cam-follow">Asteroid Chase Cam</button>
+    <button class="btn" id="btn-cam-top">Top-Down Grid Metric</button>
+    <button class="btn" id="btn-toggle-grid">Netzwerk-Gitter</button>
+    <button class="btn" id="btn-reset">Neu Starten</button>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    // =========================================================================
+    // 1. THREE.JS SCENE SETUP & HOLLYWOOD LIGHTING
+    // =========================================================================
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x02020a, 0.0065);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 32, 68);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Dramatic Hollywood Lights
+    const ambientLight = new THREE.AmbientLight(0x0a1026, 1.2);
+    scene.add(ambientLight);
+
+    const planetLight = new THREE.PointLight(0x38bdf8, 3.5, 120, 1.4);
+    planetLight.position.set(0, 0, 0);
+    scene.add(planetLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(60, 40, 50);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xec4899, 1.2);
+    rimLight.position.set(-60, -20, -50);
+    scene.add(rimLight);
+
+    // =========================================================================
+    // 2. CELESTIAL SOURCE OBJECT ("DIE ERDE / PLANET")
+    // =========================================================================
+    const planetGroup = new THREE.Group();
+    scene.add(planetGroup);
+
+    // Planet Core Sphere
+    const planetGeo = new THREE.SphereGeometry(7.5, 64, 64);
+    const planetMat = new THREE.MeshStandardMaterial({
+      color: 0x0f2b48,
+      roughness: 0.35,
+      metalness: 0.6,
+      emissive: 0x03182b,
+      emissiveIntensity: 0.8
+    });
+    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+    planetGroup.add(planetMesh);
+
+    // Atmosphere Glow Layer (Hollywood Bloom Style)
+    const atmoGeo = new THREE.SphereGeometry(8.4, 64, 64);
+    const atmoMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow(0.68 - dot(vNormal, vec3(0, 0, 1.0)), 2.8);
+          gl_FragColor = vec4(0.22, 0.74, 0.98, 1.0) * intensity * 2.2;
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true
+    });
+    const atmoMesh = new THREE.Mesh(atmoGeo, atmoMat);
+    planetGroup.add(atmoMesh);
+
+    // =========================================================================
+    // 3. SUBQG QUANTUM VACUUM GRAPH & EDGE METRIC CONTRACTION
+    //    L_e = L_0 * exp(x_e) mit (μ I + κ L) x = -β w ρ
+    // =========================================================================
+    const GRID_SIZE = 80;
+    const GRID_STEP = 2.2;
+    const gridGeometry = new THREE.BufferGeometry();
+    const gridPositions = [];
+    const gridColors = [];
+
+    // Erzeuge ein 2D-Gitter im SubQG-Raum mit lokaler metrischer Verzerrung
+    const nodes = [];
+    for (let i = -GRID_SIZE / 2; i <= GRID_SIZE / 2; i++) {
+      for (let j = -GRID_SIZE / 2; j <= GRID_SIZE / 2; j++) {
+        const x = i * GRID_STEP;
+        const z = j * GRID_STEP;
+        const dist = Math.hypot(x, z);
+
+        // SubQG Metrik-Kontraktion: x_e = -beta * exp(-dist / lambda)
+        const lambda = 12.0; // Screening-Länge sqrt(kappa/mu)
+        const xe = -0.55 * Math.exp(-dist / lambda); // Log-Metrik
+        const y = xe * 9.5; // Visualisierung der Raumkrümmung als Trichter
+
+        nodes.push({ x, y, z, dist, xe });
+      }
+    }
+
+    // Erzeuge Kanten des Quantennetzwerks
+    const nodeCountX = GRID_SIZE + 1;
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
+        const idx = i * nodeCountX + j;
+        const n0 = nodes[idx];
+        const nRight = nodes[idx + 1];
+        const nDown = nodes[idx + nodeCountX];
+
+        // Horizontale Kante
+        gridPositions.push(n0.x, n0.y, n0.z, nRight.x, nRight.y, nRight.z);
+        // Vertikale Kante
+        gridPositions.push(n0.x, n0.y, n0.z, nDown.x, nDown.y, nDown.z);
+
+        // Farbverlauf: Tiefblau im homogenen Vakuum, leuchtend Cyan/Gold in stark kontrahierter Zone
+        const cVal0 = Math.min(1.0, Math.abs(n0.xe) * 2.2);
+        gridColors.push(0.08 + cVal0 * 0.3, 0.2 + cVal0 * 0.7, 0.45 + cVal0 * 0.5);
+        gridColors.push(0.08 + cVal0 * 0.3, 0.2 + cVal0 * 0.7, 0.45 + cVal0 * 0.5);
+
+        gridColors.push(0.08 + cVal0 * 0.3, 0.2 + cVal0 * 0.7, 0.45 + cVal0 * 0.5);
+        gridColors.push(0.08 + cVal0 * 0.3, 0.2 + cVal0 * 0.7, 0.45 + cVal0 * 0.5);
+      }
+    }
+
+    gridGeometry.setAttribute('position', new THREE.Float32BufferAttribute(gridPositions, 3));
+    gridGeometry.setAttribute('color', new THREE.Float32BufferAttribute(gridColors, 3));
+
+    const gridMaterial = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.42,
+      blending: THREE.AdditiveBlending
+    });
+    const gridMesh = new THREE.LineSegments(gridGeometry, gridMaterial);
+    scene.add(gridMesh);
+
+    // =========================================================================
+    // 4. SUBQG VAKUUM QUANTUM FLUCTUATION PARTICLES (SUPRAFLUIDER HINTERGRUND)
+    // =========================================================================
+    const PARTICLE_COUNT = 1500;
+    const partGeo = new THREE.BufferGeometry();
+    const partPos = new Float32Array(PARTICLE_COUNT * 3);
+    const partSizes = new Float32Array(PARTICLE_COUNT);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      partPos[i * 3 + 0] = (Math.random() - 0.5) * 160;
+      partPos[i * 3 + 1] = (Math.random() - 0.5) * 25;
+      partPos[i * 3 + 2] = (Math.random() - 0.5) * 160;
+      partSizes[i] = Math.random() * 2.5 + 0.8;
+    }
+    partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+    partGeo.setAttribute('size', new THREE.BufferAttribute(partSizes, 1));
+
+    const partMat = new THREE.PointsMaterial({
+      color: 0x38bdf8,
+      size: 1.2,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending
+    });
+    const vacuumParticles = new THREE.Points(partGeo, partMat);
+    scene.add(vacuumParticles);
+
+    // =========================================================================
+    // 5. ASTEROID & RESONANZ-WELLENPAKET (SOLITON)
+    // =========================================================================
+    const asteroidGroup = new THREE.Group();
+    scene.add(asteroidGroup);
+
+    // Unregelmäßige Asteroiden-Geometrie (Deformed Dodecahedron) - deutlich vergrößert für maximale Sichtbarkeit
+    const astGeo = new THREE.DodecahedronGeometry(3.6, 2);
+    const posAttr = astGeo.attributes.position;
+    for (let i = 0; i < posAttr.count; i++) {
+      const vx = posAttr.getX(i);
+      const vy = posAttr.getY(i);
+      const vz = posAttr.getZ(i);
+      const noise = 1.0 + (Math.sin(vx * 3.5) + Math.cos(vy * 3.2) + Math.sin(vz * 2.8)) * 0.18;
+      posAttr.setXYZ(i, vx * noise, vy * noise, vz * noise);
+    }
+    astGeo.computeVertexNormals();
+
+    const astMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0,
+      roughness: 0.45,
+      metalness: 0.55,
+      emissive: 0x38bdf8,
+      emissiveIntensity: 0.35,
+      flatShading: true
+    });
+    const asteroidMesh = new THREE.Mesh(astGeo, astMat);
+    asteroidGroup.add(asteroidMesh);
+
+    // Resonanz-Wellenpaket Hülle um den Asteroiden (|Ψ_u|² Einhüllende)
+    const wavePacketGeo = new THREE.SphereGeometry(6.2, 32, 32);
+    const wavePacketMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        uniform float uTime;
+        void main() {
+          float pulse = 0.5 + 0.5 * sin(uTime * 4.0);
+          float rim = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.2);
+          vec3 col = mix(vec3(0.13, 0.77, 0.37), vec3(0.22, 0.74, 0.98), pulse);
+          gl_FragColor = vec4(col, rim * 0.65);
+        }
+      `,
+      uniforms: {
+        uTime: { value: 0 }
+      },
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const wavePacketMesh = new THREE.Mesh(wavePacketGeo, wavePacketMat);
+    asteroidGroup.add(wavePacketMesh);
+
+    // Hollywood Trail Effect: Glühende Trajektorien-Spur
+    const TRAIL_LENGTH = 180;
+    const trailPositions = new Float32Array(TRAIL_LENGTH * 3);
+    const trailColors = new Float32Array(TRAIL_LENGTH * 3);
+    for (let i = 0; i < TRAIL_LENGTH; i++) {
+      trailPositions[i * 3] = -60;
+      trailPositions[i * 3 + 1] = 0;
+      trailPositions[i * 3 + 2] = -35;
+      const alpha = i / TRAIL_LENGTH;
+      trailColors[i * 3 + 0] = 0.22 * alpha;
+      trailColors[i * 3 + 1] = 0.74 * alpha;
+      trailColors[i * 3 + 2] = 0.98 * alpha;
+    }
+    const trailGeo = new THREE.BufferGeometry();
+    trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+    trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+    const trailMat = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.85
+    });
+    const trailLine = new THREE.Line(trailGeo, trailMat);
+    scene.add(trailLine);
+
+    // =========================================================================
+    // 6. NUMERISCHE ASTEROIDEN-FLUGBAHN (SUBQG HAMILTON DYNAMIK)
+    // =========================================================================
+    let astState = {
+      x: -75.0,
+      y: 0.0,
+      z: -28.0,
+      vx: 0.58,
+      vy: 0.0,
+      vz: 0.05
+    };
+
+    function resetAsteroid() {
+      astState.x = -75.0;
+      astState.y = 0.0;
+      astState.z = -28.0;
+      astState.vx = 0.58;
+      astState.vy = 0.0;
+      astState.vz = 0.05;
+      for (let i = 0; i < TRAIL_LENGTH; i++) {
+        trailPositions[i * 3] = astState.x;
+        trailPositions[i * 3 + 1] = astState.y;
+        trailPositions[i * 3 + 2] = astState.z;
+      }
+      trailGeo.attributes.position.needsUpdate = true;
+    }
+
+    // SubQG Effektive Beschleunigung inklusive MOND-Crossover und Kantenkrümmung
+    function computeSubQGAcceleration(x, z) {
+      const r = Math.hypot(x, z);
+      if (r < 1.0) return { ax: 0, az: 0, geff: 0, xe: -0.6 };
+
+      // Kantenmetrik am Ort des Asteroiden
+      const lambda = 12.0;
+      const xe = -0.55 * Math.exp(-r / lambda);
+
+      // SubQG Gravitationspotential-Gradient mit MOND Crossover a0
+      const GM = 85.0;
+      const a0 = 0.035; // Kosmologische MOND-Beschleunigung
+      const gNewton = GM / (r * r);
+      // SubQG Crossover Formel: g_eff = g_N / (1 + a0 / g_eff) -> sqrt(gN^2/4 + gN*a0) - gN/2 ...
+      const gEff = Math.sqrt(gNewton * (gNewton + a0));
+
+      const ax = -gEff * (x / r);
+      const az = -gEff * (z / r);
+      return { ax, az, gEff, xe, r };
+    }
+
+    // =========================================================================
+    // 7. CAMERA MODES & INTERACTION
+    // =========================================================================
+    let cameraMode = 'fly'; // 'fly', 'follow', 'top'
+
+    document.getElementById('btn-cam-fly').addEventListener('click', (e) => {
+      setCamMode('fly', e.target);
+    });
+    document.getElementById('btn-cam-follow').addEventListener('click', (e) => {
+      setCamMode('follow', e.target);
+    });
+    document.getElementById('btn-cam-top').addEventListener('click', (e) => {
+      setCamMode('top', e.target);
+    });
+
+    function setCamMode(mode, targetBtn) {
+      cameraMode = mode;
+      document.querySelectorAll('.controls-bottom .btn').forEach(b => {
+        if (b.id.startsWith('btn-cam')) b.classList.remove('active');
+      });
+      targetBtn.classList.add('active');
+    }
+
+    document.getElementById('btn-toggle-grid').addEventListener('click', (e) => {
+      gridMesh.visible = !gridMesh.visible;
+      e.target.classList.toggle('active', gridMesh.visible);
+    });
+    document.getElementById('btn-toggle-grid').classList.add('active');
+
+    document.getElementById('btn-reset').addEventListener('click', resetAsteroid);
+
+    // =========================================================================
+    // 8. CINEMATIC RENDER LOOP
+    // =========================================================================
+    const clock = new THREE.Clock();
+    let trailIndex = 0;
+
+    const hudWe = document.getElementById('hud-we');
+    const hudXe = document.getElementById('hud-xe');
+    const hudGeff = document.getElementById('hud-geff');
+    const hudRegime = document.getElementById('hud-regime');
+    const hudV = document.getElementById('hud-v');
+    const narrativeText = document.getElementById('narrative-text');
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
+
+      // 1. Numerische Integration der Asteroiden-Flugbahn (Verlet / Euler RK)
+      const subqg = computeSubQGAcceleration(astState.x, astState.z);
+      astState.vx += subqg.ax * delta;
+      astState.vz += subqg.az * delta;
+      astState.x += astState.vx * delta * 24.0;
+      astState.z += astState.vz * delta * 24.0;
+
+      // Asteroid y-Koordinate folgt der metrischen Kontraktion (Raumzeit-Trichter)
+      astState.y = subqg.xe * 9.5;
+
+      // Automatische Schleife für kontinuierliches Kinoerlebnis
+      if (astState.x > 85.0 || astState.z > 85.0 || astState.r < 7.8) {
+        resetAsteroid();
+      }
+
+      asteroidGroup.position.set(astState.x, astState.y, astState.z);
+      asteroidMesh.rotation.x += 0.8 * delta;
+      asteroidMesh.rotation.y += 1.2 * delta;
+      wavePacketMat.uniforms.uTime.value = elapsed;
+
+      // 2. Trail Update
+      for (let i = 0; i < TRAIL_LENGTH - 1; i++) {
+        trailPositions[i * 3] = trailPositions[(i + 1) * 3];
+        trailPositions[i * 3 + 1] = trailPositions[(i + 1) * 3 + 1];
+        trailPositions[i * 3 + 2] = trailPositions[(i + 1) * 3 + 2];
+      }
+      trailPositions[(TRAIL_LENGTH - 1) * 3] = astState.x;
+      trailPositions[(TRAIL_LENGTH - 1) * 3 + 1] = astState.y;
+      trailPositions[(TRAIL_LENGTH - 1) * 3 + 2] = astState.z;
+      trailGeo.attributes.position.needsUpdate = true;
+
+      // 3. Planet Eigendrehung & Atmosphären-Pulsieren
+      planetGroup.rotation.y += 0.15 * delta;
+
+      // 4. Telemetrie & Narrativ-Aktualisierung
+      const currentSpeed = Math.hypot(astState.vx, astState.vz);
+      hudXe.textContent = `${subqg.xe.toFixed(4)} (L_e/L₀: ${(Math.exp(subqg.xe)*100).toFixed(1)}%)`;
+      hudGeff.textContent = `${subqg.gEff.toFixed(5)} J₀/L₀`;
+      hudV.textContent = `${(currentSpeed * 0.72).toFixed(3)} c`;
+
+      if (subqg.r > 38.0) {
+        hudRegime.textContent = 'Suprafluider Trägheitsflug (Vakuum)';
+        narrativeText.textContent = '1. Tiefes Vakuum: Der Asteroid gleitet widerstandslos durch das kondensierte SubQG-Netzwerk (w_e ≈ 1). Keine Newtonsche Reibung.';
+      } else if (subqg.r > 15.0) {
+        hudRegime.textContent = 'Metrische Refraktion (Kantenverkürzung)';
+        narrativeText.textContent = '2. Eintritt in die Kontraktionszone: Die Kantenlängen L_e verkürzen sich. Die Wellenfront des Asteroiden krümmt sich in Richtung der kürzeren Kanten.';
+      } else {
+        hudRegime.textContent = 'Periapsis-Flyby (Gravitationsfokussierung)';
+        narrativeText.textContent = '3. Nahe Vorbeifahrt: Maximale Beschleunigung durch reine Geometrieübertragung der Subquanten-Oszillatoren.';
+      }
+
+      // 5. Kamera-Regie
+      if (cameraMode === 'fly') {
+        const camAngle = elapsed * 0.12;
+        camera.position.x = Math.sin(camAngle) * 68;
+        camera.position.z = Math.cos(camAngle) * 68;
+        camera.position.y = 30 + Math.sin(elapsed * 0.25) * 6;
+        camera.lookAt(0, -2, 0);
+      } else if (cameraMode === 'follow') {
+        camera.position.x = astState.x - astState.vx * 24.0;
+        camera.position.z = astState.z - astState.vz * 24.0 + 12.0;
+        camera.position.y = astState.y + 14.0;
+        camera.lookAt(planetGroup.position);
+      } else if (cameraMode === 'top') {
+        camera.position.set(0, 85, 0.1);
+        camera.lookAt(0, 0, 0);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

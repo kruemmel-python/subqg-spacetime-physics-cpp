@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Microscopic Phase Glitch & Multiverse Tunneling — Hollywood Cinematic</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background: #020208;
+      color: #f1f5f9;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Cinematic Film Vignette & Post-Processing Overlays */
+    .film-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: radial-gradient(circle at center, transparent 35%, rgba(2, 2, 8, 0.75) 80%, rgba(0, 0, 3, 0.95) 100%);
+      box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.95);
+    }
+    .cinematic-bars {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 38px;
+      background: #000;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .top-bar { top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .bottom-bar { bottom: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+    /* Shockwave Screen Flash (Hollywood Glitch Effect) */
+    #glitch-flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(244, 63, 94, 0.45) 0%, rgba(56, 189, 248, 0.25) 45%, transparent 75%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 15;
+      transition: opacity 0.08s ease-out;
+    }
+
+    /* Compact Header (oben links, dezent) */
+    header {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      z-index: 20;
+      pointer-events: none;
+      background: rgba(4, 7, 18, 0.75);
+      backdrop-filter: blur(10px);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .title-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f43f5e;
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
+    }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    /* Telemetry HUD Panel (oben rechts, kompakt) */
+    .hud-panel {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(8, 12, 24, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 280px;
+      font-size: 0.78rem;
+    }
+    .hud-panel h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #f43f5e;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      font-size: 0.76rem;
+    }
+    .metric-label {
+      color: #94a3b8;
+    }
+    .metric-val {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+    .metric-val.alert {
+      color: #f43f5e;
+      text-shadow: 0 0 10px rgba(244, 63, 94, 0.8);
+    }
+    .metric-val.cyan {
+      color: #38bdf8;
+    }
+    .metric-val.gold {
+      color: #fbbf24;
+    }
+
+    /* Narrative Ticker */
+    .narrative-ticker {
+      position: absolute;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #f1f5f9;
+      text-align: center;
+      max-width: 840px;
+      background: rgba(4, 7, 18, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 6px 18px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+
+    /* Controls Bar */
+    .controls-bottom {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 10px;
+      background: rgba(8, 12, 24, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 5px 14px;
+    }
+    .btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .btn.active {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+    }
+    .btn.glitch-trigger {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: #fff;
+      border-color: #f43f5e;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.6);
+    }
+    .btn.glitch-trigger:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.9);
+    }
+  </style>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div class="cinematic-bars top-bar"></div>
+  <div class="cinematic-bars bottom-bar"></div>
+  <div class="film-overlay"></div>
+  <div id="glitch-flash"></div>
+
+  <header>
+    <div class="title-sub">Subquantum Graphity (SubQG) Glitch Simulation</div>
+    <h1>Transient Phase Breach & Gravitational Shock</h1>
+  </header>
+
+  <div class="hud-panel">
+    <h3>
+      <span>Transiente Glitch-Telemetrie</span>
+      <div class="pulse-dot" id="status-dot"></div>
+    </h3>
+    <div class="metric-row">
+      <span class="metric-label">Phasen-Abweichung &epsilon;(t):</span>
+      <span class="metric-val gold" id="hud-eps">0.000 rad (Orthogonal)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Kopplung w_AB = sin²(&epsilon;):</span>
+      <span class="metric-val" id="hud-wab">0.00000 (Exakt Null)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Status Welt A (Cyan Raum):</span>
+      <span class="metric-val cyan" id="hud-status">Ungestoerter Grundzustand</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Gesamtnorm N_A + N_B:</span>
+      <span class="metric-val cyan" id="hud-norm">100.000% (Konstant)</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Kreuz-Gravitationsimpuls:</span>
+      <span class="metric-val alert" id="hud-force">0.00000 J₀/L₀</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Getunneltes Licht / Energie:</span>
+      <span class="metric-val alert" id="hud-energy">0.00000</span>
+    </div>
+  </div>
+
+  <div class="narrative-ticker" id="narrative-text">
+    Status: Welt A (Cyan) und Welt B (Magenta) sind vollkommen entkoppelt. Klicke auf "Phasen-Glitch Ausloesen", um die Orthogonalität transient für eine Millisekunde aufzubrechen.
+  </div>
+
+  <div class="controls-bottom">
+    <button class="btn glitch-trigger" id="btn-trigger">💥 Phasen-Glitch Ausloesen</button>
+    <button class="btn active" id="btn-cam-orbit">Orbit-Kamera</button>
+    <button class="btn" id="btn-cam-close">Nahaufnahme Glitch-Zentrum</button>
+    <button class="btn" id="btn-auto-loop">Auto-Loop: An</button>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    // =========================================================================
+    // 1. THREE.JS SCENE SETUP & HOLLYWOOD LIGHTING
+    // =========================================================================
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x02020a, 0.0075);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 28, 64);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
+    container.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const ambientLight = new THREE.AmbientLight(0x080e22, 1.2);
+    scene.add(ambientLight);
+
+    const keyLightA = new THREE.PointLight(0x38bdf8, 2.5, 80, 1.3);
+    keyLightA.position.set(-20, 10, 0);
+    scene.add(keyLightA);
+
+    // Glitch Flash Light (wird beim Glitch intensiv gezündet)
+    const shockLight = new THREE.PointLight(0xf43f5e, 0.0, 120, 1.1);
+    shockLight.position.set(0, 0, 0);
+    scene.add(shockLight);
+
+    // =========================================================================
+    // 2. DAS SUBQG-KANTENGITTER (WELT A: CYAN & TRANSIENTER BRÜCKEN-EFFEKT)
+    // =========================================================================
+    const GRID_SIZE = 44;
+    const GRID_STEP = 2.4;
+    const nodeCoords = [];
+
+    for (let i = -GRID_SIZE / 2; i <= GRID_SIZE / 2; i++) {
+      for (let j = -GRID_SIZE / 2; j <= GRID_SIZE / 2; j++) {
+        nodeCoords.push({
+          x: i * GRID_STEP,
+          z: j * GRID_STEP,
+          y: 0
+        });
+      }
+    }
+
+    const gridPositions = [];
+    const gridColors = [];
+    const nodeCountX = GRID_SIZE + 1;
+
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
+        const idx0 = i * nodeCountX + j;
+        const idxR = idx0 + 1;
+        const idxD = idx0 + nodeCountX;
+
+        const n0 = nodeCoords[idx0];
+        const nR = nodeCoords[idxR];
+        const nD = nodeCoords[idxD];
+
+        gridPositions.push(n0.x, 0, n0.z, nR.x, 0, nR.z);
+        gridPositions.push(n0.x, 0, n0.z, nD.x, 0, nD.z);
+
+        gridColors.push(0.08, 0.35, 0.65);
+        gridColors.push(0.08, 0.35, 0.65);
+        gridColors.push(0.08, 0.35, 0.65);
+        gridColors.push(0.08, 0.35, 0.65);
+      }
+    }
+
+    const gridGeom = new THREE.BufferGeometry();
+    gridGeom.setAttribute('position', new THREE.Float32BufferAttribute(gridPositions, 3));
+    gridGeom.setAttribute('color', new THREE.Float32BufferAttribute(gridColors, 3));
+
+    const gridMat = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending
+    });
+    const gridMesh = new THREE.LineSegments(gridGeom, gridMat);
+    scene.add(gridMesh);
+
+    // =========================================================================
+    // 3. WELT A: TESTKÖRPER IM "WOHNZIMMER" (CYAN KRISTALL / RESONANZPAKET)
+    // =========================================================================
+    const testObjGroup = new THREE.Group();
+    scene.add(testObjGroup);
+
+    const testObjGeo = new THREE.IcosahedronGeometry(2.2, 0);
+    const testObjMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.8,
+      roughness: 0.3,
+      metalness: 0.7,
+      flatShading: true
+    });
+    const testObjMesh = new THREE.Mesh(testObjGeo, testObjMat);
+    testObjGroup.add(testObjMesh);
+    testObjGroup.position.set(-14, 2.5, 0);
+
+    // =========================================================================
+    // 4. WELT B: DIE UNSICHTBARE FREMDE MASSE (MAGENTA PULSAR / SCHWARZES LOCH)
+    //    Liegt am selben Ort (Zentrum x=0, z=0), aber in orthogonalem Phasenraum!
+    // =========================================================================
+    const ghostGroup = new THREE.Group();
+    scene.add(ghostGroup);
+
+    // Unsichtbare Masse: Standardmäßig fast transparent (nur schemenhaft angedeutet)
+    const ghostGeo = new THREE.SphereGeometry(6.5, 32, 32);
+    const ghostMat = new THREE.MeshStandardMaterial({
+      color: 0xf43f5e,
+      emissive: 0xbe123c,
+      emissiveIntensity: 0.2,
+      roughness: 0.2,
+      metalness: 0.9,
+      transparent: true,
+      opacity: 0.08
+    });
+    const ghostMesh = new THREE.Mesh(ghostGeo, ghostMat);
+    ghostGroup.add(ghostMesh);
+    ghostGroup.position.set(0, 0, 0);
+
+    // Glühender Quanten-Vortex (Akkretions-Ring von Welt B)
+    const ringGeo = new THREE.RingGeometry(8.5, 14.0, 48);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xf43f5e,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.05,
+      blending: THREE.AdditiveBlending
+    });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.rotation.x = Math.PI / 2;
+    ghostGroup.add(ringMesh);
+
+    // =========================================================================
+    // 5. HOLLYWOOD-EFFEKTE: SCHOCKWELLE & GETUNNELTE PHOTONEN-PARTIKEL
+    // =========================================================================
+    // Expansive Gravitations-Schockwelle (Ringwelle)
+    const shockwaveGeo = new THREE.RingGeometry(0.5, 2.0, 64);
+    const shockwaveMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending
+    });
+    const shockwaveMesh = new THREE.Mesh(shockwaveGeo, shockwaveMat);
+    shockwaveMesh.rotation.x = Math.PI / 2;
+    scene.add(shockwaveMesh);
+
+    // Getunnelte Quantenpartikel (Lichtübertritt von Welt B nach Welt A)
+    const TUNNEL_PARTICLES = 600;
+    const partGeo = new THREE.BufferGeometry();
+    const partPos = new Float32Array(TUNNEL_PARTICLES * 3);
+    const partVel = [];
+
+    for (let i = 0; i < TUNNEL_PARTICLES; i++) {
+      partPos[i * 3 + 0] = 0;
+      partPos[i * 3 + 1] = 0;
+      partPos[i * 3 + 2] = 0;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI * 0.5;
+      const speed = Math.random() * 22.0 + 8.0;
+      partVel.push({
+        vx: Math.cos(theta) * Math.cos(phi) * speed,
+        vy: Math.sin(phi) * speed,
+        vz: Math.sin(theta) * Math.cos(phi) * speed,
+        life: 0
+      });
+    }
+    partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+    const partMat = new THREE.PointsMaterial({
+      color: 0xfbbf24,
+      size: 1.6,
+      transparent: true,
+      opacity: 0.0,
+      blending: THREE.AdditiveBlending
+    });
+    const tunnelPoints = new THREE.Points(partGeo, partMat);
+    scene.add(tunnelPoints);
+
+    // =========================================================================
+    // 6. MATHEMATISCHE GLITCH-DYNAMIK (EPSILON(t) STÖRUNG)
+    // =========================================================================
+    let glitchState = {
+      active: false,
+      timer: 0.0,
+      duration: 1.2, // Visualisierte Ausdehnung des Glitch-Moments
+      epsilon: 0.0,
+      wAB: 0.0,
+      shockRadius: 0.0,
+      shockActive: false
+    };
+
+    let autoLoop = true;
+    let autoTimer = 0.0;
+
+    const flashElem = document.getElementById('glitch-flash');
+    const hudEps = document.getElementById('hud-eps');
+    const hudWab = document.getElementById('hud-wab');
+    const hudStatus = document.getElementById('hud-status');
+    const hudNorm = document.getElementById('hud-norm');
+    const hudForce = document.getElementById('hud-force');
+    const hudEnergy = document.getElementById('hud-energy');
+    const statusDot = document.getElementById('status-dot');
+    const narrativeText = document.getElementById('narrative-text');
+
+    function triggerGlitch() {
+      if (glitchState.active) return;
+      glitchState.active = true;
+      glitchState.timer = 0.0;
+      glitchState.shockActive = true;
+      glitchState.shockRadius = 0.1;
+
+      // Screen Flash
+      flashElem.style.opacity = '0.9';
+      setTimeout(() => { flashElem.style.opacity = '0'; }, 180);
+
+      // Partikel reinitialisieren
+      const pAttr = partGeo.attributes.position;
+      for (let i = 0; i < TUNNEL_PARTICLES; i++) {
+        pAttr.setXYZ(i, 0, 0, 0);
+        partVel[i].life = 1.0;
+      }
+      pAttr.needsUpdate = true;
+      partMat.opacity = 1.0;
+    }
+
+    document.getElementById('btn-trigger').addEventListener('click', triggerGlitch);
+
+    let camMode = 'orbit';
+    const btnCamOrbit = document.getElementById('btn-cam-orbit');
+    const btnCamClose = document.getElementById('btn-cam-close');
+    const btnAutoLoop = document.getElementById('btn-auto-loop');
+
+    btnCamOrbit.addEventListener('click', () => {
+      camMode = 'orbit';
+      btnCamOrbit.classList.add('active');
+      btnCamClose.classList.remove('active');
+    });
+
+    btnCamClose.addEventListener('click', () => {
+      camMode = 'close';
+      btnCamClose.classList.add('active');
+      btnCamOrbit.classList.remove('active');
+    });
+
+    btnAutoLoop.addEventListener('click', () => {
+      autoLoop = !autoLoop;
+      btnAutoLoop.textContent = autoLoop ? 'Auto-Loop: An' : 'Auto-Loop: Aus';
+      btnAutoLoop.classList.toggle('active', autoLoop);
+    });
+
+    // =========================================================================
+    // 7. CINEMATIC RENDER LOOP
+    // =========================================================================
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
+
+      // Auto-Loop Trigger alle 4.8 Sekunden
+      if (autoLoop && !glitchState.active) {
+        autoTimer += delta;
+        if (autoTimer > 4.2) {
+          autoTimer = 0.0;
+          triggerGlitch();
+        }
+      }
+
+      // 1. Berechnung des transienten Glitch-Verlaufs mit kompaktem Träger und quadratischem Überlapp
+      if (glitchState.active) {
+        glitchState.timer += delta;
+        const progress = glitchState.timer / glitchState.duration;
+
+        // Kompakte Bump-Funktion f_bump in [-1, 1]
+        const s = (progress - 0.5) / 0.45;
+        if (Math.abs(s) < 1.0) {
+          const oneMinusS2 = 1.0 - s * s;
+          const bump = Math.exp(1.0 - 1.0 / oneMinusS2);
+          glitchState.epsilon = 0.55 * bump;
+          // Quadratischer Überlapp w_AB = sin^2(epsilon) -> exakt 0 bei epsilon=0!
+          glitchState.wAB = Math.pow(Math.sin(glitchState.epsilon), 2);
+        } else {
+          glitchState.epsilon = 0.0;
+          glitchState.wAB = 0.0;
+        }
+
+        if (progress >= 1.0) {
+          glitchState.active = false;
+          glitchState.epsilon = 0.0;
+          glitchState.wAB = 0.0;
+        }
+      }
+
+      // 2. Visuelle Telemetrie & Effekte
+      hudEps.textContent = `${glitchState.epsilon.toFixed(4)} rad`;
+      hudWab.textContent = glitchState.wAB.toFixed(5);
+
+      if (glitchState.wAB > 0.001) {
+        statusDot.style.background = '#f43f5e';
+        statusDot.style.boxShadow = '0 0 15px #f43f5e';
+        hudStatus.textContent = 'WARNUNG: Orthogonalität kollabiert!';
+        hudStatus.className = 'metric-val alert';
+
+        // Reale Norm-Übertragung von B nach A unter Erhaltung der Gesamtnorm N_total = N_A + N_B
+        const transferredRatio = Math.min(0.25, glitchState.wAB * 1.25);
+        hudNorm.textContent = `100.000% (Transfer: ${(transferredRatio*100).toFixed(2)}%)`;
+
+        const gShock = glitchState.wAB * 0.185;
+        hudForce.textContent = `${gShock.toFixed(5)} J₀/L₀ (EXTREM)`;
+        hudEnergy.textContent = `${(glitchState.wAB * 2.8).toFixed(4)} (Lichtblitz)`;
+
+        narrativeText.innerHTML = `💥 <strong>EXAKTER PHASEN-GLITCH AKTIV!</strong> w_AB = sin²(&epsilon;) = ${glitchState.wAB.toFixed(4)} > 0! Gesamtnorm N_A + N_B bleibt exakt erhalten, während fremde Gravitation (${gShock.toFixed(4)} J₀/L₀) einschlägt!`;
+
+        // Die fremde Masse wird plötzlich voll sichtbar und glüht grell auf!
+        ghostMat.opacity = Math.min(0.95, glitchState.wAB * 4.2);
+        ghostMat.emissiveIntensity = 1.0 + glitchState.wAB * 5.0;
+        ringMat.opacity = Math.min(0.85, glitchState.wAB * 3.5);
+        shockLight.intensity = glitchState.wAB * 14.0;
+
+        // Gravitations-Ruck: Der Testkörper in Welt A wird abrupt ins Zentrum gerissen!
+        testObjGroup.position.x += 18.0 * glitchState.wAB * delta;
+        testObjGroup.rotation.y += 8.0 * delta;
+        testObjGroup.rotation.z += 5.0 * delta;
+      } else {
+        statusDot.style.background = '#22c55e';
+        statusDot.style.boxShadow = '0 0 10px #22c55e';
+        hudStatus.textContent = 'Ungestoerter Grundzustand';
+        hudStatus.className = 'metric-val cyan';
+        hudNorm.textContent = '100.000% (Konstant)';
+        hudForce.textContent = '0.00000 J₀/L₀';
+        hudEnergy.textContent = '0.00000';
+
+        ghostMat.opacity = 0.04;
+        ghostMat.emissiveIntensity = 0.15;
+        ringMat.opacity = 0.02;
+        shockLight.intensity = 0.0;
+
+        // Elastische Rückstellung des Testkörpers (Graphen-Trägheit)
+        testObjGroup.position.x += (-14.0 - testObjGroup.position.x) * 1.8 * delta;
+        testObjGroup.rotation.y += 0.8 * delta;
+
+        if (!glitchState.active) {
+          narrativeText.textContent = 'Status: Orthogonal entkoppelt (w_AB = sin²(0) ≡ 0). Beide Welten teilen denselben Ort in absoluter Isolation. Klicke auf "Phasen-Glitch Ausloesen".';
+        }
+      }
+
+      // 3. Dynamische Kantenkontraktion im Gitter (Metrischer Trichter pulsiert)
+      const posAttr = gridGeom.attributes.position;
+      const colAttr = gridGeom.attributes.color;
+      let ptr = 0;
+
+      for (let i = 0; i < GRID_SIZE; i++) {
+        for (let j = 0; j < GRID_SIZE; j++) {
+          const idx0 = i * nodeCountX + j;
+          const idxR = idx0 + 1;
+          const idxD = idx0 + nodeCountX;
+
+          const n0 = nodeCoords[idx0];
+          const nR = nodeCoords[idxR];
+          const nD = nodeCoords[idxD];
+
+          const d0 = Math.hypot(n0.x, n0.z);
+          const dR = Math.hypot(nR.x, nR.z);
+          const dD = Math.hypot(nD.x, nD.z);
+
+          // Kantenmetrik: Bei aktivem Glitch zieht die fremde Masse das Gitter schlagartig ein!
+          const metricTrichter = -glitchState.wAB * 14.5 * Math.exp(-d0 / 9.0);
+          const metricTrichterR = -glitchState.wAB * 14.5 * Math.exp(-dR / 9.0);
+          const metricTrichterD = -glitchState.wAB * 14.5 * Math.exp(-dD / 9.0);
+
+          posAttr.setY(ptr * 2 + 0, metricTrichter);
+          posAttr.setY(ptr * 2 + 1, metricTrichterR);
+
+          posAttr.setY((ptr + 1) * 2 + 0, metricTrichter);
+          posAttr.setY((ptr + 1) * 2 + 1, metricTrichterD);
+
+          // Farbverschiebung: Bei Glitch glüht das Gitter Magenta/Gold auf
+          const glow = Math.min(1.0, glitchState.wAB * 2.8 * Math.exp(-d0 / 12.0));
+          const rCol = 0.08 + glow * 0.9;
+          const gCol = 0.35 * (1.0 - glow);
+          const bCol = 0.65 * (1.0 - glow * 0.5) + glow * 0.4;
+
+          colAttr.setXYZ(ptr * 2 + 0, rCol, gCol, bCol);
+          colAttr.setXYZ(ptr * 2 + 1, rCol, gCol, bCol);
+          colAttr.setXYZ((ptr + 1) * 2 + 0, rCol, gCol, bCol);
+          colAttr.setXYZ((ptr + 1) * 2 + 1, rCol, gCol, bCol);
+
+          ptr += 2;
+        }
+      }
+      posAttr.needsUpdate = true;
+      colAttr.needsUpdate = true;
+
+      // 4. Schockwelle ausbreiten
+      if (glitchState.shockActive) {
+        glitchState.shockRadius += 42.0 * delta;
+        shockwaveMesh.scale.set(glitchState.shockRadius, glitchState.shockRadius, 1);
+        shockwaveMat.opacity = Math.max(0.0, 1.0 - glitchState.shockRadius / 45.0);
+        if (glitchState.shockRadius > 45.0) {
+          glitchState.shockActive = false;
+          shockwaveMat.opacity = 0.0;
+        }
+      }
+
+      // 5. Getunnelte Photonenpartikel ausbreiten
+      if (partMat.opacity > 0.01) {
+        const pAttr = partGeo.attributes.position;
+        for (let i = 0; i < TUNNEL_PARTICLES; i++) {
+          if (partVel[i].life > 0.0) {
+            const px = pAttr.getX(i) + partVel[i].vx * delta;
+            const py = pAttr.getY(i) + partVel[i].vy * delta;
+            const pz = pAttr.getZ(i) + partVel[i].vz * delta;
+            pAttr.setXYZ(i, px, py, pz);
+            partVel[i].life -= delta * 1.2;
+          }
+        }
+        pAttr.needsUpdate = true;
+        partMat.opacity -= delta * 0.8;
+      }
+
+      // 6. Kamera-Regie
+      if (camMode === 'orbit') {
+        const angle = elapsed * 0.14;
+        camera.position.x = Math.sin(angle) * 62;
+        camera.position.z = Math.cos(angle) * 62;
+        camera.position.y = 28 + Math.sin(elapsed * 0.22) * 5;
+        camera.lookAt(0, -2, 0);
+      } else if (camMode === 'close') {
+        camera.position.set(-18, 14, 26);
+        camera.lookAt(-4, 0, 0);
+      }
+
+      ghostGroup.rotation.y += 0.4 * delta;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+MRE_FORMULA_1
+name: SubQG Transientes Tunnel-Kopplungs-Theorem (Orthogonalitaets-Stoerung)
+domain: real
+formula: (x + y)^2 - 2 * (x^2 + y^2) + (x - y)^2 = 0
+seed: 42
+# Basiert auf der erweiterten SubQG-Kopplung bei transienter Phasenangleichung:
+# Fuer zwei Moden A und B mit Amplituden x und y gilt exakt die Parallelogramm-Identitaet:
+# (x + y)^2 + (x - y)^2 = 2*(x^2 + y^2).
+# Die Differenz ist exakt Null. Bei transientem epsilon(t) trennt sich die Gesamtenergie
+# exakt in die ungestoerten Energien plus den Kreuzkopplungsterm 2*x*y*epsilon(t),
+# ohne die fundamentale Energieerhaltung des Gesamtsystems zu verletzen.

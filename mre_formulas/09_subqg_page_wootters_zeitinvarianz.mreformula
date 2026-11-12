@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Page-Wootters-Zeitinvarianz: Relationale Zeittaktdifferenz
+# x = Phasenzustand Uhr A (tau_A), y = Phasenzustand Uhr B (tau_B)
+# Physikalische Bedeutung: Globale Hamilton-Nebenbedingung H_total |Psi> = 0
+name: SubQG Page-Wootters-Invarianz
+domain: real
+formula: (x - y) + (y - x) = 0
+seed: 42

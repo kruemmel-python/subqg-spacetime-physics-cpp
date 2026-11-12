@@ -1,0 +1,9 @@
+MRE_FORMULA_1
+name: SubQG Orthogonale Multiversum-Entkopplung
+domain: real
+formula: (x + y)^2 + (x - y)^2 - 2 * (x^2 + y^2) = 0
+seed: 42
+# Beschreibt die Parallelogramm-Orthogonalitaet zweier unabhaengiger Kantenmetrik-Moden
+# x = x_e^(A) und y = x_e^(B) auf dem gemeinsamen Subquanten-Knotenraum V.
+# Fuer vollstaendig orthogonale Sektoren heben sich die Kreuzterme 2*x*y und -2*x*y
+# exakt auf: Keine gegenseitige Beeinflussung, T_AB = 0, F_AB = 0.

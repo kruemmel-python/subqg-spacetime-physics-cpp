@@ -1,0 +1,161 @@
+/**
+ * Subquantum Graphity (SubQG 1.0)
+ * TypeScript Definitions
+ */
+
+export interface SimulationStats {
+  nodes: number;
+  edges: number;
+  faces: number;
+  events: number;
+}
+
+export interface CrossoverAcceleration {
+  gN: number;
+  gEff: number;
+  localExponent: number;
+}
+
+export interface GalacticCurve {
+  curve: Array<{ r: number; v: number; gEff: number; gN: number }>;
+  isFlat: boolean;
+  flatnessVariation: number;
+  vFlat: number;
+}
+
+export interface TullyFisherResult {
+  data: Array<{ M: number; vFlat: number }>;
+  meanExponent: number;
+  matchesTheoretical025: boolean;
+}
+
+export class SubQGUnifiedProofEngine {
+  constructor(options?: {
+    supportRadius?: number;
+    threshold?: number;
+    rho0?: number;
+    boxSize?: number;
+    G?: number;
+    seed?: number;
+  });
+
+  supportRadius: number;
+  threshold: number;
+  rho0: number;
+  boxSize: number;
+  G: number;
+  seed: number;
+  a0: number;
+  events: Array<{ id: number; parents: number[]; depth: number; faceId: string }>;
+
+  computeOverlap(posA: number[], phaseA: number, posB: number[], phaseB: number): number;
+  initializeMicrostructure(options?: { centralMass?: number; clusterRadius?: number }): SimulationStats;
+  reconstructSpatialDistance(i: number, j: number): number;
+  internalRelationalTime(evA: number, evB: number): number;
+  effectiveGravitationalAcceleration(M: number, r: number): CrossoverAcceleration;
+  computeGalacticCurve(M: number, options?: { rMin?: number; rMax?: number; steps?: number }): GalacticCurve;
+  validateTullyFisherScaling(masses: number[]): TullyFisherResult;
+}
+
+export class SubQGGenesisEngine {
+  constructor(options?: {
+    stateCount?: number;
+    threshold?: number;
+    universeMode?: 'CONTINUUM_3D' | 'CRITICAL_FRACTAL' | 'DECOUPLED_ISLANDS' | 'MULTI_TEMPORAL';
+    seed?: number;
+  });
+
+  lambdaRatio: number;
+  giantFraction: number;
+  emergentDimension: number;
+
+  measureEmergentSpeedLimit(options?: { pulseNodes?: number[]; maxSteps?: number }): {
+    meanSpeedLimitC: number;
+    speedSpreadPercent: number;
+    isSpeedUniversal: boolean;
+  };
+
+  measureParticleSolitonStability(options?: { evolutionSteps?: number }): {
+    isParticleStable: boolean;
+    finalCoreRetention: number;
+  };
+
+  measureEmergentGravitationalAttraction(options?: { testSteps?: number }): {
+    attractionProven: boolean;
+    meanMetricContractionPercent: number;
+    gravitationalFocusingRatio: number;
+  };
+}
+
+export function executeMasterGenesisExperiment(): {
+  subqgFundamentalRulesHeldStrictlyConstant: Record<string, string>;
+  universe1_Continuum: any;
+  universe2_Fractal: any;
+  comparativeLawsOfNature: {
+    differentEmergentDimensions: boolean;
+    differentEmergentSpeedLimits: boolean;
+    bothShowParticleStability: boolean;
+    bothShowAttractiveGravity: boolean;
+    natureLawsEmergeWithoutFormulas: boolean;
+  };
+};
+
+export class SubQGMultiversePhaseEngine {
+  constructor(options?: any);
+}
+
+export class SubQGGraphCoupledEngine {
+  constructor(options?: any);
+}
+
+export class SubQGEmergentGravity {
+  constructor(options?: any);
+}
+
+export class SubQGFirstPrinciplesEngine {
+  constructor(options?: any);
+}
+
+export class ActionWorld {
+  constructor(options?: any);
+  step(): void;
+  minimize(): any;
+  action(): number;
+  setMass(node: number, mass: number): void;
+}
+
+export class CausalWorld extends ActionWorld {}
+export class GeodesicWorld extends CausalWorld {}
+export class FeedbackWorld extends GeodesicWorld {}
+export class GravityWorld extends FeedbackWorld {}
+export class WaveWorld {
+  constructor(options?: any);
+}
+export class CausalWaveWorld extends WaveWorld {}
+export class EmergenceWorld {
+  constructor(options?: any);
+}
+
+export class SubQGAppleWorld {
+  constructor(config?: Record<string, any>);
+  solveVariationalMetric(opts?: Record<string, any>): any;
+  measureObservables(psiRe: Float64Array, psiIm: Float64Array, phiMetric: Float64Array, edgeFieldEnergy?: number): any;
+  simulatePacketTrajectory(opts: Record<string, any>): any;
+}
+
+export class SubQGAppleExperiment {
+  constructor(config?: Record<string, any>);
+  runInertialCalibration(): any;
+  runCoreGravityAndHolding(calibration: any, backgroundMode?: 'stationaryMetric' | 'coupledMetric'): any;
+  runHandForceLimitExperiment(calibration: any): any;
+  runControlSuite(calibration: any, primaryResults: any): any;
+}
+
+export function executeAppleExperimentSuite(config?: Record<string, any>): any;
+export const DEFAULT_APPLE_OBJECTS: ReadonlyArray<{
+  id: string;
+  label: string;
+  amplitude: number;
+  sigma: number;
+  color: string;
+}>;

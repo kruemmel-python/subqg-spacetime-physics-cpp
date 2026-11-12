@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# Dieses physikalische Gegenbeispiel demonstriert das Scheitern reiner Newton-Gravitation
+# Behauptung: Die effektive Gravitation g_eff^2 = x^2 + x*y sei rein Newtonsch (x^2)
+# Der MRE-Tester widerlegt dies durch Finden von Gegenbeispielen sobald y = a0 != 0
+name: Gegenbeispiel Reine Newton-Gravitation
+domain: real
+formula: (x^2 + x*y) = x^2
+seed: 42

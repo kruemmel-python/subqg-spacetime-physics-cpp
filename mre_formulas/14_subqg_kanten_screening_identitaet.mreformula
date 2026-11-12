@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+name: SubQG Kanten-Screening-Identitaet (Variationsgleichung der Metrik)
+domain: real
+formula: (x + y)^2 - x^2 - y^2 = 2*x*y
+seed: 42
+# Basiert auf der diskreten Kantenwirkung S_edge[x] = (mu/2) x^2 + (kappa/2) (x - y)^2 + beta w rho x
+# Die quadratische Form der relativen Kantenkontraktion (x - y)^2 entwickelt sich
+# symmetrisch zu x^2 - 2*x*y + y^2; die Kantenkopplung 2*x*y steuert die Glattheitssteifigkeit kappa.

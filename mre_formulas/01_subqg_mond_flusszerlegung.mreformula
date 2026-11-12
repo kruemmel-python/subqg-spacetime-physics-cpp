@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG MOND-Flusszerlegung: Aufspaltung des Gravitationsflusses
+# x = effektive Beschleunigung (g_eff), y = kosmologische Grenzbeschleunigung (a0)
+# Physikalische Bedeutung: Der Gesamtfluss x zerfaellt exakt in Newton-Komponente und MOND-Vakuumanteil
+name: SubQG MOND-Flusszerlegung
+domain: real
+formula: (x^2 / (x + y)) + (x*y / (x + y)) = x
+seed: 42

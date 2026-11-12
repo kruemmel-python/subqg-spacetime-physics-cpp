@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {boundedAffinity,randomDegreeMatched,runLinkAudit} from '../src/modules/subqg_link_audit.mjs';
+const nodes=Array.from({length:12},(_,i)=>({amp:0.2+0.05*i,phase:i*0.2}));
+test('bounded affinity degree cap',()=>{const a=boundedAffinity(nodes,3);assert.ok(a.every(x=>x.length<=3));});
+test('bounded affinity symmetric',()=>{const a=boundedAffinity(nodes,4);for(let i=0;i<a.length;i++)for(const j of a[i])assert.ok(a[j].includes(i));});
+test('random control exact edge count',()=>{const a=randomDegreeMatched(20,25);assert.equal(a.reduce((s,x)=>s+x.length,0)/2,25);});
+test('random control reproducible',()=>assert.deepEqual(randomDegreeMatched(12,14,5),randomDegreeMatched(12,14,5)));
+test('invalid degree rejected',()=>assert.throws(()=>boundedAffinity(nodes,0),RangeError));
+test('invalid edge count rejected',()=>assert.throws(()=>randomDegreeMatched(4,7),RangeError));
+test('audit returns three rules',()=>{const r=runLinkAudit({caps:[25],seeds:[7],steps:200,sources:4,maxSteps:26});assert.deepEqual(r.groups.map(x=>x.rule),['original','bounded','random-matched']);});
+test('matched control edge count equals bounded',()=>{const r=runLinkAudit({caps:[25],seeds:[7],steps:200,sources:4,maxSteps:26});assert.equal(r.samples[1].edges,r.samples[2].edges);});

@@ -1,0 +1,5 @@
+MRE_FORMULA_1
+name: Binomische Formel
+domain: real
+formula: (x + y)^2 = x^2 + 2*x*y + y^2
+seed: 42

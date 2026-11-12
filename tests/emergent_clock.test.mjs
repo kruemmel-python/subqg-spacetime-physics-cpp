@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {clockSector,probe,experiment} from '../src/modules/subqg_emergent_clock.mjs';
+test('overlap supports a bound clock sector',()=>assert.equal(clockSector([0,0]).available,true));
+test('antiphase yields no coupled oscillator clock',()=>assert.equal(clockSector([0,Math.PI]).available,false));
+test('no relative excitation means no phase clock',()=>assert.equal(probe([0,0],{q:[0,0]}).available,false));
+test('bonded clock increases monotonically',()=>{const r=probe([0,0]);assert.equal(r.clock.monotonicViolations,0);assert.ok(r.clock.tau>0);});
+test('clock agrees with integration time to discretization tolerance',()=>{const r=probe([0,0]);assert.ok(Math.abs(r.clock.tau-2)<0.0001);});
+test('smaller step improves phase time error',()=>{const a=probe([0,0],{dt:0.02,steps:100});const b=probe([0,0],{dt:0.01,steps:200});assert.ok(Math.abs(b.clock.tau-2)<Math.abs(a.clock.tau-2));});
+test('invalid input rejected',()=>assert.throws(()=>probe([0,0],{dt:0}))); 
+test('threshold transition is explicit, not emergent proof',()=>{const r=experiment();assert.equal(r.scenarios.nearThresholdBonded.available,true);assert.equal(r.scenarios.nearThresholdUnbonded.available,false);});

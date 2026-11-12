@@ -1,0 +1,30 @@
+{
+  "name": "subqg-game-physic-engine",
+  "version": "1.0.0",
+  "description": "Production-ready, ergonomic 2D/3D Game Physics Engine powered by underlying Subquantum Graphity (SubQG) relational metric lattice & action dynamics.",
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "server": "node tools/start_physics_server.mjs",
+    "build": "node tools/build_standalone_demo.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:watch": "node --test --watch tests/*.test.mjs",
+    "demo": "node examples/01_falling_box.mjs"
+  },
+  "keywords": [
+    "physics",
+    "physics-engine",
+    "game-physics",
+    "subqg",
+    "subquantum-graphity",
+    "rigidbody",
+    "collision-detection",
+    "sat",
+    "joints",
+    "raycast",
+    "relational-gravity"
+  ],
+  "author": "SubQG Research & Engineering Team",
+  "license": "MIT"
+}

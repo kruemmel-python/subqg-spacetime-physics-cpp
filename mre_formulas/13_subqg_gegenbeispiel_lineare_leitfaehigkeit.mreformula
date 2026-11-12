@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# Dieses Gegenbeispiel zeigt, dass ein rein lineares Graphennetzwerk keine flachen Kurven erlaubt
+# Behauptung: Die Leitfaehigkeit bleibe immer ungesaettigt (1)
+# Der MRE-Tester widerlegt dies bei x, y > 0
+name: Gegenbeispiel Lineare Graphenleitfaehigkeit
+domain: real
+formula: x / (x + y) = 1
+seed: 42

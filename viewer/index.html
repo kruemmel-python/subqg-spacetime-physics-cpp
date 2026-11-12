@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Genesis – Die Geburt paralleler Universen (Cineastische 3D-Dokumentation)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: #020617;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    #viewport {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+      background: radial-gradient(circle at 50% 40%, #060b18 0%, #010308 100%);
+    }
+
+    /* NASA Cinematic HUD Overlay */
+    .hud-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 24px 18px 24px;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .hud-layer.cinema-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Top Bar: Telemetry & Mission Header */
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      padding-bottom: 8px;
+      background: linear-gradient(180deg, rgba(2, 6, 23, 0.85) 0%, rgba(2, 6, 23, 0) 100%);
+      pointer-events: auto;
+    }
+    .mission-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .mission-tag {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #38bdf8;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mission-tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+    .mission-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #f8fafc;
+      text-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    }
+    .telemetry-grid {
+      display: flex;
+      gap: 10px;
+    }
+    .telemetry-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 6px;
+      padding: 4px 9px;
+      backdrop-filter: blur(6px);
+      text-align: right;
+    }
+    .telemetry-label {
+      font-size: 8.5px;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    .telemetry-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: monospace;
+    }
+
+    /* Floating Cinema Toggle (Top Right) */
+    .cinema-toggle-btn {
+      position: absolute;
+      top: 14px;
+      right: 24px;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s ease;
+      pointer-events: auto;
+    }
+    .cinema-toggle-btn:hover {
+      background: #0284c7;
+      color: white;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Bottom Section: Cinema Subtitles + Controls */
+    .bottom-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    /* Cinema Subtitles - strictly positioned at lower bottom */
+    .narrative-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin: 0 auto;
+      max-width: 900px;
+      pointer-events: auto;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .narrative-container.hidden {
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+    .chapter-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      background: rgba(14, 165, 233, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .subtitle-card {
+      background: rgba(3, 7, 18, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 20px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    }
+    .subtitle-text {
+      font-size: 14.5px;
+      line-height: 1.4;
+      color: #ffffff;
+      font-weight: 500;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.95);
+    }
+
+    /* Bottom Controls */
+    .hud-controls {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: linear-gradient(0deg, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0) 100%);
+      padding-top: 6px;
+    }
+    .timeline-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .timeline-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(56, 189, 248, 0.25);
+      outline: none;
+      cursor: pointer;
+    }
+    .timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      cursor: pointer;
+    }
+    .time-readout {
+      font-family: monospace;
+      font-size: 12px;
+      color: #94a3b8;
+      width: 85px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .hud-btn {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(6px);
+    }
+    .hud-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    }
+    .hud-btn.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+    .export-btn {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #6ee7b7;
+    }
+    .export-btn:hover {
+      background: rgba(16, 185, 129, 0.4);
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    .export-btn.recording {
+      background: #dc2626 !important;
+      border-color: #ef4444 !important;
+      color: white !important;
+      animation: recordBlink 1.2s infinite;
+    }
+
+    /* Universe Switchers */
+    .universe-view-tags {
+      display: flex;
+      gap: 6px;
+    }
+    .view-tag {
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 9.5px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.55);
+      color: #94a3b8;
+    }
+    .view-tag.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    /* Modal / Toast for Export */
+    #exportNotice {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(3, 7, 18, 0.94);
+      border: 1px solid #10b981;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+      padding: 22px 30px;
+      border-radius: 12px;
+      text-align: center;
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(16px);
+      max-width: 480px;
+    }
+    #exportNotice h3 { color: #10b981; margin-bottom: 8px; font-size: 17px; }
+    #exportNotice p { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    @keyframes recordBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 3D Viewport Canvas -->
+  <canvas id="viewport"></canvas>
+
+  <!-- Cinema Mode Toggle (Always Visible in Top Right) -->
+  <button class="cinema-toggle-btn" id="cinemaToggleBtn" title="Taste H oder C drücken">🎬 KINO-MODUS (HUD)</button>
+
+  <!-- NASA Documentary Overlay -->
+  <div class="hud-layer" id="hudLayer">
+    <!-- Header Telemetry -->
+    <div class="hud-header">
+      <div class="mission-title">
+        <div class="mission-tag">NASA Deep Physics Visualization · SubQG Genesis</div>
+        <div class="mission-name">DIE GEBURT PARALLELER UNIVERSEN AUS DEM NICHTS</div>
+      </div>
+      <div class="telemetry-grid">
+        <div class="telemetry-box">
+          <div class="telemetry-label">Kopplung Λ/Λ_c</div>
+          <div class="telemetry-value" id="hudLambda">0.9990</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Ordnungsparameter Δ*</div>
+          <div class="telemetry-value" id="hudDelta">0.0000</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Dimension d</div>
+          <div class="telemetry-value" id="hudDim">0.00</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Grenzgeschw. c</div>
+          <div class="telemetry-value" id="hudC">0.000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Container: Subtitles + Controls -->
+    <div class="bottom-section">
+      <!-- Clean Subtitles at Lower Bottom -->
+      <div class="narrative-container" id="narrativeContainer">
+        <div class="chapter-badge" id="chapterBadge">PROLOG · VOR DER ZEIT</div>
+        <div class="subtitle-card">
+          <div class="subtitle-text" id="subtitleText">
+            Am Anfang existiert kein Raum, keine Zeit und keine Entfernung. Nur ungebundene Möglichkeiten im tiefen Subquantenfeld.
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline & Action Bar -->
+      <div class="hud-controls">
+        <div class="timeline-bar">
+          <button class="hud-btn" id="playBtn" style="padding: 5px 12px;">▶ Abspielen</button>
+          <input type="range" class="timeline-slider" id="timeSlider" min="0" max="100" value="0" step="0.1">
+          <div class="time-readout" id="timeReadout">00:00 / 02:30</div>
+        </div>
+        <div class="btn-row">
+          <div class="btn-group">
+            <button class="hud-btn active" id="cameraModeBtn">🎥 NASA-Kamerafahrt</button>
+            <button class="hud-btn" id="audioBtn">🔊 Kosmische Klangsynthese</button>
+            <button class="hud-btn" id="subtitleToggleBtn" title="Taste T drücken">💬 Untertitel: AN</button>
+            <button class="hud-btn active" id="glowBtn" title="Leuchtstärke umschalten (Taste L)">✨ Kristallklar (Kein Überstrahlen)</button>
+          </div>
+          <div class="btn-group">
+            <button class="hud-btn export-btn" id="quickExportBtn" title="Automatischer 15s HD Clip">⚡ 15s HD-Clip exportieren</button>
+            <button class="hud-btn export-btn" id="exportBtn">🔴 Film aufnehmen (MP4/WebM)</button>
+          </div>
+          <div class="universe-view-tags">
+            <div class="view-tag active" id="viewDual">Multiversum (Alle 3 Welten)</div>
+            <div class="view-tag" id="viewUniv1">Universum 1 (3D)</div>
+            <div class="view-tag" id="viewUniv2">Universum 2 (Fraktal)</div>
+            <div class="view-tag" id="viewUniv3">Universum 3 (Quanteninsel)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Notification Toast -->
+  <div id="exportNotice">
+    <h3 id="exportNoticeTitle">🎬 Aufnahme läuft...</h3>
+    <p id="exportNoticeDesc">Die 3D-Dokumentation wird in voller Auflösung aufgezeichnet. Klicke erneut auf die rote Schaltfläche, um die Aufnahme zu stoppen und die Videodatei herunterzuladen.</p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('viewport');
+    const ctx = canvas.getContext('2d');
+
+    let W = 0, H = 0;
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Narrative Timeline Script (6 In-Depth Chapters: From 0 to Multiverse)
+    const CHAPTERS = [
+      {
+        start: 0,
+        end: 15,
+        badge: "PROLOG · DER REINE SUBQG-MÖGLICHKEITSZUSTAND",
+        text: "Vor dem Urknall existiert keine Raumzeit. Keine Dimensionen, kein Licht, keine Distanzen. Nur ein zeitloses Meer ungebundener U(1)-Phasen im fundamentalen Subquantenfeld.",
+        lambda: 0.9800, delta: 0.000, dim: 0.00, c: 0.000,
+        camDist: 310, camPanX: 70, camAngleSpeed: 0.0005, state: 'VOID'
+      },
+      {
+        start: 15,
+        end: 32,
+        badge: "AKT I · DER GENESIS-ÜBERGANG & ERSTE BINDUNGEN",
+        text: "Die Resonanz überschreitet die kritische Schwelle Θ = 0,75. Ein Phasenübergang zweiter Ordnung bricht die Symmetrie: Erste relationale Bindungen knüpfen sich – Raumzeitquanten blitzen auf.",
+        lambda: 1.0025, delta: 0.045, dim: 1.15, c: 0.420,
+        camDist: 290, camPanX: 65, camAngleSpeed: 0.0008, state: 'FLASH'
+      },
+      {
+        start: 32,
+        end: 50,
+        badge: "AKT II · PERKOLATION & ENTSTEHUNG DER 3D-RAUMZEIT",
+        text: "Das Netzwerk perkoliert. Die Bindungen schließen sich zu stabilen Tetraedern: Eine kontinuierliche 3D-Geometrie entsteht – nicht als Bühne, sondern als das relationale Gewebe selbst.",
+        lambda: 1.0450, delta: 0.234, dim: 2.98, c: 1.000,
+        camDist: 275, camPanX: 60, camAngleSpeed: 0.0010, state: 'PERCOLATION'
+      },
+      {
+        start: 50,
+        end: 68,
+        badge: "AKT III · DIE VERZWEIGUNG ZUM MULTIVERSUM",
+        text: "Aus demselben Ur-Substrat trennen sich parallele Welten ab: Links unser 3D-Kosmos (d = 3,0), mittig ein fraktales Universum (d = 2,05) und rechts eine dichte Quanteninsel (d = 1,6).",
+        lambda: 1.1200, delta: 0.332, dim: 2.98, c: 1.613,
+        camDist: 430, camPanX: 0, camAngleSpeed: 0.0007, state: 'MULTIVERSE'
+      },
+      {
+        start: 68,
+        end: 84,
+        badge: "AKT IV · SELBSTORGANISATION DER NATURGESETZE",
+        text: "Stabile Resonanzmuster formen Quasiteilchen (Solitonen). Lokale Energie spannt das relationale Netz: Universelle Gravitation krümmt den Raum – ganz ohne hypothetische Dunkle Materie.",
+        lambda: 1.1200, delta: 0.380, dim: 3.00, c: 1.613,
+        camDist: 320, camPanX: 55, camAngleSpeed: 0.0011, state: 'GRAVITY_PULSE'
+      },
+      {
+        start: 84,
+        end: 100,
+        badge: "EPILOG · DAS HARMONISCHE MULTIVERSUM",
+        text: "Raum, Zeit und Gravitation sind keine vorgegebenen Gesetze. Sie sind emergente, selbstorganisierte Phänomene des ewigen SubQG-Möglichkeitsfeldes.",
+        lambda: 1.1200, delta: 0.382, dim: 3.00, c: 1.613,
+        camDist: 440, camPanX: 0, camAngleSpeed: 0.0006, state: 'EPILOG'
+      }
+    ];
+
+    // Build the 3D Node Clusters for the Multiverse (3 Distinct Universes)
+    const N_NODES = 110;
+    const nodesU1 = [];
+    const nodesU2 = [];
+    const nodesU3 = [];
+
+    function halton(index, base) {
+      let result = 0;
+      let f = 1 / base;
+      let i = index;
+      while (i > 0) {
+        result += f * (i % base);
+        i = Math.floor(i / base);
+        f /= base;
+      }
+      return result;
+    }
+
+    // Universe 1: 3D regular continuum geometry (Our Universe, d = 3.00)
+    for (let i = 0; i < N_NODES; i++) {
+      const u = halton(i + 1, 2);
+      const v = halton(i + 1, 3);
+      const w = halton(i + 1, 5);
+      const theta = 2 * Math.PI * u;
+      const phi = Math.acos(2 * v - 1);
+      const r = 74 * Math.cbrt(w);
+      nodesU1.push({
+        origX: -145, origY: 0, origZ: 0,
+        relX: r * Math.sin(phi) * Math.cos(theta),
+        relY: r * Math.sin(phi) * Math.sin(theta),
+        relZ: r * Math.cos(phi),
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Universe 2: Critical Fractal Universe (d ~ 2.05)
+    for (let i = 0; i < 90; i++) {
+      const branch = i % 4;
+      const bAngle = (branch * Math.PI) / 2;
+      const distAlong = Math.pow(halton(i + 1, 2), 0.7) * 78;
+      const spread = 18 * (1 - distAlong / 78);
+      nodesU2.push({
+        origX: 15, origY: 0, origZ: 0,
+        relX: distAlong * Math.cos(bAngle) + (halton(i + 1, 3) - 0.5) * spread,
+        relY: distAlong * Math.sin(bAngle) + (halton(i + 1, 5) - 0.5) * spread,
+        relZ: (halton(i + 1, 7) - 0.5) * spread * 2,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Universe 3: Dense Quantum Island Cluster (d ~ 1.60)
+    for (let i = 0; i < 65; i++) {
+      const u = halton(i + 1, 3);
+      const v = halton(i + 1, 5);
+      const theta = 2 * Math.PI * u;
+      const r = 42 * Math.sqrt(v);
+      nodesU3.push({
+        origX: 165, origY: 0, origZ: 0,
+        relX: r * Math.cos(theta),
+        relY: r * Math.sin(theta) * 0.75,
+        relZ: (halton(i + 1, 7) - 0.5) * 48,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Edges for Universe 1
+    const edgesU1 = [];
+    for (let i = 0; i < N_NODES; i++) {
+      for (let j = i + 1; j < N_NODES; j++) {
+        const dx = nodesU1[i].relX - nodesU1[j].relX;
+        const dy = nodesU1[i].relY - nodesU1[j].relY;
+        const dz = nodesU1[i].relZ - nodesU1[j].relZ;
+        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < 35) edgesU1.push({ a: i, b: j, baseLen: d });
+      }
+    }
+
+    // Edges for Universe 2
+    const edgesU2 = [];
+    for (let i = 0; i < nodesU2.length; i++) {
+      for (let j = i + 1; j < nodesU2.length; j++) {
+        const dx = nodesU2[i].relX - nodesU2[j].relX;
+        const dy = nodesU2[i].relY - nodesU2[j].relY;
+        const dz = nodesU2[i].relZ - nodesU2[j].relZ;
+        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < 27) edgesU2.push({ a: i, b: j, baseLen: d });
+      }
+    }
+
+    // Edges for Universe 3
+    const edgesU3 = [];
+    for (let i = 0; i < nodesU3.length; i++) {
+      for (let j = i + 1; j < nodesU3.length; j++) {
+        const dx = nodesU3[i].relX - nodesU3[j].relX;
+        const dy = nodesU3[i].relY - nodesU3[j].relY;
+        const dz = nodesU3[i].relZ - nodesU3[j].relZ;
+        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < 25) edgesU3.push({ a: i, b: j, baseLen: d });
+      }
+    }
+
+    // Deterministic Quantum Blast Sparks (For Supernova Ejecta at Genesis & Multiverse Split)
+    const N_SPARKS = 80;
+    const blastSparks = [];
+    for (let i = 0; i < N_SPARKS; i++) {
+      const u = halton(i + 1, 2);
+      const v = halton(i + 1, 3);
+      const theta = 2 * Math.PI * u;
+      const phi = Math.acos(2 * v - 1);
+      const speed = 7.5 + halton(i + 1, 5) * 8.5;
+      blastSparks.push({
+        dx: Math.sin(phi) * Math.cos(theta) * speed,
+        dy: Math.sin(phi) * Math.sin(theta) * speed,
+        dz: Math.cos(phi) * speed,
+        size: 1.2 + halton(i + 1, 7) * 1.5
+      });
+    }
+
+    // Helper: Draw 3D Expanding Relativistic Shockwave Ring
+    function draw3DShockwave(centerX, centerY, centerZ, radius, colorRgb, alpha, lineWidth, cx, cy, camDist, cameraAngle, cameraPitch) {
+      if (alpha <= 0.01 || radius <= 2) return;
+      ctx.save();
+      ctx.lineWidth = lineWidth || 2;
+      ctx.strokeStyle = `rgba(${colorRgb}, ${alpha})`;
+      ctx.beginPath();
+      const segments = 48;
+      let started = false;
+      for (let s = 0; s <= segments; s++) {
+        const theta = (s / segments) * Math.PI * 2;
+        const sx = centerX + radius * Math.cos(theta);
+        const sy = centerY + radius * Math.sin(theta);
+        const sz = centerZ;
+        const proj = project3D(sx, sy, sz, cx, cy, camDist, cameraAngle, cameraPitch);
+        if (!proj) continue;
+        if (!started) {
+          ctx.moveTo(proj.px, proj.py);
+          started = true;
+        } else {
+          ctx.lineTo(proj.px, proj.py);
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Helper: Draw Cinematic Anamorphic Lens Flare
+    function drawAnamorphicFlare(px, py, color, intensity, width = 280) {
+      if (intensity <= 0.02) return;
+      ctx.save();
+      const w = width * intensity;
+      const grad = ctx.createLinearGradient(px - w, py, px + w, py);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.3, `rgba(${color}, ${intensity * 0.3})`);
+      grad.addColorStop(0.5, `rgba(255, 255, 255, ${intensity * 0.95})`);
+      grad.addColorStop(0.7, `rgba(${color}, ${intensity * 0.3})`);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(px - w, py - 1.5, w * 2, 3);
+
+      // Center bright core
+      ctx.beginPath();
+      ctx.arc(px, py, 3.5 * intensity, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Background Particles (Reduced for dark, crisp deep space)
+    const voidParticles = [];
+    for (let i = 0; i < 45; i++) {
+      voidParticles.push({
+        x: (Math.random() - 0.5) * 800,
+        y: (Math.random() - 0.5) * 600,
+        z: (Math.random() - 0.5) * 600,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.015 + Math.random() * 0.02
+      });
+    }
+
+    let forceCanvasSubtitles = false;
+
+    // Helper: Draw Cinema Subtitles directly onto the Canvas (For Video Export & Cinema Mode)
+    function drawCanvasSubtitles(ctx, W, H, currCh) {
+      if (!areSubtitlesVisible) return;
+
+      ctx.save();
+      const maxTextWidth = Math.min(840, W - 80);
+      ctx.font = '500 13.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+      // Word-wrap long sentences cleanly
+      const words = currCh.text.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (const word of words) {
+        const testLine = currentLine ? currentLine + ' ' + word : word;
+        if (ctx.measureText(testLine).width > maxTextWidth) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+
+      const lineHeight = 19;
+      const paddingX = 22;
+      const paddingY = 9;
+      const badgeHeight = 15;
+      const totalBoxHeight = badgeHeight + lines.length * lineHeight + paddingY * 2;
+      
+      // Calculate box width dynamically based on content
+      let maxContentWidth = ctx.measureText(currCh.badge).width + 120;
+      for (const line of lines) {
+        maxContentWidth = Math.max(maxContentWidth, ctx.measureText(line).width);
+      }
+      const boxWidth = Math.min(W - 40, maxContentWidth + paddingX * 2);
+      const boxX = (W - boxWidth) / 2;
+      const boxY = H - totalBoxHeight - 16;
+
+      // Cinema Subtitle Plate Background (Semi-transparent dark slate)
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.82)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.32)';
+      ctx.lineWidth = 1;
+
+      // Rounded container
+      const r = 8;
+      ctx.beginPath();
+      ctx.moveTo(boxX + r, boxY);
+      ctx.lineTo(boxX + boxWidth - r, boxY);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + r);
+      ctx.lineTo(boxX + boxWidth, boxY + totalBoxHeight - r);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY + totalBoxHeight, boxX + boxWidth - r, boxY + totalBoxHeight);
+      ctx.lineTo(boxX + r, boxY + totalBoxHeight);
+      ctx.quadraticCurveTo(boxX, boxY + totalBoxHeight, boxX, boxY + totalBoxHeight - r);
+      ctx.lineTo(boxX, boxY + r);
+      ctx.quadraticCurveTo(boxX, boxY, boxX + r, boxY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Chapter Badge (Upper Left)
+      ctx.textAlign = 'left';
+      ctx.font = '700 9.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText(currCh.badge, boxX + paddingX, boxY + paddingY + 10);
+
+      // Physical Telemetry (Upper Right)
+      ctx.textAlign = 'right';
+      ctx.font = '600 9px monospace';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`Λ/Λc: ${currCh.lambda.toFixed(4)}  |  d: ${currCh.dim.toFixed(2)}  |  c: ${currCh.c.toFixed(3)}`, boxX + boxWidth - paddingX, boxY + paddingY + 10);
+
+      // Narrative Subtitles Lines (Center)
+      ctx.textAlign = 'center';
+      ctx.font = '500 13.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      let curY = boxY + paddingY + badgeHeight + 12;
+      for (const line of lines) {
+        ctx.fillText(line, W / 2, curY);
+        curY += lineHeight;
+      }
+
+      ctx.restore();
+    }
+
+    // Playback State (Calm, Thorough Documentary Pace: 64 Seconds)
+    let isPlaying = true;
+    let timelineProgress = 0;
+    let durationSeconds = 64;
+    let lastTimestamp = performance.now();
+    let cameraAngle = 0;
+    let cameraPitch = 0.15;
+    let currentView = 'DUAL';
+    let directorMode = true;
+
+    // Visual Clarity & Glow Modes: 'KRISTALL' (default, sharp & clear), 'DEZENT', 'GLOW'
+    let glowMode = 'KRISTALL';
+    const glowBtn = document.getElementById('glowBtn');
+    function cycleGlowMode() {
+      if (glowMode === 'KRISTALL') {
+        glowMode = 'DEZENT';
+        glowBtn.textContent = '✨ Optik: Dezent';
+        glowBtn.classList.remove('active');
+      } else if (glowMode === 'DEZENT') {
+        glowMode = 'GLOW';
+        glowBtn.textContent = '✨ Optik: Leuchtend';
+        glowBtn.classList.add('active');
+      } else {
+        glowMode = 'KRISTALL';
+        glowBtn.textContent = '✨ Kristallklar (Kein Überstrahlen)';
+        glowBtn.classList.add('active');
+      }
+    }
+    glowBtn.addEventListener('click', cycleGlowMode);
+
+    // Cinema Mode & Subtitles Toggle
+    const hudLayer = document.getElementById('hudLayer');
+    const cinemaToggleBtn = document.getElementById('cinemaToggleBtn');
+    let isCinemaMode = false;
+
+    function toggleCinemaMode() {
+      isCinemaMode = !isCinemaMode;
+      hudLayer.classList.toggle('cinema-hidden', isCinemaMode);
+      cinemaToggleBtn.textContent = isCinemaMode ? '👁 HUD EINBLENDEN' : '🎬 KINO-MODUS (HUD)';
+    }
+    cinemaToggleBtn.addEventListener('click', toggleCinemaMode);
+
+    const narrativeContainer = document.getElementById('narrativeContainer');
+    const subtitleToggleBtn = document.getElementById('subtitleToggleBtn');
+    let areSubtitlesVisible = true;
+
+    function toggleSubtitles() {
+      areSubtitlesVisible = !areSubtitlesVisible;
+      narrativeContainer.classList.toggle('hidden', !areSubtitlesVisible);
+      subtitleToggleBtn.textContent = areSubtitlesVisible ? '💬 Untertitel: AN' : '💬 Untertitel: AUS';
+      subtitleToggleBtn.classList.toggle('active', areSubtitlesVisible);
+    }
+    subtitleToggleBtn.addEventListener('click', toggleSubtitles);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'h' || e.key === 'H' || e.key === 'c' || e.key === 'C') {
+        toggleCinemaMode();
+      } else if (e.key === 't' || e.key === 'T' || e.key === 'u' || e.key === 'U') {
+        toggleSubtitles();
+      } else if (e.key === 'l' || e.key === 'L') {
+        cycleGlowMode();
+      } else if (e.key === ' ') {
+        isPlaying = !isPlaying;
+        document.getElementById('playBtn').textContent = isPlaying ? '⏸ Pause' : '▶ Abspielen';
+      }
+    });
+
+    // Interactive Drag Orbit
+    let isDragging = false;
+    let lastMouseX = 0, lastMouseY = 0;
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      directorMode = false;
+      document.getElementById('cameraModeBtn').classList.remove('active');
+      document.getElementById('cameraModeBtn').textContent = '🖐 Freier Orbit';
+    });
+    window.addEventListener('mouseup', () => isDragging = false);
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastMouseX;
+      const dy = e.clientY - lastMouseY;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      cameraAngle += dx * 0.006;
+      cameraPitch = Math.max(-1.2, Math.min(1.2, cameraPitch + dy * 0.006));
+    });
+
+    // Web Audio Synthesizer (Ambient Drone)
+    let audioCtx = null;
+    let droneOsc1, droneOsc2, droneFilter, droneGain;
+    let isAudioActive = false;
+
+    function initAudio() {
+      if (audioCtx) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+
+      droneGain = audioCtx.createGain();
+      droneGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+
+      droneFilter = audioCtx.createBiquadFilter();
+      droneFilter.type = 'lowpass';
+      droneFilter.frequency.setValueAtTime(140, audioCtx.currentTime);
+
+      droneOsc1 = audioCtx.createOscillator();
+      droneOsc1.type = 'sawtooth';
+      droneOsc1.frequency.setValueAtTime(55, audioCtx.currentTime);
+
+      droneOsc2 = audioCtx.createOscillator();
+      droneOsc2.type = 'sine';
+      droneOsc2.frequency.setValueAtTime(108.5, audioCtx.currentTime);
+
+      droneOsc1.connect(droneFilter);
+      droneOsc2.connect(droneFilter);
+      droneFilter.connect(droneGain);
+      droneGain.connect(audioCtx.destination);
+
+      droneOsc1.start();
+      droneOsc2.start();
+      isAudioActive = true;
+      document.getElementById('audioBtn').classList.add('active');
+    }
+
+    document.getElementById('audioBtn').addEventListener('click', () => {
+      if (!audioCtx) initAudio();
+      else {
+        if (isAudioActive) {
+          droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+          isAudioActive = false;
+          document.getElementById('audioBtn').classList.remove('active');
+        } else {
+          droneGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          isAudioActive = true;
+          document.getElementById('audioBtn').classList.add('active');
+        }
+      }
+    });
+
+    // Video Recording / Extraction API
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+    let recordingTimer = null;
+    let recordStartTime = 0;
+
+    function pickSupportedMimeType() {
+      if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1')) return { mimeType: 'video/mp4;codecs=avc1', ext: 'mp4' };
+      if (MediaRecorder.isTypeSupported('video/mp4')) return { mimeType: 'video/mp4', ext: 'mp4' };
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) return { mimeType: 'video/webm;codecs=vp9', ext: 'webm' };
+      return { mimeType: 'video/webm', ext: 'webm' };
+    }
+
+    function startVideoRecording(maxDurationSec = 0) {
+      const exportBtn = document.getElementById('exportBtn');
+      const notice = document.getElementById('exportNotice');
+      const noticeTitle = document.getElementById('exportNoticeTitle');
+      const noticeDesc = document.getElementById('exportNoticeDesc');
+      const { mimeType, ext } = pickSupportedMimeType();
+
+      const stream = canvas.captureStream(30);
+      try {
+        mediaRecorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 6000000 });
+      } catch (e) {
+        mediaRecorder = new MediaRecorder(stream);
+      }
+      recordedChunks = [];
+      mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
+      
+      mediaRecorder.onstop = () => {
+        const actualType = mediaRecorder.mimeType || mimeType;
+        const finalBlob = new Blob(recordedChunks, { type: actualType });
+        window.lastRecordedBlob = finalBlob;
+        const actualExt = actualType.includes('mp4') ? 'mp4' : 'webm';
+        const url = URL.createObjectURL(finalBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `SubQG_Genesis_Dokumentation_3D.${actualExt}`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        noticeTitle.textContent = "✅ Video erfolgreich extrahiert!";
+        noticeDesc.textContent = `Die Videodatei SubQG_Genesis_Dokumentation_3D.${actualExt} (${(finalBlob.size / (1024*1024)).toFixed(2)} MB) wurde heruntergeladen.`;
+        notice.style.display = 'block';
+        setTimeout(() => { notice.style.display = 'none'; }, 4500);
+
+        clearInterval(recordingTimer);
+        isRecording = false;
+        exportBtn.classList.remove('recording');
+        exportBtn.textContent = '🔴 Film aufnehmen (MP4/WebM)';
+      };
+
+      mediaRecorder.start(250);
+      isRecording = true;
+      recordStartTime = Date.now();
+      exportBtn.classList.add('recording');
+      exportBtn.textContent = '⏹ Aufnahme stoppen (00:00)';
+
+      noticeTitle.textContent = "🎬 Video-Extraktion gestartet...";
+      noticeDesc.textContent = `Aufnahme im Format ${ext.toUpperCase()} läuft mit 30 FPS. Klicke auf 'Aufnahme stoppen', um die Datei direkt herunterzuladen.`;
+      notice.style.display = 'block';
+      setTimeout(() => { if (isRecording) notice.style.display = 'none'; }, 3000);
+
+      recordingTimer = setInterval(() => {
+        if (!isRecording) return;
+        const elapsedSec = Math.floor((Date.now() - recordStartTime) / 1000);
+        const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
+        const secs = String(elapsedSec % 60).padStart(2, '0');
+        exportBtn.textContent = `⏹ Aufnahme stoppen (${mins}:${secs})`;
+
+        if (maxDurationSec > 0 && elapsedSec >= maxDurationSec) {
+          stopVideoRecording();
+        }
+      }, 500);
+    }
+
+    function stopVideoRecording() {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+      }
+    }
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      if (!isRecording) {
+        startVideoRecording(0);
+      } else {
+        stopVideoRecording();
+      }
+    });
+
+    // 1-Click Fast 15s HD Clip Export
+    document.getElementById('quickExportBtn').addEventListener('click', () => {
+      if (isRecording) {
+        stopVideoRecording();
+        return;
+      }
+      timelineProgress = 35; // Start at Genesis phase
+      isPlaying = true;
+      startVideoRecording(15);
+    });
+
+    // Headless / External automation helper
+    window.__recordForSeconds = function(seconds) {
+      return new Promise((resolve, reject) => {
+        const { mimeType } = pickSupportedMimeType();
+        const stream = canvas.captureStream(30);
+        let rec;
+        try {
+          rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 6000000 });
+        } catch (e) {
+          rec = new MediaRecorder(stream);
+        }
+        const chunks = [];
+        rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+        rec.onstop = () => {
+          const blob = new Blob(chunks, { type: rec.mimeType || mimeType });
+          const reader = new FileReader();
+          reader.onloadend = () => resolve({ dataUrl: reader.result, mimeType: rec.mimeType, size: blob.size });
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        };
+        rec.start(250);
+        setTimeout(() => rec.stop(), seconds * 1000);
+      });
+    };
+
+    // 3D Projection Engine
+    function project3D(x, y, z, cx, cy, camDist, rotY, rotX) {
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      const x1 = x * cosY + z * sinY;
+      const z1 = -x * sinY + z * cosY;
+
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      const y2 = y * cosX - z1 * sinX;
+      const z2 = y * sinX + z1 * cosX;
+
+      const fov = 520;
+      const dist = z2 + camDist;
+      if (dist <= 10) return null;
+
+      const scale = fov / dist;
+      return {
+        px: cx + x1 * scale,
+        py: cy + y2 * scale,
+        scale: scale,
+        z: z2
+      };
+    }
+
+    // Main Render Loop
+    function render(timestamp) {
+      const dt = Math.min(0.1, (timestamp - lastTimestamp) / 1000);
+      lastTimestamp = timestamp;
+
+      if (isPlaying) {
+        timelineProgress += (dt / durationSeconds) * 100;
+        if (timelineProgress > 100) timelineProgress = 0;
+        document.getElementById('timeSlider').value = timelineProgress.toFixed(1);
+      }
+
+      // Time Readout
+      const totalSeconds = (timelineProgress / 100) * durationSeconds;
+      const curM = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const curS = String(Math.floor(totalSeconds % 60)).padStart(2, '0');
+      document.getElementById('timeReadout').textContent = `${curM}:${curS} / 01:04`;
+
+      // Active Chapter
+      const currCh = CHAPTERS.find(c => timelineProgress >= c.start && timelineProgress < c.end) || CHAPTERS[CHAPTERS.length - 1];
+      document.getElementById('chapterBadge').textContent = currCh.badge;
+      document.getElementById('subtitleText').textContent = currCh.text;
+
+      // Telemetry Update
+      document.getElementById('hudLambda').textContent = currCh.lambda.toFixed(4);
+      document.getElementById('hudDelta').textContent = currCh.delta.toFixed(4);
+      document.getElementById('hudDim').textContent = currCh.dim.toFixed(2);
+      document.getElementById('hudC').textContent = currCh.c.toFixed(3);
+
+      // Director Camera Orbit
+      if (directorMode) {
+        cameraAngle += currCh.camAngleSpeed;
+        cameraPitch = 0.12 + Math.sin(timelineProgress * 0.04) * 0.08;
+      }
+
+      // Clear Canvas to pure deep cosmic black (Maximum contrast)
+      ctx.fillStyle = '#010308';
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle Deep Space Vignette (Ultra-clean, zero milky haze)
+      ctx.save();
+      const gradVoid = ctx.createRadialGradient(W / 2, H * 0.40, 20, W / 2, H * 0.40, Math.max(W, H) * 0.65);
+      gradVoid.addColorStop(0, 'rgba(8, 18, 42, 0.22)');
+      gradVoid.addColorStop(0.6, 'rgba(3, 7, 18, 0.15)');
+      gradVoid.addColorStop(1, '#010308');
+      ctx.fillStyle = gradVoid;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // Dynamic Camera Recoil & Shake on Cosmic Transitions
+      let shakeX = 0, shakeY = 0;
+      if (timelineProgress >= 15 && timelineProgress < 21) {
+        const p = (timelineProgress - 15) / 6;
+        const decay = Math.exp(-p * 3.5);
+        shakeX = Math.sin(timelineProgress * 55) * 11 * decay;
+        shakeY = Math.cos(timelineProgress * 45) * 8 * decay;
+      } else if (timelineProgress >= 50 && timelineProgress < 56) {
+        const p = (timelineProgress - 50) / 6;
+        const decay = Math.exp(-p * 3.5);
+        shakeX = Math.sin(timelineProgress * 50) * 12 * decay;
+        shakeY = Math.cos(timelineProgress * 40) * 9 * decay;
+      } else if (timelineProgress >= 68 && timelineProgress < 74) {
+        const p = (timelineProgress - 68) / 6;
+        const decay = Math.exp(-p * 3.5);
+        shakeX = Math.sin(timelineProgress * 60) * 9 * decay;
+        shakeY = Math.cos(timelineProgress * 50) * 7 * decay;
+      }
+
+      // Camera Coordinates: Upper screen center (cy = H * 0.40) so lower bottom is 100% free
+      const cx = W / 2 + (currCh.camPanX || 0) + shakeX;
+      const cy = H * 0.40 + shakeY;
+      const camDist = currCh.camDist;
+      const stage = currCh.state;
+
+      // Render Pinpoint Background Stars (Faint, discrete, no fog)
+      const voidAlpha = stage === 'VOID' ? 0.45 : Math.max(0.12, 0.45 - (timelineProgress - 18) * 0.015);
+      ctx.fillStyle = `rgba(186, 230, 253, ${voidAlpha * 0.4})`;
+      for (const p of voidParticles) {
+        p.phase += p.speed;
+        const px = p.x + Math.sin(p.phase) * 12;
+        const py = p.y + Math.cos(p.phase) * 12;
+        const proj = project3D(px, py, p.z, cx, cy, camDist, cameraAngle, cameraPitch);
+        if (proj) {
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, Math.max(0.7, 1.1 * proj.scale), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Compute Genesis activation parameters
+      let bondFactor = 0;
+      let gravityPulse = 0;
+      if (stage === 'FLASH') bondFactor = (timelineProgress - 15) / 17 * 0.45;
+      else if (stage === 'PERCOLATION') bondFactor = 0.45 + (timelineProgress - 32) / 18 * 0.55;
+      else bondFactor = 1.0;
+
+      if (stage === 'GRAVITY_PULSE') {
+        gravityPulse = Math.sin(timelineProgress * 0.8) * 0.5 + 0.5;
+      }
+
+      // --- SPECIAL EFFECTS: RELATIVISTIC SHOCKWAVE RINGS ---
+      // 1. Genesis Blast Shockwave (15% - 32%)
+      if (timelineProgress >= 15 && timelineProgress < 32) {
+        const elapsed = timelineProgress - 15;
+        const r1 = elapsed * 15;
+        const alpha1 = Math.max(0, 0.95 - elapsed * 0.055);
+        draw3DShockwave(-145, 0, 0, r1, '56, 189, 248', alpha1, 2.5, cx, cy, camDist, cameraAngle, cameraPitch);
+        draw3DShockwave(-145, 0, 0, r1 * 0.6, '255, 255, 255', alpha1 * 0.8, 1.8, cx, cy, camDist, cameraAngle, cameraPitch);
+        draw3DShockwave(-145, 0, 0, r1 * 0.3, '14, 165, 233', alpha1 * 0.5, 1.2, cx, cy, camDist, cameraAngle, cameraPitch);
+      }
+
+      // 2. Multiverse Rift Shockwaves (50% - 68%)
+      if (timelineProgress >= 50 && timelineProgress < 68) {
+        const elapsed = timelineProgress - 50;
+        const rRift = elapsed * 17;
+        const alphaRift = Math.max(0, 0.9 - elapsed * 0.05);
+        draw3DShockwave(0, 0, 0, rRift, '192, 132, 252', alphaRift, 2.2, cx, cy, camDist, cameraAngle, cameraPitch);
+        draw3DShockwave(0, 0, 0, rRift * 0.7, '52, 211, 153', alphaRift * 0.75, 1.8, cx, cy, camDist, cameraAngle, cameraPitch);
+      }
+
+      // 3. Einstein Gravitational Wave Pulsing Rings (68% - 84%)
+      if (timelineProgress >= 68 && timelineProgress < 84) {
+        for (let w = 0; w < 3; w++) {
+          const wavePhase = ((timelineProgress - 68) * 3.5 + w * 12) % 36;
+          const rWave = wavePhase * 4.8;
+          const aWave = Math.max(0, 0.7 * (1 - wavePhase / 36));
+          draw3DShockwave(-145, 0, 0, rWave, '245, 158, 11', aWave, 1.8, cx, cy, camDist, cameraAngle, cameraPitch);
+        }
+      }
+
+      // --- SPECIAL EFFECTS: QUANTUM SPARKS EJECTA (SUPERNOVA EMBERS) ---
+      if (timelineProgress >= 15 && timelineProgress < 28) {
+        const elapsed = timelineProgress - 15;
+        const alpha = Math.max(0, 1.0 - elapsed * 0.075);
+        for (let i = 0; i < blastSparks.length; i++) {
+          const s = blastSparks[i];
+          const sx = -145 + s.dx * elapsed * 0.8;
+          const sy = s.dy * elapsed * 0.8;
+          const sz = s.dz * elapsed * 0.8;
+          const proj = project3D(sx, sy, sz, cx, cy, camDist, cameraAngle, cameraPitch);
+          if (!proj) continue;
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, Math.max(1, s.size * proj.scale), 0, Math.PI * 2);
+          ctx.fill();
+
+          const prevSx = -145 + s.dx * (elapsed - 0.35) * 0.8;
+          const prevSy = s.dy * (elapsed - 0.35) * 0.8;
+          const prevSz = s.dz * (elapsed - 0.35) * 0.8;
+          const prevProj = project3D(prevSx, prevSy, prevSz, cx, cy, camDist, cameraAngle, cameraPitch);
+          if (prevProj) {
+            ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.7})`;
+            ctx.lineWidth = Math.max(0.6, 1.2 * proj.scale);
+            ctx.beginPath();
+            ctx.moveTo(prevProj.px, prevProj.py);
+            ctx.lineTo(proj.px, proj.py);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Blend Mode Selection: 'KRISTALL' and 'DEZENT' use source-over (Zero Overexposure Blowout)
+      ctx.globalCompositeOperation = (glowMode === 'GLOW') ? 'lighter' : 'source-over';
+      const blurLevel = (glowMode === 'KRISTALL') ? 0 : (glowMode === 'DEZENT' ? 2 : 6);
+
+      // Render Universe 1 (3D Continuum) - Razor Sharp Geometry
+      if (currentView === 'DUAL' || currentView === 'UNIV1') {
+        if (bondFactor > 0.05) {
+          for (const e of edgesU1) {
+            const na = nodesU1[e.a];
+            const nb = nodesU1[e.b];
+
+            let metricStretch = 1.0;
+            const isCenterEdge = (e.a === 0 || e.b === 0);
+            if (stage === 'GRAVITY_PULSE' && isCenterEdge) {
+              metricStretch = 0.64;
+            }
+
+            const pa = project3D(na.origX + na.relX * bondFactor, na.origY + na.relY * bondFactor, na.origZ + na.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            const pb = project3D(nb.origX + nb.relX * bondFactor, nb.origY + nb.relY * bondFactor, nb.origZ + nb.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            if (!pa || !pb) continue;
+
+            // Crisp thin filaments, never blowing out
+            ctx.lineWidth = Math.max(0.4, (isCenterEdge && stage === 'GRAVITY_PULSE' ? 1.6 : 0.9) * pa.scale);
+            ctx.strokeStyle = stage === 'GRAVITY_PULSE' && isCenterEdge
+              ? `rgba(245, 158, 11, ${0.75 + 0.25 * gravityPulse})`
+              : `rgba(56, 189, 248, ${0.25 * bondFactor})`;
+            ctx.beginPath();
+            ctx.moveTo(pa.px, pa.py);
+            ctx.lineTo(pb.px, pb.py);
+            ctx.stroke();
+          }
+        }
+
+        for (let i = 0; i < N_NODES; i++) {
+          const n = nodesU1[i];
+          const proj = project3D(n.origX + n.relX * bondFactor, n.origY + n.relY * bondFactor, n.origZ + n.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+          if (!proj) continue;
+
+          const isCenter = (i === 0 && stage === 'GRAVITY_PULSE');
+          const rad = isCenter ? 7.5 * proj.scale : Math.max(1.6, 2.8 * proj.scale);
+
+          ctx.shadowBlur = isCenter ? (blurLevel * 2 + 4) : blurLevel;
+          ctx.shadowColor = isCenter ? '#f59e0b' : '#38bdf8';
+
+          // Outer crisp sphere
+          ctx.fillStyle = isCenter ? '#d97706' : '#0284c7';
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, rad, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Inner high-clarity pinpoint light (3D crystal specular dot)
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = isCenter ? '#fef3c7' : '#e0f2fe';
+          ctx.beginPath();
+          ctx.arc(proj.px - rad * 0.2, proj.py - rad * 0.2, Math.max(0.8, rad * 0.45), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Quantum Information Packets racing through bonds (Neural Cosmic Web)
+        if (bondFactor > 0.25) {
+          ctx.save();
+          for (let k = 0; k < 20; k++) {
+            const e = edgesU1[(k * 7) % edgesU1.length];
+            const na = nodesU1[e.a];
+            const nb = nodesU1[e.b];
+            const u = ((timelineProgress * 2.5 + k * 0.19) % 1.0);
+            const px = na.origX + (na.relX * (1 - u) + nb.relX * u) * bondFactor;
+            const py = na.origY + (na.relY * (1 - u) + nb.relY * u) * bondFactor;
+            const pz = na.origZ + (na.relZ * (1 - u) + nb.relZ * u) * bondFactor;
+            const proj = project3D(px, py, pz, cx, cy, camDist, cameraAngle, cameraPitch);
+            if (!proj) continue;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(proj.px, proj.py, Math.max(1.2, 2.0 * proj.scale), 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+
+      // Anamorphic Lens Flare on Genesis Ignition (15% - 23%)
+      if (timelineProgress >= 15 && timelineProgress < 23) {
+        const pFlare = (timelineProgress - 15) / 8;
+        const intensity = Math.sin(pFlare * Math.PI);
+        const centerProj = project3D(-145, 0, 0, cx, cy, camDist, cameraAngle, cameraPitch);
+        if (centerProj) {
+          drawAnamorphicFlare(centerProj.px, centerProj.py, '56, 189, 248', intensity, 360);
+        }
+      }
+
+      // Anamorphic Lens Flare on Gravitational Soliton (68% - 82%)
+      if (timelineProgress >= 68 && timelineProgress < 82) {
+        const pFlare = (timelineProgress - 68) / 14;
+        const intensity = Math.sin(pFlare * Math.PI) * 0.85;
+        const centerProj = project3D(-145, 0, 0, cx, cy, camDist, cameraAngle, cameraPitch);
+        if (centerProj) {
+          drawAnamorphicFlare(centerProj.px, centerProj.py, '245, 158, 11', intensity, 290);
+        }
+      }
+
+      // Render Universe 2 (Critical Fractal Universe, d ~ 2.05) - Visible in Multiverse stages
+      const showMultiverse = (stage === 'MULTIVERSE' || stage === 'GRAVITY_PULSE' || stage === 'EPILOG');
+      if ((currentView === 'DUAL' || currentView === 'UNIV2') && showMultiverse) {
+        if (bondFactor > 0.1) {
+          for (const e of edgesU2) {
+            const na = nodesU2[e.a];
+            const nb = nodesU2[e.b];
+
+            const pa = project3D(na.origX + na.relX * bondFactor, na.origY + na.relY * bondFactor, na.origZ + na.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            const pb = project3D(nb.origX + nb.relX * bondFactor, nb.origY + nb.relY * bondFactor, nb.origZ + nb.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            if (!pa || !pb) continue;
+
+            ctx.lineWidth = Math.max(0.35, 0.75 * pa.scale);
+            ctx.strokeStyle = `rgba(168, 85, 247, ${0.22 * bondFactor})`;
+            ctx.beginPath();
+            ctx.moveTo(pa.px, pa.py);
+            ctx.lineTo(pb.px, pb.py);
+            ctx.stroke();
+          }
+        }
+
+        for (let i = 0; i < nodesU2.length; i++) {
+          const n = nodesU2[i];
+          const proj = project3D(n.origX + n.relX * bondFactor, n.origY + n.relY * bondFactor, n.origZ + n.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+          if (!proj) continue;
+
+          const rad = Math.max(1.3, 2.3 * proj.scale);
+          ctx.shadowBlur = blurLevel;
+          ctx.shadowColor = '#c084fc';
+
+          // Outer crisp violet sphere
+          ctx.fillStyle = '#7e22ce';
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, rad, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Inner pinpoint highlight
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#f3e8ff';
+          ctx.beginPath();
+          ctx.arc(proj.px - rad * 0.2, proj.py - rad * 0.2, Math.max(0.6, rad * 0.4), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Render Universe 3 (Dense Quantum Island, d ~ 1.60) - Visible in Multiverse stages
+      if ((currentView === 'DUAL' || currentView === 'UNIV3') && showMultiverse) {
+        if (bondFactor > 0.1) {
+          for (const e of edgesU3) {
+            const na = nodesU3[e.a];
+            const nb = nodesU3[e.b];
+
+            const pa = project3D(na.origX + na.relX * bondFactor, na.origY + na.relY * bondFactor, na.origZ + na.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            const pb = project3D(nb.origX + nb.relX * bondFactor, nb.origY + nb.relY * bondFactor, nb.origZ + nb.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+            if (!pa || !pb) continue;
+
+            ctx.lineWidth = Math.max(0.35, 0.75 * pa.scale);
+            ctx.strokeStyle = `rgba(52, 211, 153, ${0.22 * bondFactor})`;
+            ctx.beginPath();
+            ctx.moveTo(pa.px, pa.py);
+            ctx.lineTo(pb.px, pb.py);
+            ctx.stroke();
+          }
+        }
+
+        for (let i = 0; i < nodesU3.length; i++) {
+          const n = nodesU3[i];
+          const proj = project3D(n.origX + n.relX * bondFactor, n.origY + n.relY * bondFactor, n.origZ + n.relZ * bondFactor, cx, cy, camDist, cameraAngle, cameraPitch);
+          if (!proj) continue;
+
+          const rad = Math.max(1.3, 2.2 * proj.scale);
+          ctx.shadowBlur = blurLevel;
+          ctx.shadowColor = '#34d399';
+
+          // Outer crisp emerald sphere
+          ctx.fillStyle = '#047857';
+          ctx.beginPath();
+          ctx.arc(proj.px, proj.py, rad, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Inner pinpoint highlight
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = '#d1fae5';
+          ctx.beginPath();
+          ctx.arc(proj.px - rad * 0.2, proj.py - rad * 0.2, Math.max(0.6, rad * 0.4), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.shadowBlur = 0;
+
+      // Burned-in Subtitles for Video Recording, Cinema Mode, or forced export
+      if (isRecording || isCinemaMode || forceCanvasSubtitles) {
+        drawCanvasSubtitles(ctx, W, H, currCh);
+      }
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+
+    // Slider Input
+    const timeSlider = document.getElementById('timeSlider');
+    timeSlider.addEventListener('input', (e) => {
+      timelineProgress = parseFloat(e.target.value);
+    });
+
+    // Play/Pause Button
+    const playBtn = document.getElementById('playBtn');
+    playBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      playBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Abspielen';
+    });
+
+    // Camera Mode
+    const cameraModeBtn = document.getElementById('cameraModeBtn');
+    cameraModeBtn.addEventListener('click', () => {
+      directorMode = !directorMode;
+      cameraModeBtn.classList.toggle('active', directorMode);
+      cameraModeBtn.textContent = directorMode ? '🎥 NASA-Kamerafahrt' : '🖐 Freier Orbit';
+    });
+
+    // Views
+    const viewDual = document.getElementById('viewDual');
+    const viewUniv1 = document.getElementById('viewUniv1');
+    const viewUniv2 = document.getElementById('viewUniv2');
+    const viewUniv3 = document.getElementById('viewUniv3');
+
+    function setActiveView(view, btn) {
+      currentView = view;
+      [viewDual, viewUniv1, viewUniv2, viewUniv3].forEach(b => b && b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    viewDual.addEventListener('click', () => setActiveView('DUAL', viewDual));
+    viewUniv1.addEventListener('click', () => setActiveView('UNIV1', viewUniv1));
+    viewUniv2.addEventListener('click', () => setActiveView('UNIV2', viewUniv2));
+    if (viewUniv3) viewUniv3.addEventListener('click', () => setActiveView('UNIV3', viewUniv3));
+  </script>
+</body>
+</html>

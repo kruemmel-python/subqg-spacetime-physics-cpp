@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {adjacency,graphDistances,estimateDimension,buildControl,auditWorld} from '../src/modules/subqg_dimension.mjs';
+test('distances on cycle',()=>assert.deepEqual(graphDistances(buildControl('cycle',8),0),[0,1,2,3,4,3,2,1]));
+test('no usable fit on clique',()=>{const a=estimateDimension(buildControl('clique',20));assert.equal(a.median,null);});
+test('cycle has approximately one-dimensional growth',()=>{const d=estimateDimension(buildControl('cycle',101));assert.ok(d.median>0.65&&d.median<1.4,JSON.stringify(d));});
+test('grid has larger growth exponent than cycle',()=>{const g=estimateDimension(buildControl('grid',400));const c=estimateDimension(buildControl('cycle',400));assert.ok(g.median>c.median,`${g.median} vs ${c.median}`);});
+test('edge validation',()=>assert.throws(()=>adjacency(3,[{a:0,b:3}]),RangeError));
+test('deterministic audit',()=>assert.deepEqual(auditWorld(),auditWorld()));
+test('dimension does not assume SubQG has a spatial dimension',()=>{const r=auditWorld();assert.ok(r.dimension.median===null||Number.isFinite(r.dimension.median));});

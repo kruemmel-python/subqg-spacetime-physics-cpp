@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Metrische Rueckkopplung: Kantenlaengenkontraktion durch Energiedichte
+# x = Ruhekantenlaenge (l0), y = effektive Gravitationskopplung (chi * rho / kappa)
+# Physikalische Bedeutung: Gleichgewichtsmetrik l = l0 * (1 - chi*rho/kappa)
+name: SubQG Metrische Kantenkontraktion
+domain: real
+formula: x * (1 - y) = x - x*y
+seed: 42

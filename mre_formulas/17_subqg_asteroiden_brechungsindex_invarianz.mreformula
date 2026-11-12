@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+name: SubQG Asteroiden Brechungsindex & Kantenkontraktion
+domain: real
+formula: (1 / (1 - y)) * (1 - y) = 1
+seed: 42
+# Im SubQG-Raum entspricht die Kantenverkuerzung der relativen Laenge L_e/L_0 = 1 - y (y = 1 - exp(x_e)).
+# Der effektive optisch-geometrische Brechungsindex n(r) = 1 / (1 - y) kompensiert
+# die Kantenlaenge exakt, sodass das Produkt n * L = 1 invariant bleibt (Phasenerhaltung).

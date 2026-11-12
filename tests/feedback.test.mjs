@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {FeedbackWorld} from '../src/modules/subqg_feedback.mjs';
+const make=()=>{const w=new FeedbackWorld({seed:42,threshold:0.24,linkThreshold:0.34,maxNodes:55});w.run(900);assert.ok(w.links.size>0);assert.ok(w.faces.size>0);return w;};
+test('no space before events, no physical clock from solver',()=>{const w=new FeedbackWorld();const x=w.evolve();assert.equal(x.meanLength,0);assert.equal(x.clockTotal,0);assert.equal(w.nodes.length,0);});
+test('deterministic trajectories',()=>{const a=make(),b=make();a.setMass(0,2);b.setMass(0,2);assert.deepEqual(a.evolveMany(12),b.evolveMany(12));});
+test('excitation causes metric response and solver converges',()=>{const w=make();w.initializeMetric();const baseline=[...w.metric.values()];w.setMass(0,2);const out=w.evolveMany(20);assert.ok(out.every(r=>r.residual<1e-9));assert.ok([...w.metric.values()].some((v,i)=>Math.abs(v-baseline[i])>1e-6));});
+test('removing excitation relaxes toward original geometry',()=>{const w=make();w.setMass(0,2);w.evolveMany(40);const excited=[...w.metric.values()];w.setMass(0,0);w.evolveMany(80);const relaxed=[...w.metric.values()];const avg=a=>a.reduce((s,v)=>s+Math.abs(v-1),0)/a.length;assert.ok(avg(relaxed)<avg(excited));assert.ok(avg(relaxed)<1e-5);});
+test('bounded lengths and finite values',()=>{const w=make();w.setMass(0,1e3);w.evolveMany(30);for(const x of w.metric.values())assert.ok(Number.isFinite(x)&&x>=w.minLength&&x<=w.maxLength);});
+test('metric symmetry and gauge invariance',()=>{const w=make();w.setMass(0,1);w.evolveMany(4);for(const e of w.links.values())assert.equal(w.edgeLength(e),w.edgeLength({a:e.b,b:e.a}));});
+test('event clocks do not advance during feedback',()=>{const w=make();const before=JSON.stringify([...w.clocks]);w.setMass(0,1);w.evolveMany(10);assert.equal(JSON.stringify([...w.clocks]),before);});
+test('reject invalid parameters',()=>{assert.throws(()=>new FeedbackWorld({relaxation:2}),RangeError);assert.throws(()=>new FeedbackWorld({feedback:-1}),RangeError);});

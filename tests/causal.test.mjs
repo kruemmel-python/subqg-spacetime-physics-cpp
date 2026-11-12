@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {CausalWorld} from '../src/modules/subqg_causal.mjs';
+const make=()=>{const w=new CausalWorld({seed:42});w.run(900);return w;};
+test('empty world has no events and no physical clock',()=>{const w=new CausalWorld();assert.equal(w.events.length,0);assert.equal(w.eventClocks.size,0);});
+test('event count matches formed faces',()=>{const w=make();assert.equal(w.events.length,w.faces.size);assert.ok(w.events.length>0);});
+test('local clock increments once per incident face',()=>{const w=make();assert.equal([...w.eventClocks.values()].reduce((a,b)=>a+b,0),3*w.events.length);});
+test('all parents precede children and causal depth increases',()=>{const w=make();for(const e of w.events)for(const p of e.parents){assert.ok(p<e.id);assert.ok(w.events[p].depth<e.depth);assert.equal(w.relation(p,e.id),'before');assert.equal(w.relation(e.id,p),'after');}});
+test('transitive ancestors and antisymmetry',()=>{const w=make();for(const e of w.events.slice(0,100))for(const a of w.ancestors(e.id)){assert.equal(w.relation(a,e.id),'before');assert.ok(!w.ancestors(a).has(e.id));}});
+test('identical seeds produce identical causal histories',()=>{assert.deepEqual(make().causalSnapshot(),make().causalSnapshot());});
+test('solver relaxation does not create events or advance clocks',()=>{const w=make(),before=JSON.stringify(w.causalSnapshot());w.evolveMany(3);assert.equal(JSON.stringify(w.causalSnapshot()),before);});
+test('no event clock before first face',()=>{const w=new CausalWorld({seed:42});for(let i=0;i<900;i++){const row=w.step();if(row.formed>0)break;assert.equal(w.events.length,0);assert.equal(w.eventClocks.size,0);}assert.ok(w.events.length>0);});
+test('causal relation validates IDs',()=>{const w=make();assert.throws(()=>w.relation(-1,0),RangeError);assert.equal(w.relation(0,0),'same');});
+test('spacelike relation exists for independent faces when present',()=>{const w=make();let found=false;for(let i=0;i<Math.min(150,w.events.length)&&!found;i++)for(let j=i+1;j<Math.min(150,w.events.length);j++)if(w.relation(i,j)==='spacelike'){found=true;break;}assert.ok(found);});

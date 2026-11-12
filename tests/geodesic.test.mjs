@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {GeodesicWorld} from '../src/modules/subqg_geodesic.mjs';
+const make=()=>{const w=new GeodesicWorld({seed:42,maxNodes:65});w.run(900);return w;};
+test('force-free probe has no path without a connected graph',()=>{const w=new GeodesicWorld();assert.throws(()=>w.shortestPath(0,1),RangeError);});
+test('same endpoint is a zero-length geodesic',()=>{const w=make();assert.deepEqual(w.shortestPath(0,0),{path:[0],length:0,reachable:true});});
+test('baseline graph metric gives identical paths',()=>{const w=make();for(const r of w.pathSurvey({maxPairs:100}))assert.equal(r.changed,false);});
+test('paths have valid edges and sum to computed length',()=>{const w=make();w.setMass(0,2);w.evolveMany(12);for(const r of w.pathSurvey({maxPairs:200})){let sum=0;for(let k=1;k<r.curved.path.length;k++){const edge=w.links.get(w.key(r.curved.path[k-1],r.curved.path[k]));assert.ok(edge);sum+=w.edgeLength(edge);}assert.ok(Math.abs(sum-r.curved.length)<1e-9);}});
+test('deterministic survey for equal seed and perturbation',()=>{const a=make(),b=make();for(const w of [a,b]){w.setMass(0,2);w.evolveMany(12);}assert.deepEqual(a.pathSurvey({maxPairs:100}),b.pathSurvey({maxPairs:100}));});
+test('metric remains positive after perturbation',()=>{const w=make();w.setMass(0,4);w.evolveMany(15);for(const e of w.links.values())assert.ok(w.edgeLength(e)>0);});
+test('probe cannot change intrinsic event clocks',()=>{const w=make();const before=[...w.clocks];w.pathSurvey({maxPairs:100});assert.deepEqual([...w.clocks],before);});

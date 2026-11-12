@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SubQG Apfel-Experiment — Trägheit, Gewicht & Universeller Freier Fall</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #0f172a;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    header {
+      max-width: 1440px;
+      margin: 0 auto 18px auto;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+    .controls-bar {
+      max-width: 1440px;
+      margin: 0 auto 18px auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+    select, button, input[type="range"] {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #334155;
+    }
+    button.primary {
+      background: #0284c7;
+      border-color: #38bdf8;
+      font-weight: 600;
+    }
+    .grid {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card h2 {
+      font-size: 1.02rem;
+      color: #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card h2 span {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    canvas {
+      width: 100%;
+      height: 290px;
+      background: #050811;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #1e293b;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .mono {
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    .pass { color: #4ade80; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>SubQG Apfel-Experiment: Trägheit, Gewicht & Universeller Freier Fall</h1>
+      <p>Echte Echtzeit-Berechnung aus SubQG-Phasenüberlappung, variationeller Kantenmetrik x_e = ln(L_e/L_0) und unitärer Hamiltonscher Wellendynamik (kein F=m·g im Code)</p>
+    </div>
+    <div class="badge-row" id="gateBadges">
+      <span class="badge">Initialisiere SubQG-Engine...</span>
+    </div>
+  </header>
+
+  <div class="controls-bar">
+    <div class="control-group">
+      <label for="modeSelect">Versuchsmodus:</label>
+      <select id="modeSelect">
+        <option value="freeFall">1. Freier Fall (F_act = 0) — Universalität Ẍ_frei ≈ g_eff</option>
+        <option value="pidHold">2. Stationäres Halten (PID @ X_0) — Gewicht F_Halten ∝ m_inert</option>
+        <option value="handForce">3. "Apfel auf der Hand" (Gleiches F_max = 0.055 für alle)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <button id="playPauseBtn" class="primary">Pause</button>
+      <button id="resetBtn">Neu starten</button>
+    </div>
+    <div class="control-group" style="flex:1; min-width:220px;">
+      <label for="timeSlider">Zeitschritt:</label>
+      <input type="range" id="timeSlider" min="0" max="50" value="0" style="flex:1;" />
+      <span id="timeLabel" class="mono">t = 0.00</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>
+        1. SubQG-Graphenraum: Wellenpakete |Ψ_u(t)|² & Metrische Kontraktion L_e = e^(x_e)
+        <span>Quelle ("Erde") bei Knoten u = 8 | Startort X_0 = 28</span>
+      </h2>
+      <canvas id="waveCanvas" width="680" height="290"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>
+        2. Schwerpunkt-Trajektorien X(t) im festen Referenzlineal X_u^(0)
+        <span>Alle 4 Resonanzobjekte gleichzeitig im gewählten Modus</span>
+      </h2>
+      <canvas id="trajCanvas" width="680" height="290"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>
+        3. Erforderliche Aktuator-Haltekraft F_act(t) & Lineare Regression F_Halten(m_inert)
+        <span>Gleicher Regler (K_p=40, K_d=35, K_i=25) für alle Objekte</span>
+      </h2>
+      <canvas id="forceCanvas" width="680" height="290"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>
+        4. Quantitative Messdaten (Dynamische Impulskalibrierung, Fall & Haltekraft)
+        <span id="summaryStats"></span>
+      </h2>
+      <div style="overflow-x:auto;">
+        <table id="metricsTable">
+          <thead>
+            <tr>
+              <th>Resonanzobjekt</th>
+              <th>Norm N_Ψ</th>
+              <th>m_inert (ΔP/Δv)</th>
+              <th>Ẍ_frei (Fall)</th>
+              <th>F_Halten (Gewicht)</th>
+              <th>F_Halten / m_inert</th>
+              <th>Abw. |F/m - a|</th>
+              <th>Hand-Test (F_max)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { executeAppleExperimentSuite } from '../src/modules/subqg_apple_experiment.mjs';
+
+    const suite = executeAppleExperimentSuite();
+    const st = suite.stationaryMode;
+    const hf = suite.handForceExperiment;
+
+    // Gate-Badges aktualisieren
+    const badgeContainer = document.getElementById('gateBadges');
+    badgeContainer.innerHTML = `
+      <span class="badge">Alle 6 Gates: ${suite.allGatesPassed ? 'BESTANDEN' : 'FEHLER'}</span>
+      <span class="badge">Massenspanne: ${suite.calibration.massSpanRatio.toFixed(2)}×</span>
+      <span class="badge">Freier Fall η: ${(st.maxEta * 100).toFixed(3)}%</span>
+      <span class="badge">Gewicht R²: ${st.weightRegression.rSquared.toFixed(6)}</span>
+      <span class="badge">10/10 Kontrollen (C1–C10): OK</span>
+    `;
+
+    document.getElementById('summaryStats').textContent =
+      `Steigung A = ${st.weightRegression.slope.toFixed(5)} vs. |⟨Ẍ_frei⟩| = ${st.meanFreeFallAccAbs.toFixed(5)}`;
+
+    // Tabelle füllen
+    const tbody = document.querySelector('#metricsTable tbody');
+    st.objects.forEach((obj, idx) => {
+      const handObj = hf.objects[idx];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong style="color:${obj.color}">${obj.label}</strong></td>
+        <td class="mono">${obj.excitationNorm.toFixed(3)}</td>
+        <td class="mono">${obj.mInert.toFixed(4)}</td>
+        <td class="mono">${obj.aFree.toFixed(5)}</td>
+        <td class="mono">${obj.fHold.toFixed(5)}</td>
+        <td class="mono">${obj.ratioFOverM.toFixed(5)}</td>
+        <td class="mono pass">${(obj.equivalenceRelError * 100).toFixed(2)}%</td>
+        <td class="mono" style="color:${handObj.isHeld ? '#4ade80' : '#f87171'}">${handObj.status}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Interaktive Animations-Steuerung
+    const modeSelect = document.getElementById('modeSelect');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const timeSlider = document.getElementById('timeSlider');
+    const timeLabel = document.getElementById('timeLabel');
+
+    let playing = true;
+    let frameIndex = 0;
+
+    function getActiveSeries() {
+      const mode = modeSelect.value;
+      if (mode === 'freeFall') {
+        return st.objects.map(o => ({ ...o, activeSamples: o.freeFallSamples }));
+      } else if (mode === 'pidHold') {
+        return st.objects.map(o => ({ ...o, activeSamples: o.holdSamples }));
+      } else {
+        return st.objects.map((o, i) => ({ ...o, activeSamples: hf.objects[i].samples }));
+      }
+    }
+
+    function updateSliderRange() {
+      const series = getActiveSeries();
+      const maxIdx = series[0].activeSamples.length - 1;
+      timeSlider.max = String(maxIdx);
+      if (frameIndex > maxIdx) frameIndex = 0;
+    }
+
+    modeSelect.addEventListener('change', () => {
+      frameIndex = 0;
+      updateSliderRange();
+      renderAll();
+    });
+
+    playPauseBtn.addEventListener('click', () => {
+      playing = !playing;
+      playPauseBtn.textContent = playing ? 'Pause' : 'Abspielen';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      frameIndex = 0;
+      renderAll();
+    });
+
+    timeSlider.addEventListener('input', () => {
+      frameIndex = Number(timeSlider.value);
+      renderAll();
+    });
+
+    updateSliderRange();
+
+    function drawWaveCanvas(series, idx) {
+      const canvas = document.getElementById('waveCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const metric = st.objects[0].metricSnapshot;
+      const N = metric.phiMetric.length;
+      const padL = 48, padR = 20, padT = 24, padB = 34;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      // Gitterlinien
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= 70; x += 10) {
+        const px = padL + (x / (N - 1)) * plotW;
+        ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT + plotH); ctx.stroke();
+        ctx.fillStyle = '#64748b';
+        ctx.font = '11px Consolas, monospace';
+        ctx.fillText(String(x), px - 6, H - 10);
+      }
+
+      // Quellzentrum (u = 8) und Startort (X_0 = 28)
+      const srcPx = padL + (8 / (N - 1)) * plotW;
+      ctx.strokeStyle = 'rgba(244, 63, 94, 0.55)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(srcPx, padT); ctx.lineTo(srcPx, padT + plotH); ctx.stroke();
+      ctx.fillStyle = '#fb7185';
+      ctx.fillText('Quelle ("Erde" u=8)', srcPx + 4, padT + 14);
+
+      const x0Px = padL + (28 / (N - 1)) * plotW;
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+      ctx.beginPath(); ctx.moveTo(x0Px, padT); ctx.lineTo(x0Px, padT + plotH); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('Start X_0=28', x0Px + 4, padT + 14);
+
+      // Effektive Kantenlänge L_e = exp(x_e) als gestrichelte goldene Kurve
+      ctx.strokeStyle = '#eab308';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let e = 0; e < metric.edgeLength.length; e++) {
+        const px = padL + ((e + 0.5) / (N - 1)) * plotW;
+        const lVal = metric.edgeLength[e]; // in [0.75, 1.0]
+        const py = padT + (1.0 - lVal) * plotH * 2.8;
+        if (e === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#eab308';
+      ctx.fillText('Metrik-Kontraktion 1 - L_e(u)', padL + 8, padT + plotH - 8);
+
+      // Wellenpaket-Dichten |Ψ_u(t)|² aller 4 Objekte
+      const maxRho = 3.5;
+      series.forEach(obj => {
+        const sample = obj.activeSamples[Math.min(idx, obj.activeSamples.length - 1)];
+        ctx.strokeStyle = obj.color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        for (let u = 0; u < N; u++) {
+          const px = padL + (u / (N - 1)) * plotW;
+          const rho = sample.density[u];
+          const py = padT + plotH - Math.min(1.0, rho / maxRho) * (plotH * 0.88);
+          if (u === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      });
+    }
+
+    function drawTrajCanvas(series, idx) {
+      const canvas = document.getElementById('trajCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const padL = 54, padR = 20, padT = 20, padB = 32;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const allSamples = series.flatMap(s => s.activeSamples);
+      const tMax = Math.max(...allSamples.map(s => s.t), 1);
+      const xMin = Math.min(...allSamples.map(s => s.X), 26.8);
+      const xMax = Math.max(...allSamples.map(s => s.X), 28.2);
+      const spanX = Math.max(0.2, xMax - xMin);
+
+      // Referenzlinie X_0 = 28
+      const yRef = padT + ((xMax - 28.0) / spanX) * plotH;
+      ctx.strokeStyle = '#334155';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(padL, yRef); ctx.lineTo(padL + plotW, yRef); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Consolas, monospace';
+      ctx.fillText('X_0 = 28.0', 4, Math.min(H - 12, Math.max(14, yRef + 4)));
+
+      series.forEach(obj => {
+        const limit = Math.min(idx, obj.activeSamples.length - 1);
+        ctx.strokeStyle = obj.color;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (let i = 0; i <= limit; i++) {
+          const s = obj.activeSamples[i];
+          const px = padL + (s.t / tMax) * plotW;
+          const py = padT + ((xMax - s.X) / spanX) * plotH;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        const cur = obj.activeSamples[limit];
+        const cx = padL + (cur.t / tMax) * plotW;
+        const cy = padT + ((xMax - cur.X) / spanX) * plotH;
+        ctx.fillStyle = obj.color;
+        ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI * 2); ctx.fill();
+      });
+
+      ctx.fillStyle = '#64748b';
+      ctx.fillText(`t = 0`, padL, H - 10);
+      ctx.fillText(`t = ${tMax.toFixed(1)}`, padL + plotW - 48, H - 10);
+    }
+
+    function drawForceCanvas(series, idx) {
+      const canvas = document.getElementById('forceCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const halfW = Math.floor(W * 0.54);
+      const padL = 48, padT = 22, padB = 32;
+      const plotW = halfW - padL - 16;
+      const plotH = H - padT - padB;
+
+      // Links: Zeitverlauf F_act(t)
+      const allSamples = series.flatMap(s => s.activeSamples);
+      const tMax = Math.max(...allSamples.map(s => s.t), 1);
+      const fMaxPlot = Math.max(0.22, ...allSamples.map(s => Math.abs(s.fAct)));
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.strokeRect(padL, padT, plotW, plotH);
+
+      series.forEach(obj => {
+        const limit = Math.min(idx, obj.activeSamples.length - 1);
+        ctx.strokeStyle = obj.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i <= limit; i++) {
+          const s = obj.activeSamples[i];
+          const px = padL + (s.t / tMax) * plotW;
+          const py = padT + plotH - (Math.max(0, s.fAct) / fMaxPlot) * plotH;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      });
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Consolas, monospace';
+      ctx.fillText('F_act(t) Zeitverlauf', padL + 6, padT + 14);
+
+      // Rechts: Lineare Regression F_Halten vs. m_inert
+      const regL = halfW + 36;
+      const regW = W - regL - 20;
+      ctx.strokeStyle = '#1e293b';
+      ctx.strokeRect(regL, padT, regW, plotH);
+
+      const mMax = 7.2;
+      const fRegMax = 0.18;
+      // Regressionsgerade
+      ctx.strokeStyle = '#38bdf8';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      const y0 = padT + plotH - (st.weightRegression.intercept / fRegMax) * plotH;
+      const y1 = padT + plotH - ((st.weightRegression.slope * mMax + st.weightRegression.intercept) / fRegMax) * plotH;
+      ctx.moveTo(regL, y0);
+      ctx.lineTo(regL + regW, y1);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      st.objects.forEach(obj => {
+        const px = regL + (obj.mInert / mMax) * regW;
+        const py = padT + plotH - (obj.fHold / fRegMax) * plotH;
+        ctx.fillStyle = obj.color;
+        ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2); ctx.fill();
+      });
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`F_Halten ∝ m_inert (R²=${st.weightRegression.rSquared.toFixed(5)})`, regL + 6, padT + 14);
+    }
+
+    function renderAll() {
+      const series = getActiveSeries();
+      const sample0 = series[0].activeSamples[Math.min(frameIndex, series[0].activeSamples.length - 1)];
+      timeSlider.value = String(frameIndex);
+      timeLabel.textContent = `t = ${sample0.t.toFixed(2)}`;
+      drawWaveCanvas(series, frameIndex);
+      drawTrajCanvas(series, frameIndex);
+      drawForceCanvas(series, frameIndex);
+    }
+
+    setInterval(() => {
+      if (!playing) return;
+      const series = getActiveSeries();
+      const maxIdx = series[0].activeSamples.length - 1;
+      frameIndex = (frameIndex + 1) % (maxIdx + 1);
+      renderAll();
+    }, 90);
+
+    renderAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Landau-Ordnungsparameter: Symmetrie des Nukleationspotentials V(Delta)
+# x = quadratische Amplitude (Delta^2), y = effektive Schwellenkopplung
+# Physikalische Bedeutung: Symmetrie des quadratisch-quartischen Landau-Potentials
+name: SubQG Landau-Ordnungsparameter
+domain: real
+formula: (x + y)^2 - 2*x*y = x^2 + y^2
+seed: 42

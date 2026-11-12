@@ -1,0 +1,9 @@
+MRE_FORMULA_1
+name: SubQG Ehrenfest-Kuerzung des Freien Falls
+domain: real
+formula: (x * y) / x = y
+seed: 42
+# In SubQG gilt fuer die Beschleunigung a = F_geom / m_inert.
+# Da die geometrische Kraft F_geom proportional zur Quantenzahl N_Psi ist (F = x * y mit x = N_Psi)
+# und die traege Masse m_inert ebenfalls proportional zu N_Psi ist (m = x),
+# kuerzt sich die Teilchenzahl x exakt heraus: Die Fallbeschleunigung y = g_eff ist universell.

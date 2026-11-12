@@ -1,0 +1,6092 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubQG Game Physics Engine - Interactive Sandbox & Laboratory</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f141d;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #1a2234;
+      border-bottom: 1px solid #2d3748;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .title-group h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #63b3ed;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      background: #2b6cb0;
+      color: #ebf8ff;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-subqg {
+      background: #805ad5;
+      color: #faf5ff;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select, button {
+      background: #2d3748;
+      color: #edf2f7;
+      border: 1px solid #4a5568;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    select:hover, button:hover {
+      background: #4a5568;
+      border-color: #63b3ed;
+    }
+    button.btn-primary {
+      background: #3182ce;
+      border-color: #4299e1;
+    }
+    button.btn-primary:hover {
+      background: #2b6cb0;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-label input {
+      cursor: pointer;
+    }
+    #main-container {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #canvas-wrap {
+      flex: 1;
+      position: relative;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #090d16;
+    }
+    #overlay-hud {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      pointer-events: none;
+      min-width: 240px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .hud-title {
+      font-weight: 700;
+      color: #90cdf4;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 4px;
+    }
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hud-val {
+      font-family: monospace;
+      font-weight: 600;
+      color: #68d391;
+    }
+    .hud-val-subqg {
+      color: #d6bcfa;
+    }
+    #instructions {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      pointer-events: none;
+    }
+    #tool-panel {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tool-btn {
+      width: 100%;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>
+        SubQG Game Physics Engine
+        <span class="badge">Production 2D</span>
+        <span class="badge badge-subqg">Emergent Subquantum Graphity</span>
+      </h1>
+    </div>
+
+    <div class="controls">
+      <label for="scene-select" style="font-size:0.85rem; color:#a0aec0;">Szene:</label>
+      <select id="scene-select">
+        <option value="stackingTower">1. Kistenturm & Stapel-Stabilität</option>
+        <option value="bouncingBalls">2. Bälle, Rampen & Elastizität</option>
+        <option value="ropeBridge">3. Hängebrücke (Tragfähig - Fängt Felsen ab)</option>
+        <option value="ropeBridgeBreakable">3b. Hängebrücke (Zerstörbar - Reißt & Zersplittert bei 450 N)</option>
+        <option value="vehicleTerrain">4. Motorisiertes Geländefahrzeug</option>
+        <option value="catapult">5. Katapult & Trebuchet</option>
+        <option value="sensorsAndTrays">6. Sensor-Radar & Triggers</option>
+      </select>
+
+      <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; font-weight:600; color:#cbd5e1;">
+        <span>Physik-Modus:</span>
+        <select id="engine-mode-select" style="background:#1e293b; color:#63b3ed; font-weight:700; border:1px solid #3182ce; border-radius:6px; padding:4px 8px;">
+          <option value="hybrid" selected>⚡ Hybrid-Modus (SubQG Metrikgitter + Impulssolver - Empfohlen für Spiele)</option>
+          <option value="pure-subqg">★ SubQG Pure (100% First-Principles - Kantenbarriere ohne Impulssolver)</option>
+        </select>
+      </label>
+
+      <button id="btn-reset" class="btn-primary">Neu starten</button>
+      <button id="btn-fire-catapult" style="display:none; background:#e53e3e; color:white; font-weight:700; padding:5px 12px; border-radius:6px; border:none; cursor:pointer; box-shadow:0 0 8px rgba(229,62,62,0.6);">🚀 Katapult abfeuern (Leertaste)</button>
+      <button id="btn-reload-catapult" style="display:none; background:#4a5568; color:white; font-weight:700; padding:5px 10px; border-radius:6px; border:none; cursor:pointer;">🔄 Nachladen</button>
+
+      <label class="checkbox-label" title="Aktiviert Materialbruch bei definierter Belastungsgrenze">
+        <input type="checkbox" id="chk-breakable" checked>
+        <span style="color:#f6ad55; font-weight:600;">Materialbruch</span>
+      </label>
+
+      <label class="checkbox-label" title="Schaltet die visuelle Anzeige des internen SubQG-Kantennetzwerks ein">
+        <input type="checkbox" id="chk-subqg" checked>
+        <span style="color:#d6bcfa; font-weight:600;">SubQG Gitter</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="chk-gravity" checked>
+        <span>Gravitation</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" id="chk-contacts" checked>
+        <span>Kontakte</span>
+      </label>
+    </div>
+  </header>
+
+  <div id="main-container">
+    <div id="canvas-wrap">
+      <canvas id="physics-canvas"></canvas>
+
+      <div id="overlay-hud">
+        <div class="hud-title">LIVE TELEMETRIE & SUBQG AUDIT</div>
+        <div class="hud-row"><span>Physik-Modus:</span><span id="hud-mode" class="hud-val" style="color:#d6bcfa; font-weight:700;">PURE SUBQG (100%)</span></div>
+        <div class="hud-row"><span>Kontakt-Solver:</span><span id="hud-contact-solver" class="hud-val" style="color:#68d391;">0 (Pure SubQG)</span></div>
+        <div class="hud-row"><span>Gelenk-Solver:</span><span id="hud-joint-solver" class="hud-val" style="color:#63b3ed;">0 Aufrufe</span></div>
+        <div class="hud-row"><span>FPS:</span><span id="hud-fps" class="hud-val">60</span></div>
+        <div class="hud-row"><span>Körper (Bodies):</span><span id="hud-bodies" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Gelenke (Joints):</span><span id="hud-joints" class="hud-val">0 intakt</span></div>
+        <div class="hud-row"><span>Material-Status:</span><span id="hud-material" class="hud-val" style="color:#68d391;">Intakt</span></div>
+        <div class="hud-row"><span>Aktive Kontakte:</span><span id="hud-contacts" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Schlafend (Sleeping):</span><span id="hud-sleeping" class="hud-val">0</span></div>
+        <div class="hud-row"><span>Kinetische Energie:</span><span id="hud-energy" class="hud-val">0 J</span></div>
+        <div style="margin: 6px 0 4px; border-top: 1px dashed #4a5568;"></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">SubQG Kantenwirkung:</span><span id="hud-action" class="hud-val hud-val-subqg">0.00</span></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">Max. Kantenverzerrung:</span><span id="hud-strain" class="hud-val hud-val-subqg">0.00%</span></div>
+        <div class="hud-row"><span style="color:#d6bcfa;">Relationale Kanten:</span><span id="hud-edges" class="hud-val hud-val-subqg">0</span></div>
+      </div>
+
+      <div id="tool-panel">
+        <div style="font-size:0.75rem; color:#90cdf4; font-weight:700; margin-bottom:2px;">SPAWN OBJEKTE</div>
+        <button class="tool-btn" id="btn-spawn-box">+ Kiste (Holz)</button>
+        <button class="tool-btn" id="btn-spawn-ball">+ Ball (Gummi)</button>
+        <button class="tool-btn" id="btn-spawn-boulder">+ Felsblock (Schwer)</button>
+        <button class="tool-btn" id="btn-spawn-capsule">+ Kapsel</button>
+      </div>
+
+      <div id="instructions">
+        <strong>Bedienung:</strong> Linksklick & Ziehen = Körper greifen & werfen | Rechtsklick & Ziehen = Laser-Raycast | Mausrad = Zoom
+      </div>
+    </div>
+  </div>
+
+  
+<script>
+
+// --- src/math/MathUtils.mjs ---
+/**
+ * Mathematische Hilfsfunktionen und physikalische Konstanten
+ */
+const EPSILON = 1e-9;
+const DEG2RAD = Math.PI / 180.0;
+const RAD2DEG = 180.0 / Math.PI;
+
+function clamp(val, min, max) {
+  if (val < min) return min;
+  if (val > max) return max;
+  return val;
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function sign(x) {
+  return x >= 0 ? 1 : -1;
+}
+
+function normalizeAngle(angle) {
+  while (angle > Math.PI) angle -= 2 * Math.PI;
+  while (angle < -Math.PI) angle += 2 * Math.PI;
+  return angle;
+}
+
+function isApproxZero(val, eps = 1e-6) {
+  return Math.abs(val) <= eps;
+}
+
+
+// --- src/math/Vec2.mjs ---
+/**
+ * Vec2: Hochperformante 2D Vektorklasse für SubQG Game Physics.
+ */
+class Vec2 {
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
+
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+
+  copy(v) {
+    this.x = v.x;
+    this.y = v.y;
+    return this;
+  }
+
+  clone() {
+    return new Vec2(this.x, this.y);
+  }
+
+  add(v) {
+    this.x += v.x;
+    this.y += v.y;
+    return this;
+  }
+
+  sub(v) {
+    this.x -= v.x;
+    this.y -= v.y;
+    return this;
+  }
+
+  scale(s) {
+    this.x *= s;
+    this.y *= s;
+    return this;
+  }
+
+  addScaled(v, s) {
+    this.x += v.x * s;
+    this.y += v.y * s;
+    return this;
+  }
+
+  subScaled(v, s) {
+    this.x -= v.x * s;
+    this.y -= v.y * s;
+    return this;
+  }
+
+  negate() {
+    this.x = -this.x;
+    this.y = -this.y;
+    return this;
+  }
+
+  dot(v) {
+    return this.x * v.x + this.y * v.y;
+  }
+
+  /**
+   * 2D Kreuzprodukt mit anderem Vektor ergibt Skalar (z-Komponente): a.x * b.y - a.y * b.x
+   */
+  cross(v) {
+    return this.x * v.y - this.y * v.x;
+  }
+
+  /**
+   * Kreuzprodukt aus Skalar und Vektor: s x v = (-s * v.y, s * v.x)
+   */
+  crossScalar(s) {
+    return new Vec2(-s * this.y, s * this.x);
+  }
+
+  lengthSq() {
+    return this.x * this.x + this.y * this.y;
+  }
+
+  length() {
+    return Math.hypot(this.x, this.y);
+  }
+
+  normalize() {
+    const len = this.length();
+    if (len > 1e-12) {
+      const inv = 1.0 / len;
+      this.x *= inv;
+      this.y *= inv;
+    } else {
+      this.x = 0;
+      this.y = 0;
+    }
+    return this;
+  }
+
+  perp() {
+    // 90 Grad links herum
+    return new Vec2(-this.y, this.x);
+  }
+
+  distanceToSq(v) {
+    const dx = this.x - v.x;
+    const dy = this.y - v.y;
+    return dx * dx + dy * dy;
+  }
+
+  distanceTo(v) {
+    return Math.hypot(this.x - v.x, this.y - v.y);
+  }
+
+  rotate(angle) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+    const x = this.x * c - this.y * s;
+    const y = this.x * s + this.y * c;
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+
+  // Statische Utility-Methoden
+  static zero() {
+    return new Vec2(0, 0);
+  }
+
+  static add(a, b) {
+    return new Vec2(a.x + b.x, a.y + b.y);
+  }
+
+  static sub(a, b) {
+    return new Vec2(a.x - b.x, a.y - b.y);
+  }
+
+  static scale(v, s) {
+    return new Vec2(v.x * s, v.y * s);
+  }
+
+  static dot(a, b) {
+    return a.x * b.x + a.y * b.y;
+  }
+
+  static cross(a, b) {
+    return a.x * b.y - a.y * b.x;
+  }
+
+  static crossScalarVec(s, v) {
+    return new Vec2(-s * v.y, s * v.x);
+  }
+
+  static crossVecScalar(v, s) {
+    return new Vec2(s * v.y, -s * v.x);
+  }
+
+  static distance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  static distanceSq(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  }
+
+  static lerp(a, b, t) {
+    return new Vec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+  }
+}
+
+
+// --- src/math/Mat22.mjs ---
+
+/**
+ * Mat22: 2x2 Matrix für Rotationen, effektive Massen und Trägheitstransformationen.
+ * Spaltenbasiert: [c1.x c2.x]
+ *                 [c1.y c2.y]
+ */
+class Mat22 {
+  constructor(c1 = new Vec2(1, 0), c2 = new Vec2(0, 1)) {
+    this.c1 = c1.clone();
+    this.c2 = c2.clone();
+  }
+
+  set(angle) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+    this.c1.x = c;  this.c2.x = -s;
+    this.c1.y = s;  this.c2.y = c;
+    return this;
+  }
+
+  setElements(m00, m01, m10, m11) {
+    this.c1.x = m00; this.c2.x = m01;
+    this.c1.y = m10; this.c2.y = m11;
+    return this;
+  }
+
+  copy(m) {
+    this.c1.copy(m.c1);
+    this.c2.copy(m.c2);
+    return this;
+  }
+
+  mulVec(v) {
+    return new Vec2(
+      this.c1.x * v.x + this.c2.x * v.y,
+      this.c1.y * v.x + this.c2.y * v.y
+    );
+  }
+
+  mulMat(m) {
+    return new Mat22(
+      this.mulVec(m.c1),
+      this.mulVec(m.c2)
+    );
+  }
+
+  transpose() {
+    const tmp = this.c1.y;
+    this.c1.y = this.c2.x;
+    this.c2.x = tmp;
+    return this;
+  }
+
+  invert() {
+    const a = this.c1.x, b = this.c2.x;
+    const c = this.c1.y, d = this.c2.y;
+    let det = a * d - b * c;
+    if (Math.abs(det) < 1e-12) {
+      det = 1e-12;
+    }
+    const invDet = 1.0 / det;
+    this.c1.x =  d * invDet;
+    this.c2.x = -b * invDet;
+    this.c1.y = -c * invDet;
+    this.c2.y =  a * invDet;
+    return this;
+  }
+
+  /**
+   * Löst lineares Gleichungssystem M * x = b
+   */
+  solve(b) {
+    const a = this.c1.x, c = this.c2.x;
+    const d = this.c1.y, e = this.c2.y;
+    let det = a * e - c * d;
+    if (Math.abs(det) < 1e-12) {
+      det = 1e-12;
+    }
+    const invDet = 1.0 / det;
+    return new Vec2(
+      (e * b.x - c * b.y) * invDet,
+      (a * b.y - d * b.x) * invDet
+    );
+  }
+
+  static fromAngle(angle) {
+    return new Mat22().set(angle);
+  }
+}
+
+
+// --- src/math/Transform.mjs ---
+
+/**
+ * Transform: Starre Koordinatentransformation (Position + Rotation)
+ * Cacht cos und sin für maximale Performance ohne redundante Trigonometrie.
+ */
+class Transform {
+  constructor(position = new Vec2(0, 0), angle = 0) {
+    this.position = position.clone();
+    this.angle = angle;
+    this.c = Math.cos(angle);
+    this.s = Math.sin(angle);
+  }
+
+  set(pos, angle) {
+    this.position.copy(pos);
+    this.angle = angle;
+    this.c = Math.cos(angle);
+    this.s = Math.sin(angle);
+    return this;
+  }
+
+  copy(t) {
+    this.position.copy(t.position);
+    this.angle = t.angle;
+    this.c = t.c;
+    this.s = t.s;
+    return this;
+  }
+
+  clone() {
+    return new Transform(this.position, this.angle);
+  }
+
+  setAngle(angle) {
+    this.angle = angle;
+    this.c = Math.cos(angle);
+    this.s = Math.sin(angle);
+    return this;
+  }
+
+  /**
+   * Lokal zu Weltpunkt: T * p = R * p + position
+   */
+  transformPoint(p) {
+    return new Vec2(
+      this.position.x + (this.c * p.x - this.s * p.y),
+      this.position.y + (this.s * p.x + this.c * p.y)
+    );
+  }
+
+  /**
+   * Lokal zu Weltvektor (nur Rotation): R * v
+   */
+  transformVector(v) {
+    return new Vec2(
+      this.c * v.x - this.s * v.y,
+      this.s * v.x + this.c * v.y
+    );
+  }
+
+  /**
+   * Welt- zu Lokalpunkt: R^T * (p - position)
+   */
+  inverseTransformPoint(p) {
+    const dx = p.x - this.position.x;
+    const dy = p.y - this.position.y;
+    return new Vec2(
+      this.c * dx + this.s * dy,
+      -this.s * dx + this.c * dy
+    );
+  }
+
+  /**
+   * Welt- zu Lokalvektor: R^T * v
+   */
+  inverseTransformVector(v) {
+    return new Vec2(
+      this.c * v.x + this.s * v.y,
+      -this.s * v.x + this.c * v.y
+    );
+  }
+}
+
+
+// --- src/math/AABB.mjs ---
+
+/**
+ * AABB: Achsenparallele Bounding Box für Broadphase-Prüfungen & Raycasts.
+ */
+class AABB {
+  constructor(min = new Vec2(Infinity, Infinity), max = new Vec2(-Infinity, -Infinity)) {
+    this.min = min.clone();
+    this.max = max.clone();
+  }
+
+  set(min, max) {
+    this.min.copy(min);
+    this.max.copy(max);
+    return this;
+  }
+
+  copy(aabb) {
+    this.min.copy(aabb.min);
+    this.max.copy(aabb.max);
+    return this;
+  }
+
+  clone() {
+    return new AABB(this.min, this.max);
+  }
+
+  reset() {
+    this.min.set(Infinity, Infinity);
+    this.max.set(-Infinity, -Infinity);
+    return this;
+  }
+
+  expand(margin) {
+    this.min.x -= margin;
+    this.min.y -= margin;
+    this.max.x += margin;
+    this.max.y += margin;
+    return this;
+  }
+
+  expandByVec(v) {
+    if (v.x < 0) this.min.x += v.x;
+    else this.max.x += v.x;
+    if (v.y < 0) this.min.y += v.y;
+    else this.max.y += v.y;
+    return this;
+  }
+
+  combine(other) {
+    this.min.x = Math.min(this.min.x, other.min.x);
+    this.min.y = Math.min(this.min.y, other.min.y);
+    this.max.x = Math.max(this.max.x, other.max.x);
+    this.max.y = Math.max(this.max.y, other.max.y);
+    return this;
+  }
+
+  containsPoint(p) {
+    return (
+      p.x >= this.min.x &&
+      p.x <= this.max.x &&
+      p.y >= this.min.y &&
+      p.y <= this.max.y
+    );
+  }
+
+  containsAABB(other) {
+    return (
+      this.min.x <= other.min.x &&
+      this.min.y <= other.min.y &&
+      this.max.x >= other.max.x &&
+      this.max.y >= other.max.y
+    );
+  }
+
+  intersects(other) {
+    return !(
+      this.max.x < other.min.x ||
+      this.min.x > other.max.x ||
+      this.max.y < other.min.y ||
+      this.min.y > other.max.y
+    );
+  }
+
+  getCenter() {
+    return new Vec2(
+      (this.min.x + this.max.x) * 0.5,
+      (this.min.y + this.max.y) * 0.5
+    );
+  }
+
+  getExtents() {
+    return new Vec2(
+      (this.max.x - this.min.x) * 0.5,
+      (this.max.y - this.min.y) * 0.5
+    );
+  }
+
+  getArea() {
+    const w = Math.max(0, this.max.x - this.min.x);
+    const h = Math.max(0, this.max.y - this.min.y);
+    return w * h;
+  }
+
+  getPerimeter() {
+    const w = Math.max(0, this.max.x - this.min.x);
+    const h = Math.max(0, this.max.y - this.min.y);
+    return 2.0 * (w + h);
+  }
+
+  static combineArea(a, b) {
+    const minX = Math.min(a.min.x, b.min.x);
+    const minY = Math.min(a.min.y, b.min.y);
+    const maxX = Math.max(a.max.x, b.max.x);
+    const maxY = Math.max(a.max.y, b.max.y);
+    const w = Math.max(0, maxX - minX);
+    const h = Math.max(0, maxY - minY);
+    return w * h;
+  }
+
+  /**
+   * Fast Raycast gegen AABB (Slab-Methode)
+   * Gibt { hit: boolean, fraction: number, normal: Vec2 } zurück
+   */
+  raycast(origin, dir, maxFraction = 1.0) {
+    let tmin = 0.0;
+    let tmax = maxFraction;
+    let normalX = 0;
+    let normalY = 0;
+
+    // X-Achse
+    if (Math.abs(dir.x) < 1e-12) {
+      if (origin.x < this.min.x || origin.x > this.max.x) {
+        return { hit: false, fraction: 0, normal: Vec2.zero() };
+      }
+    } else {
+      const invD = 1.0 / dir.x;
+      let t1 = (this.min.x - origin.x) * invD;
+      let t2 = (this.max.x - origin.x) * invD;
+      let sign = -1.0;
+      if (t1 > t2) {
+        const tmp = t1; t1 = t2; t2 = tmp;
+        sign = 1.0;
+      }
+      if (t1 > tmin) {
+        tmin = t1;
+        normalX = sign;
+        normalY = 0;
+      }
+      tmax = Math.min(tmax, t2);
+      if (tmin > tmax) return { hit: false, fraction: 0, normal: Vec2.zero() };
+    }
+
+    // Y-Achse
+    if (Math.abs(dir.y) < 1e-12) {
+      if (origin.y < this.min.y || origin.y > this.max.y) {
+        return { hit: false, fraction: 0, normal: Vec2.zero() };
+      }
+    } else {
+      const invD = 1.0 / dir.y;
+      let t1 = (this.min.y - origin.y) * invD;
+      let t2 = (this.max.y - origin.y) * invD;
+      let sign = -1.0;
+      if (t1 > t2) {
+        const tmp = t1; t1 = t2; t2 = tmp;
+        sign = 1.0;
+      }
+      if (t1 > tmin) {
+        tmin = t1;
+        normalX = 0;
+        normalY = sign;
+      }
+      tmax = Math.min(tmax, t2);
+      if (tmin > tmax) return { hit: false, fraction: 0, normal: Vec2.zero() };
+    }
+
+    return {
+      hit: true,
+      fraction: tmin,
+      point: new Vec2(origin.x + dir.x * tmin, origin.y + dir.y * tmin),
+      normal: new Vec2(normalX, normalY)
+    };
+  }
+}
+
+
+// --- src/dynamics/Material.mjs ---
+/**
+ * Material: Definiert physikalische Oberflächen- und Masseneigenschaften
+ */
+class Material {
+  constructor(config = {}) {
+    this.density = config.density ?? 1.0;       // Dichte in kg/m² (für 2D)
+    this.friction = config.friction ?? 0.3;     // Reibungskoeffizient mu (0.0 = reibungsfrei, 1.0 = hoch)
+    this.restitution = config.restitution ?? 0.2; // Elastizität / Rückprall (0.0 = unelastisch, 1.0 = perfekt elastisch)
+  }
+
+  static default() {
+    return new Material({ density: 1.0, friction: 0.3, restitution: 0.2 });
+  }
+
+  static wood() {
+    return new Material({ density: 0.7, friction: 0.4, restitution: 0.15 });
+  }
+
+  static metal() {
+    return new Material({ density: 7.8, friction: 0.2, restitution: 0.1 });
+  }
+
+  static rubber() {
+    return new Material({ density: 1.2, friction: 0.8, restitution: 0.85 });
+  }
+
+  static ice() {
+    return new Material({ density: 0.9, friction: 0.05, restitution: 0.1 });
+  }
+
+  static bouncy() {
+    return new Material({ density: 1.0, friction: 0.2, restitution: 0.95 });
+  }
+
+  static stone() {
+    return new Material({ density: 2.5, friction: 0.6, restitution: 0.05 });
+  }
+}
+
+
+// --- src/collision/shapes/Shape.mjs ---
+
+
+
+/**
+ * Shape: Abstrakte Basisklasse für alle geometrischen Kollisionsformen.
+ */
+class Shape {
+  constructor(type = 'shape') {
+    this.type = type;
+    this.material = Material.default();
+    this.isTrigger = false; // Sensor / Trigger: detektiert Überlappungen ohne physischen Stoß
+    this.body = null;       // Zugehöriger RigidBody
+    this.offset = new Vec2(0, 0); // Lokaler Versatz zum Schwerpunkt
+  }
+
+  setMaterial(material) {
+    this.material = material;
+    if (this.body) this.body._recomputeMassData();
+    return this;
+  }
+
+  setTrigger(isTrigger) {
+    this.isTrigger = isTrigger;
+    return this;
+  }
+
+  setOffset(x, y) {
+    this.offset.set(x, y);
+    if (this.body) this.body._recomputeMassData();
+    return this;
+  }
+
+  /**
+   * Berechnet Masse und Trägheitsmoment für die gegebene Dichte
+   * Gibt { mass, inertia } zurück
+   */
+  computeMassData(density) {
+    throw new Error('computeMassData() must be implemented by subclass');
+  }
+
+  /**
+   * Berechnet die weltraumbezogene AABB der Form unter Transformation T
+   */
+  computeAABB(transform) {
+    throw new Error('computeAABB() must be implemented by subclass');
+  }
+
+  /**
+   * Prüft, ob ein Weltpunkt innerhalb der Form liegt
+   */
+  testPoint(point, transform) {
+    throw new Error('testPoint() must be implemented by subclass');
+  }
+
+  /**
+   * Führt einen Raycast gegen die Form durch
+   */
+  raycast(ray, transform, maxDist) {
+    throw new Error('raycast() must be implemented by subclass');
+  }
+}
+
+
+// --- src/collision/shapes/Circle.mjs ---
+
+
+
+/**
+ * Circle: Kreis-Kollisionsform (z. B. Bälle, Räder, Fässer).
+ */
+class Circle extends Shape {
+  constructor(radius = 0.5, offset = new Vec2(0, 0)) {
+    super('circle');
+    this.radius = Math.max(1e-4, radius);
+    this.offset = offset.clone();
+  }
+
+  computeMassData(density) {
+    const area = Math.PI * this.radius * this.radius;
+    const mass = density * area;
+    // Trägheitsmoment um Zentrum: I_0 = 1/2 * m * r^2
+    // Nach Steinerschem Satz bei Versatz d: I = I_0 + m * d^2
+    const dSq = this.offset.lengthSq();
+    const inertia = 0.5 * mass * this.radius * this.radius + mass * dSq;
+    return { mass, inertia, area };
+  }
+
+  computeAABB(transform) {
+    const center = transform.transformPoint(this.offset);
+    const r = this.radius;
+    return new AABB(
+      new Vec2(center.x - r, center.y - r),
+      new Vec2(center.x + r, center.y + r)
+    );
+  }
+
+  testPoint(point, transform) {
+    const center = transform.transformPoint(this.offset);
+    return center.distanceToSq(point) <= this.radius * this.radius;
+  }
+
+  raycast(ray, transform, maxDist = Infinity) {
+    const center = transform.transformPoint(this.offset);
+    const m = Vec2.sub(ray.origin, center);
+    const b = m.dot(ray.direction);
+    const c = m.dot(m) - this.radius * this.radius;
+
+    // Strahlursprung außerhalb und zielt vom Kreis weg
+    if (c > 0.0 && b > 0.0) return { hit: false };
+
+    const discr = b * b - c;
+    if (discr < 0.0) return { hit: false };
+
+    let t = -b - Math.sqrt(discr);
+    if (t < 0.0) t = 0.0; // Strahl startete im Kreis
+
+    if (t > maxDist) return { hit: false };
+
+    const hitPoint = Vec2.add(ray.origin, Vec2.scale(ray.direction, t));
+    const normal = Vec2.sub(hitPoint, center).normalize();
+
+    return {
+      hit: true,
+      fraction: t,
+      point: hitPoint,
+      normal
+    };
+  }
+}
+
+
+// --- src/collision/shapes/Box.mjs ---
+
+
+
+/**
+ * Box: Rechteckige Kollisionsform (Kisten, Böden, Wände, Plattformen).
+ */
+class Box extends Shape {
+  constructor(width = 1.0, height = 1.0, offset = new Vec2(0, 0)) {
+    super('box');
+    this.width = Math.max(1e-4, width);
+    this.height = Math.max(1e-4, height);
+    this.offset = offset.clone();
+    this.hx = this.width * 0.5;
+    this.hy = this.height * 0.5;
+  }
+
+  computeMassData(density) {
+    const area = this.width * this.height;
+    const mass = density * area;
+    // Trägheitsmoment Kiste: I_0 = 1/12 * m * (w^2 + h^2)
+    // Steiner: + m * d^2
+    const dSq = this.offset.lengthSq();
+    const inertia = (1.0 / 12.0) * mass * (this.width * this.width + this.height * this.height) + mass * dSq;
+    return { mass, inertia, area };
+  }
+
+  getLocalVertices() {
+    const ox = this.offset.x;
+    const oy = this.offset.y;
+    return [
+      new Vec2(ox - this.hx, oy - this.hy),
+      new Vec2(ox + this.hx, oy - this.hy),
+      new Vec2(ox + this.hx, oy + this.hy),
+      new Vec2(ox - this.hx, oy + this.hy)
+    ];
+  }
+
+  getWorldVertices(transform) {
+    const local = this.getLocalVertices();
+    return local.map(v => transform.transformPoint(v));
+  }
+
+  getWorldNormals(transform) {
+    // 2 orthogonale Einheitsnormalen reichen für Rechteck im SAT
+    const n1 = transform.transformVector(new Vec2(1, 0));
+    const n2 = transform.transformVector(new Vec2(0, 1));
+    return [n1, n2];
+  }
+
+  computeAABB(transform) {
+    const verts = this.getWorldVertices(transform);
+    const min = new Vec2(Infinity, Infinity);
+    const max = new Vec2(-Infinity, -Infinity);
+
+    for (const v of verts) {
+      if (v.x < min.x) min.x = v.x;
+      if (v.x > max.x) max.x = v.x;
+      if (v.y < min.y) min.y = v.y;
+      if (v.y > max.y) max.y = v.y;
+    }
+
+    return new AABB(min, max);
+  }
+
+  testPoint(point, transform) {
+    // Transformiere Weltpunkt in lokales Kistensystem
+    const local = transform.inverseTransformPoint(point);
+    const dx = local.x - this.offset.x;
+    const dy = local.y - this.offset.y;
+    return Math.abs(dx) <= this.hx && Math.abs(dy) <= this.hy;
+  }
+
+  raycast(ray, transform, maxDist = Infinity) {
+    // Transformiere Strahl ins lokale System
+    const localOrigin = transform.inverseTransformPoint(ray.origin);
+    const localDir = transform.inverseTransformVector(ray.direction);
+
+    const aabb = new AABB(
+      new Vec2(this.offset.x - this.hx, this.offset.y - this.hy),
+      new Vec2(this.offset.x + this.hx, this.offset.y + this.hy)
+    );
+
+    const hit = aabb.raycast(localOrigin, localDir, maxDist);
+    if (!hit.hit) return { hit: false };
+
+    // Zurück in Weltkoordinaten transformieren
+    const worldPoint = transform.transformPoint(hit.point);
+    const worldNormal = transform.transformVector(hit.normal);
+
+    return {
+      hit: true,
+      fraction: hit.fraction,
+      point: worldPoint,
+      normal: worldNormal
+    };
+  }
+}
+
+
+// --- src/collision/shapes/Polygon.mjs ---
+
+
+
+/**
+ * Polygon: Konvexe Polygonform für Dreiecke, Sechsecke, Keile, Rampen etc.
+ */
+class Polygon extends Shape {
+  constructor(vertices = [], offset = new Vec2(0, 0)) {
+    super('polygon');
+    if (vertices.length < 3) {
+      throw new Error('Polygon requires at least 3 vertices');
+    }
+    this.offset = offset.clone();
+    this.localVertices = vertices.map(v => v.clone());
+    this._ensureCounterClockwise();
+    this.localNormals = this._computeLocalNormals();
+  }
+
+  _ensureCounterClockwise() {
+    let area2 = 0;
+    const n = this.localVertices.length;
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      area2 += this.localVertices[i].cross(this.localVertices[j]);
+    }
+    // Wenn im Uhrzeigersinn definiert, umkehren
+    if (area2 < 0) {
+      this.localVertices.reverse();
+    }
+  }
+
+  _computeLocalNormals() {
+    const normals = [];
+    const n = this.localVertices.length;
+    for (let i = 0; i < n; i++) {
+      const p1 = this.localVertices[i];
+      const p2 = this.localVertices[(i + 1) % n];
+      const edge = Vec2.sub(p2, p1);
+      // Nach außen gerichtete Normale (bei CCW ist das edge.perp() bzw. (edge.y, -edge.x) invertiert)
+      const normal = new Vec2(edge.y, -edge.x).normalize();
+      normals.push(normal);
+    }
+    return normals;
+  }
+
+  computeMassData(density) {
+    let area = 0.0;
+    let cx = 0.0;
+    let cy = 0.0;
+    let inertia = 0.0;
+    const n = this.localVertices.length;
+
+    for (let i = 0; i < n; i++) {
+      const p1 = this.localVertices[i];
+      const p2 = this.localVertices[(i + 1) % n];
+      const cross = p1.cross(p2);
+      area += cross * 0.5;
+      cx += (p1.x + p2.x) * cross;
+      cy += (p1.y + p2.y) * cross;
+
+      // Trägheitsintegral über Dreieck
+      const intx2 = p1.x * p1.x + p1.x * p2.x + p2.x * p2.x;
+      const inty2 = p1.y * p1.y + p1.y * p2.y + p2.y * p2.y;
+      inertia += (0.25 * (1.0 / 3.0) * cross) * (intx2 + inty2);
+    }
+
+    area = Math.abs(area);
+    const mass = density * area;
+    inertia = Math.abs(inertia) * density;
+
+    return { mass, inertia: Math.max(1e-4, inertia), area };
+  }
+
+  getWorldVertices(transform) {
+    return this.localVertices.map(v => {
+      const local = Vec2.add(v, this.offset);
+      return transform.transformPoint(local);
+    });
+  }
+
+  getWorldNormals(transform) {
+    return this.localNormals.map(n => transform.transformVector(n));
+  }
+
+  computeAABB(transform) {
+    const verts = this.getWorldVertices(transform);
+    const min = new Vec2(Infinity, Infinity);
+    const max = new Vec2(-Infinity, -Infinity);
+
+    for (const v of verts) {
+      if (v.x < min.x) min.x = v.x;
+      if (v.x > max.x) max.x = v.x;
+      if (v.y < min.y) min.y = v.y;
+      if (v.y > max.y) max.y = v.y;
+    }
+
+    return new AABB(min, max);
+  }
+
+  testPoint(point, transform) {
+    const verts = this.getWorldVertices(transform);
+    const n = verts.length;
+    for (let i = 0; i < n; i++) {
+      const p1 = verts[i];
+      const p2 = verts[(i + 1) % n];
+      const edge = Vec2.sub(p2, p1);
+      const toPoint = Vec2.sub(point, p1);
+      if (edge.cross(toPoint) < 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  raycast(ray, transform, maxDist = Infinity) {
+    const verts = this.getWorldVertices(transform);
+    const normals = this.getWorldNormals(transform);
+    let tmin = 0.0;
+    let tmax = maxDist;
+    let hitNormal = Vec2.zero();
+
+    for (let i = 0; i < verts.length; i++) {
+      const normal = normals[i];
+      const v = verts[i];
+      const denom = normal.dot(ray.direction);
+      const numer = normal.dot(Vec2.sub(v, ray.origin));
+
+      if (Math.abs(denom) < 1e-9) {
+        // Parallel zur Kante
+        if (numer < 0.0) return { hit: false };
+      } else {
+        const t = numer / denom;
+        if (denom < 0.0) {
+          // Strahl trifft von außen
+          if (t > tmin) {
+            tmin = t;
+            hitNormal = normal;
+          }
+        } else {
+          // Strahl verlässt Polygon
+          if (t < tmax) {
+            tmax = t;
+          }
+        }
+      }
+      if (tmin > tmax) return { hit: false };
+    }
+
+    return {
+      hit: true,
+      fraction: tmin,
+      point: Vec2.add(ray.origin, Vec2.scale(ray.direction, tmin)),
+      normal: hitNormal
+    };
+  }
+
+  static createRegularPolygon(radius, sides = 5, offset = new Vec2(0, 0)) {
+    const verts = [];
+    const step = (Math.PI * 2.0) / sides;
+    for (let i = 0; i < sides; i++) {
+      const a = i * step;
+      verts.push(new Vec2(Math.cos(a) * radius, Math.sin(a) * radius));
+    }
+    return new Polygon(verts, offset);
+  }
+}
+
+
+// --- src/collision/shapes/Capsule.mjs ---
+
+
+
+/**
+ * Capsule: Kapselform (zwei Halbkreise verbunden durch ein Rechteck)
+ * Ideal für Spielfiguren, Ragdolls, Gliedmaßen und Projektile.
+ */
+class Capsule extends Shape {
+  constructor(length = 1.0, radius = 0.3, offset = new Vec2(0, 0)) {
+    super('capsule');
+    this.length = Math.max(1e-4, length);
+    this.radius = Math.max(1e-4, radius);
+    this.offset = offset.clone();
+    this.hl = this.length * 0.5;
+  }
+
+  computeMassData(density) {
+    // Rechteck (length * 2 * radius) + zwei Halbkreise = 1 Vollkreis (pi * radius^2)
+    const rectArea = this.length * (2.0 * this.radius);
+    const circleArea = Math.PI * this.radius * this.radius;
+    const area = rectArea + circleArea;
+    const mass = density * area;
+
+    // Trägheitsmoment um Zentrum:
+    // I_rect = 1/12 * m_rect * (length^2 + (2*radius)^2)
+    const mRect = density * rectArea;
+    const iRect = (1.0 / 12.0) * mRect * (this.length * this.length + 4.0 * this.radius * this.radius);
+
+    // I_circle = m_circle * (1/2 * r^2 + hl^2)
+    const mCircle = density * circleArea;
+    const iCircle = mCircle * (0.5 * this.radius * this.radius + this.hl * this.hl);
+
+    const dSq = this.offset.lengthSq();
+    const inertia = (iRect + iCircle) + mass * dSq;
+
+    return { mass, inertia, area };
+  }
+
+  getLocalEndpoints() {
+    const ox = this.offset.x;
+    const oy = this.offset.y;
+    // Entlang Y-Achse ausgerichtet
+    return [
+      new Vec2(ox, oy - this.hl),
+      new Vec2(ox, oy + this.hl)
+    ];
+  }
+
+  getWorldEndpoints(transform) {
+    const [p1, p2] = this.getLocalEndpoints();
+    return [
+      transform.transformPoint(p1),
+      transform.transformPoint(p2)
+    ];
+  }
+
+  computeAABB(transform) {
+    const [p1, p2] = this.getWorldEndpoints(transform);
+    const r = this.radius;
+    const min = new Vec2(
+      Math.min(p1.x, p2.x) - r,
+      Math.min(p1.y, p2.y) - r
+    );
+    const max = new Vec2(
+      Math.max(p1.x, p2.x) + r,
+      Math.max(p1.y, p2.y) + r
+    );
+    return new AABB(min, max);
+  }
+
+  testPoint(point, transform) {
+    const [p1, p2] = this.getWorldEndpoints(transform);
+    const seg = Vec2.sub(p2, p1);
+    const lenSq = seg.lengthSq();
+    if (lenSq < 1e-9) {
+      return p1.distanceToSq(point) <= this.radius * this.radius;
+    }
+    const t = Math.max(0, Math.min(1, Vec2.sub(point, p1).dot(seg) / lenSq));
+    const closest = Vec2.add(p1, Vec2.scale(seg, t));
+    return closest.distanceToSq(point) <= this.radius * this.radius;
+  }
+
+  raycast(ray, transform, maxDist = Infinity) {
+    // Kapsel als Minkowski-Summe aus Liniensegment und Kreis
+    const [p1, p2] = this.getWorldEndpoints(transform);
+    // Näherungs-Raycast über Segmentabstand
+    const seg = Vec2.sub(p2, p1);
+    const segLen = seg.length();
+    // Bounding Box Test zuerst
+    const aabb = this.computeAABB(transform);
+    const hitBox = aabb.raycast(ray.origin, ray.direction, maxDist);
+    if (!hitBox.hit) return { hit: false };
+
+    // Feinprüfung: Teste Kreis an p1, Kreis an p2 und Zylinder-Flanken
+    let bestHit = null;
+    let minFraction = Infinity;
+
+    // Test Endkappen als Kreise
+    for (const p of [p1, p2]) {
+      const m = Vec2.sub(ray.origin, p);
+      const b = m.dot(ray.direction);
+      const c = m.dot(m) - this.radius * this.radius;
+      if (!(c > 0 && b > 0)) {
+        const discr = b * b - c;
+        if (discr >= 0) {
+          let t = -b - Math.sqrt(discr);
+          if (t >= 0 && t < minFraction && t <= maxDist) {
+            minFraction = t;
+            const pt = Vec2.add(ray.origin, Vec2.scale(ray.direction, t));
+            bestHit = {
+              hit: true,
+              fraction: t,
+              point: pt,
+              normal: Vec2.sub(pt, p).normalize()
+            };
+          }
+        }
+      }
+    }
+
+    if (bestHit) return bestHit;
+    return hitBox;
+  }
+}
+
+
+// --- src/collision/shapes/Segment.mjs ---
+
+
+
+/**
+ * Segment: 1D Liniensegment (Kante) für Böden, Wände, Rampen und Hänge.
+ * Normalerweise für statische Körper (`body.type = 'static'`).
+ */
+class Segment extends Shape {
+  constructor(p1 = new Vec2(-1, 0), p2 = new Vec2(1, 0)) {
+    super('segment');
+    this.p1 = p1.clone();
+    this.p2 = p2.clone();
+    this.thickness = 0.05; // Leichte Dicke zur Vermeidung von Tunneling
+  }
+
+  computeMassData(density) {
+    // Statische Segmente haben standardmäßig unendliche Masse / 0 inverse Masse
+    return { mass: 0, inertia: 0, area: 0 };
+  }
+
+  getWorldEndpoints(transform) {
+    return [
+      transform.transformPoint(this.p1),
+      transform.transformPoint(this.p2)
+    ];
+  }
+
+  computeAABB(transform) {
+    const [w1, w2] = this.getWorldEndpoints(transform);
+    const pad = this.thickness;
+    return new AABB(
+      new Vec2(Math.min(w1.x, w2.x) - pad, Math.min(w1.y, w2.y) - pad),
+      new Vec2(Math.max(w1.x, w2.x) + pad, Math.max(w1.y, w2.y) + pad)
+    );
+  }
+
+  testPoint(point, transform) {
+    const [w1, w2] = this.getWorldEndpoints(transform);
+    const seg = Vec2.sub(w2, w1);
+    const lenSq = seg.lengthSq();
+    if (lenSq < 1e-9) return w1.distanceToSq(point) <= this.thickness * this.thickness;
+    const t = Math.max(0, Math.min(1, Vec2.sub(point, w1).dot(seg) / lenSq));
+    const closest = Vec2.add(w1, Vec2.scale(seg, t));
+    return closest.distanceToSq(point) <= this.thickness * this.thickness;
+  }
+
+  raycast(ray, transform, maxDist = Infinity) {
+    const [w1, w2] = this.getWorldEndpoints(transform);
+    const v1 = ray.origin;
+    const v2 = Vec2.add(ray.origin, Vec2.scale(ray.direction, maxDist));
+
+    const edge = Vec2.sub(w2, w1);
+    const normal = new Vec2(edge.y, -edge.x).normalize();
+
+    // 2D Linien-Schnittpunkt
+    const d = ray.direction.cross(edge);
+    if (Math.abs(d) < 1e-9) return { hit: false };
+
+    const qp = Vec2.sub(w1, ray.origin);
+    const t = qp.cross(edge) / d;
+    const u = qp.cross(ray.direction) / d;
+
+    if (t >= 0.0 && t <= maxDist && u >= 0.0 && u <= 1.0) {
+      const hitPoint = Vec2.add(ray.origin, Vec2.scale(ray.direction, t));
+      return {
+        hit: true,
+        fraction: t,
+        point: hitPoint,
+        normal: normal.dot(ray.direction) < 0 ? normal : normal.negate()
+      };
+    }
+
+    return { hit: false };
+  }
+}
+
+
+// --- src/collision/broadphase/DynamicAABBTree.mjs ---
+
+
+/**
+ * Node im dynamischen AABB-Baum
+ */
+class TreeNode {
+  constructor(id) {
+    this.id = id;
+    this.aabb = new AABB();
+    this.userData = null;
+    this.parent = null;
+    this.left = null;
+    this.right = null;
+    this.height = 0;
+  }
+
+  isLeaf() {
+    return this.left === null;
+  }
+}
+
+/**
+ * DynamicAABBTree: Binarer Hüllkörperbaum (BVH) für O(N log N) Kollisionsabfragen.
+ * Verwendet "Fat AABBs" mit Sicherheitsabstand (Padding), um teure Re-Insertions
+ * bei kleinen Körperbewegungen zu eliminieren.
+ */
+class DynamicAABBTree {
+  constructor(fatPadding = 0.1) {
+    this.fatPadding = fatPadding;
+    this.root = null;
+    this.nodePool = [];
+    this.nodeCount = 0;
+    this.nextNodeId = 1;
+  }
+
+  _allocateNode(userData, aabb) {
+    const node = new TreeNode(this.nextNodeId++);
+    node.userData = userData;
+    // Fat AABB berechnen
+    node.aabb.copy(aabb).expand(this.fatPadding);
+    node.height = 0;
+    return node;
+  }
+
+  insertLeaf(userData, aabb) {
+    const leaf = this._allocateNode(userData, aabb);
+    this.nodeCount++;
+
+    if (!this.root) {
+      this.root = leaf;
+      return leaf;
+    }
+
+    // Finde besten Geschwisterknoten (Surface Area Heuristic)
+    let best = this.root;
+    let bestCost = AABB.combineArea(this.root.aabb, leaf.aabb);
+    const queue = [{ node: this.root, inheritedCost: 0 }];
+
+    while (queue.length > 0) {
+      const { node, inheritedCost } = queue.shift();
+      const combined = new AABB().copy(node.aabb).combine(leaf.aabb);
+      const directCost = combined.getArea();
+      const totalCost = directCost + inheritedCost;
+
+      if (totalCost < bestCost) {
+        bestCost = totalCost;
+        best = node;
+      }
+
+      const newInheritedCost = inheritedCost + (directCost - node.aabb.getArea());
+      const lowerBound = leaf.aabb.getArea() + newInheritedCost;
+
+      if (lowerBound < bestCost && !node.isLeaf()) {
+        queue.push({ node: node.left, inheritedCost: newInheritedCost });
+        queue.push({ node: node.right, inheritedCost: newInheritedCost });
+      }
+    }
+
+    // Neuer Elternknoten
+    const oldParent = best.parent;
+    const newParent = new TreeNode(this.nextNodeId++);
+    newParent.parent = oldParent;
+    newParent.aabb.copy(best.aabb).combine(leaf.aabb);
+    newParent.height = best.height + 1;
+
+    if (oldParent) {
+      if (oldParent.left === best) oldParent.left = newParent;
+      else oldParent.right = newParent;
+    } else {
+      this.root = newParent;
+    }
+
+    newParent.left = best;
+    newParent.right = leaf;
+    best.parent = newParent;
+    leaf.parent = newParent;
+
+    // Balanciere Baum nach oben
+    this._refitHierarchy(leaf.parent);
+
+    return leaf;
+  }
+
+  removeLeaf(leaf) {
+    if (!leaf) return;
+    this.nodeCount--;
+
+    if (leaf === this.root) {
+      this.root = null;
+      return;
+    }
+
+    const parent = leaf.parent;
+    const grandParent = parent.parent;
+    const sibling = parent.left === leaf ? parent.right : parent.left;
+
+    if (grandParent) {
+      if (grandParent.left === parent) grandParent.left = sibling;
+      else grandParent.right = sibling;
+      sibling.parent = grandParent;
+      this._refitHierarchy(grandParent);
+    } else {
+      this.root = sibling;
+      sibling.parent = null;
+    }
+  }
+
+  updateLeaf(leaf, aabb, displacement = null) {
+    // Wenn neue AABB noch in der Fat AABB liegt, nichts tun!
+    if (leaf.aabb.containsAABB(aabb)) {
+      return false;
+    }
+
+    this.removeLeaf(leaf);
+
+    // Fat AABB mit Bewegungsprädiktion berechnen
+    leaf.aabb.copy(aabb).expand(this.fatPadding);
+    if (displacement) {
+      const pred = Vec2.scale(displacement, 2.0);
+      leaf.aabb.expandByVec(pred);
+    }
+
+    // Neu einfügen
+    if (!this.root) {
+      this.root = leaf;
+      leaf.parent = null;
+      this.nodeCount++;
+      return true;
+    }
+
+    // Standard Einfügen
+    const best = this.root;
+    const oldParent = best.parent;
+    const newParent = new TreeNode(this.nextNodeId++);
+    newParent.parent = oldParent;
+    newParent.aabb.copy(best.aabb).combine(leaf.aabb);
+    newParent.height = best.height + 1;
+
+    if (oldParent) {
+      if (oldParent.left === best) oldParent.left = newParent;
+      else oldParent.right = newParent;
+    } else {
+      this.root = newParent;
+    }
+
+    newParent.left = best;
+    newParent.right = leaf;
+    best.parent = newParent;
+    leaf.parent = newParent;
+
+    this.nodeCount++;
+    this._refitHierarchy(leaf.parent);
+    return true;
+  }
+
+  _refitHierarchy(node) {
+    let curr = node;
+    while (curr) {
+      curr = this._balance(curr);
+      const left = curr.left;
+      const right = curr.right;
+      curr.height = 1 + Math.max(left.height, right.height);
+      curr.aabb.copy(left.aabb).combine(right.aabb);
+      curr = curr.parent;
+    }
+  }
+
+  _balance(node) {
+    if (node.isLeaf() || node.height < 2) return node;
+
+    const left = node.left;
+    const right = node.right;
+    const balance = right.height - left.height;
+
+    // Rotiere right up
+    if (balance > 1) {
+      const rLeft = right.left;
+      const rRight = right.right;
+
+      right.left = node;
+      right.parent = node.parent;
+      node.parent = right;
+
+      if (right.parent) {
+        if (right.parent.left === node) right.parent.left = right;
+        else right.parent.right = right;
+      } else {
+        this.root = right;
+      }
+
+      if (rLeft.height > rRight.height) {
+        right.right = rLeft;
+        node.right = rRight;
+        rRight.parent = node;
+        node.aabb.copy(left.aabb).combine(rRight.aabb);
+        right.aabb.copy(node.aabb).combine(rLeft.aabb);
+        node.height = 1 + Math.max(left.height, rRight.height);
+        right.height = 1 + Math.max(node.height, rLeft.height);
+      } else {
+        right.right = rRight;
+        node.right = rLeft;
+        rLeft.parent = node;
+        node.aabb.copy(left.aabb).combine(rLeft.aabb);
+        right.aabb.copy(node.aabb).combine(rRight.aabb);
+        node.height = 1 + Math.max(left.height, rLeft.height);
+        right.height = 1 + Math.max(node.height, rRight.height);
+      }
+      return right;
+    }
+
+    // Rotiere left up
+    if (balance < -1) {
+      const lLeft = left.left;
+      const lRight = left.right;
+
+      left.left = node;
+      left.parent = node.parent;
+      node.parent = left;
+
+      if (left.parent) {
+        if (left.parent.left === node) left.parent.left = left;
+        else left.parent.right = left;
+      } else {
+        this.root = left;
+      }
+
+      if (lLeft.height > lRight.height) {
+        left.right = lLeft;
+        node.left = lRight;
+        lRight.parent = node;
+        node.aabb.copy(right.aabb).combine(lRight.aabb);
+        left.aabb.copy(node.aabb).combine(lLeft.aabb);
+        node.height = 1 + Math.max(right.height, lRight.height);
+        left.height = 1 + Math.max(node.height, lLeft.height);
+      } else {
+        left.right = lRight;
+        node.left = lLeft;
+        lLeft.parent = node;
+        node.aabb.copy(right.aabb).combine(lLeft.aabb);
+        left.aabb.copy(node.aabb).combine(lRight.aabb);
+        node.height = 1 + Math.max(right.height, lLeft.height);
+        left.height = 1 + Math.max(node.height, lRight.height);
+      }
+      return left;
+    }
+
+    return node;
+  }
+
+  /**
+   * Findet alle potentiell kollidierenden Paare im Baum
+   */
+  queryPairs(callback) {
+    if (!this.root || this.root.isLeaf()) return;
+
+    const stack = [this.root];
+    while (stack.length > 0) {
+      const node = stack.pop();
+      if (node.isLeaf()) continue;
+
+      this._queryCrossNodes(node.left, node.right, callback);
+      stack.push(node.left);
+      stack.push(node.right);
+    }
+  }
+
+  _queryCrossNodes(nodeA, nodeB, callback) {
+    if (!nodeA.aabb.intersects(nodeB.aabb)) return;
+
+    if (nodeA.isLeaf() && nodeB.isLeaf()) {
+      callback(nodeA.userData, nodeB.userData);
+      return;
+    }
+
+    if (nodeA.isLeaf()) {
+      this._queryCrossNodes(nodeA, nodeB.left, callback);
+      this._queryCrossNodes(nodeA, nodeB.right, callback);
+    } else if (nodeB.isLeaf()) {
+      this._queryCrossNodes(nodeA.left, nodeB, callback);
+      this._queryCrossNodes(nodeA.right, nodeB, callback);
+    } else {
+      if (nodeA.aabb.getArea() > nodeB.aabb.getArea()) {
+        this._queryCrossNodes(nodeA.left, nodeB, callback);
+        this._queryCrossNodes(nodeA.right, nodeB, callback);
+      } else {
+        this._queryCrossNodes(nodeA, nodeB.left, callback);
+        this._queryCrossNodes(nodeA, nodeB.right, callback);
+      }
+    }
+  }
+
+  /**
+   * Sucht alle Objekte, die eine AABB überlappen
+   */
+  queryAABB(aabb, callback) {
+    if (!this.root) return;
+    const stack = [this.root];
+    while (stack.length > 0) {
+      const node = stack.pop();
+      if (node.aabb.intersects(aabb)) {
+        if (node.isLeaf()) {
+          const proceed = callback(node.userData);
+          if (proceed === false) return;
+        } else {
+          stack.push(node.left);
+          stack.push(node.right);
+        }
+      }
+    }
+  }
+
+  /**
+   * Raycast-Abfrage gegen den Baum
+   */
+  raycast(origin, dir, maxDist, callback) {
+    if (!this.root) return;
+    const stack = [this.root];
+    while (stack.length > 0) {
+      const node = stack.pop();
+      const hit = node.aabb.raycast(origin, dir, maxDist);
+      if (hit.hit) {
+        if (node.isLeaf()) {
+          const proceed = callback(node.userData);
+          if (proceed === false) return;
+        } else {
+          stack.push(node.left);
+          stack.push(node.right);
+        }
+      }
+    }
+  }
+}
+
+
+// --- src/collision/narrowphase/ContactManifold.mjs ---
+
+/**
+ * ContactPoint: Einzelner Kontaktpunkt in der Kontakt-Manifold
+ */
+class ContactPoint {
+  constructor(point = new Vec2(0, 0), penetration = 0) {
+    this.point = point.clone();         // Weltposition des Kontakts
+    this.penetration = penetration;     // Eindringtiefe (> 0 bei Überlappung)
+    this.normalImpulse = 0.0;           // Akkumulierter Normal-Impuls für Warm-Starting
+    this.tangentImpulse = 0.0;          // Akkumulierter Tangential-(Reibungs-)Impuls
+    this.rA = new Vec2(0, 0);           // Hebelarm vom Schwerpunkt A: point - posA
+    this.rB = new Vec2(0, 0);           // Hebelarm vom Schwerpunkt B: point - posB
+    this.normalMass = 0.0;              // Effektive Masse in Normalenrichtung: 1 / (mA^-1 + mB^-1 + (rA x n)^2 / IA + (rB x n)^2 / IB)
+    this.tangentMass = 0.0;             // Effektive Masse in Tangentenrichtung
+    this.bias = 0.0;                    // Baumgarte-Geschwindigkeits-Bias + Restitutions-Bias
+  }
+}
+
+/**
+ * ContactManifold: Repräsentiert die Berührungsfläche / Kontaktpunkte zwischen zwei Körpern
+ */
+class ContactManifold {
+  constructor(bodyA, bodyB, shapeA, shapeB) {
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+    this.shapeA = shapeA;
+    this.shapeB = shapeB;
+    this.normal = new Vec2(0, 1);       // Einheitsnormale von A nach B
+    this.tangent = new Vec2(-1, 0);     // Tangente orthogonal zur Normale
+    this.points = [];                   // Array von ContactPoint (1 oder 2 Punkte)
+    this.friction = 0.3;
+    this.restitution = 0.0;
+    this.isTrigger = shapeA.isTrigger || shapeB.isTrigger;
+  }
+
+  addPoint(point, penetration) {
+    this.points.push(new ContactPoint(point, penetration));
+  }
+
+  get key() {
+    const idA = this.bodyA.id;
+    const idB = this.bodyB.id;
+    return idA < idB ? `${idA}:${idB}` : `${idB}:${idA}`;
+  }
+}
+
+
+// --- src/collision/narrowphase/SAT.mjs ---
+
+/**
+ * SAT: Separating Axis Theorem (Satz von den trennenden Achsen)
+ * für konvexe Polygone und Kisten inklusive Sutherland-Hodgman Kanten-Clipping.
+ */
+class SAT {
+  /**
+   * Projiziert ein Polygon auf eine Achse und gibt [min, max] zurück
+   */
+  static projectPolygon(axis, vertices) {
+    let min = axis.dot(vertices[0]);
+    let max = min;
+    for (let i = 1; i < vertices.length; i++) {
+      const p = axis.dot(vertices[i]);
+      if (p < min) min = p;
+      if (p > max) max = p;
+    }
+    return [min, max];
+  }
+
+  /**
+   * Findet die Achse mit minimaler Überlappung
+   */
+  static findMinOverlap(vertsA, normalsA, vertsB, normalsB) {
+    let minOverlap = Infinity;
+    let bestAxis = null;
+    let bestIsA = true;
+
+    // Teste Normalen von A
+    for (let i = 0; i < normalsA.length; i++) {
+      const axis = normalsA[i];
+      const [minA, maxA] = SAT.projectPolygon(axis, vertsA);
+      const [minB, maxB] = SAT.projectPolygon(axis, vertsB);
+
+      if (maxA < minB || maxB < minA) {
+        return { separating: true }; // Trennende Achse gefunden -> keine Kollision!
+      }
+
+      const overlap1 = maxA - minB;
+      const overlap2 = maxB - minA;
+      const overlap = Math.min(overlap1, overlap2);
+
+      if (overlap < minOverlap) {
+        minOverlap = overlap;
+        bestAxis = axis;
+        bestIsA = true;
+      }
+    }
+
+    // Teste Normalen von B
+    for (let i = 0; i < normalsB.length; i++) {
+      const axis = normalsB[i];
+      const [minA, maxA] = SAT.projectPolygon(axis, vertsA);
+      const [minB, maxB] = SAT.projectPolygon(axis, vertsB);
+
+      if (maxA < minB || maxB < minA) {
+        return { separating: true };
+      }
+
+      const overlap1 = maxA - minB;
+      const overlap2 = maxB - minA;
+      const overlap = Math.min(overlap1, overlap2);
+
+      if (overlap < minOverlap) {
+        minOverlap = overlap;
+        bestAxis = axis;
+        bestIsA = false;
+      }
+    }
+
+    return {
+      separating: false,
+      overlap: minOverlap,
+      axis: bestAxis,
+      isAxisFromA: bestIsA
+    };
+  }
+
+  /**
+   * Clippt Kantenpunkte gegen eine Ebene
+   */
+  static clipSegmentToLine(vIn, normal, offset) {
+    const vOut = [];
+    const d0 = normal.dot(vIn[0]) - offset;
+    const d1 = normal.dot(vIn[1]) - offset;
+
+    if (d0 <= 0.0) vOut.push(vIn[0]);
+    if (d1 <= 0.0) vOut.push(vIn[1]);
+
+    if (d0 * d1 < 0.0) {
+      const alpha = d0 / (d0 - d1);
+      const interp = Vec2.add(vIn[0], Vec2.scale(Vec2.sub(vIn[1], vIn[0]), alpha));
+      vOut.push(interp);
+    }
+
+    return vOut;
+  }
+
+  /**
+   * Findet Incident Edge (die am meisten antiparallel zur Referenz-Normalen ist)
+   */
+  static findIncidentEdge(refNormal, verts) {
+    let minDot = Infinity;
+    let incidentIndex = 0;
+    const n = verts.length;
+
+    for (let i = 0; i < n; i++) {
+      const p1 = verts[i];
+      const p2 = verts[(i + 1) % n];
+      const edge = Vec2.sub(p2, p1);
+      const normal = new Vec2(edge.y, -edge.x).normalize();
+      const dot = normal.dot(refNormal);
+      if (dot < minDot) {
+        minDot = dot;
+        incidentIndex = i;
+      }
+    }
+
+    const p1 = verts[incidentIndex];
+    const p2 = verts[(incidentIndex + 1) % n];
+    return [p1, p2];
+  }
+
+  /**
+   * Kollisionstest zweier konvexer Polygone (oder Boxen)
+   * Liefert { collision: boolean, normal: Vec2, points: Array<{ point: Vec2, depth: number }> }
+   */
+  static collidePolygons(vertsA, normalsA, posA, vertsB, normalsB, posB) {
+    const result = SAT.findMinOverlap(vertsA, normalsA, vertsB, normalsB);
+    if (result.separating) {
+      return { collision: false };
+    }
+
+    let normal = result.axis.clone();
+    // Stelle sicher, dass die Normale von A nach B zeigt
+    const centerDir = Vec2.sub(posB, posA);
+    if (normal.dot(centerDir) < 0) {
+      normal.negate();
+    }
+
+    // Bestimme Referenz- und Incident-Polygon
+    let refVerts, incVerts, refNormal;
+    if (result.isAxisFromA) {
+      refVerts = vertsA;
+      incVerts = vertsB;
+      refNormal = normal.clone();
+    } else {
+      refVerts = vertsB;
+      incVerts = vertsA;
+      refNormal = normal.clone().negate();
+    }
+
+    // Finde Referenzkante
+    let maxDot = -Infinity;
+    let refIndex = 0;
+    const nRef = refVerts.length;
+    for (let i = 0; i < nRef; i++) {
+      const p1 = refVerts[i];
+      const p2 = refVerts[(i + 1) % nRef];
+      const edge = Vec2.sub(p2, p1);
+      const edgeNorm = new Vec2(edge.y, -edge.x).normalize();
+      const dot = edgeNorm.dot(refNormal);
+      if (dot > maxDot) {
+        maxDot = dot;
+        refIndex = i;
+      }
+    }
+
+    const refV1 = refVerts[refIndex];
+    const refV2 = refVerts[(refIndex + 1) % nRef];
+    const refEdge = Vec2.sub(refV2, refV1).normalize();
+    const refTangent = refEdge.clone();
+
+    // Incident Edge finden
+    let incident = SAT.findIncidentEdge(refNormal, incVerts);
+
+    // Klippe incident edge an den Seitenflächen der Referenzkante
+    // 1. Klippe an refV1 entlang -refTangent
+    incident = SAT.clipSegmentToLine(incident, refTangent.clone().negate(), -refTangent.dot(refV1));
+    if (incident.length < 2) return { collision: false };
+
+    // 2. Klippe an refV2 entlang refTangent
+    incident = SAT.clipSegmentToLine(incident, refTangent, refTangent.dot(refV2));
+    if (incident.length < 2) return { collision: false };
+
+    // Behalte nur Punkte, die hinter der Referenzebene liegen
+    const frontOffset = refNormal.dot(refV1);
+    const contactPoints = [];
+
+    for (const pt of incident) {
+      const sep = refNormal.dot(pt) - frontOffset;
+      if (sep <= 0.0) {
+        const depth = -sep;
+        // Punkt auf Referenzebene projizieren
+        const contactPoint = result.isAxisFromA ? pt : Vec2.add(pt, Vec2.scale(normal, depth));
+        contactPoints.push({
+          point: contactPoint,
+          depth: Math.max(depth, result.overlap)
+        });
+      }
+    }
+
+    if (contactPoints.length === 0) {
+      // Fallback: mindestens 1 Kontaktpunkt mit minimaler Überlappung
+      const mid = Vec2.lerp(posA, posB, 0.5);
+      contactPoints.push({
+        point: mid,
+        depth: result.overlap
+      });
+    }
+
+    return {
+      collision: true,
+      normal,
+      points: contactPoints
+    };
+  }
+}
+
+
+// --- src/collision/Raycast.mjs ---
+
+/**
+ * Ray: Repräsentiert einen physikalischen Abtaststrahl
+ */
+class Ray {
+  constructor(origin = new Vec2(0, 0), direction = new Vec2(1, 0), maxDistance = Infinity) {
+    this.origin = origin.clone();
+    this.direction = direction.clone().normalize();
+    this.maxDistance = maxDistance;
+  }
+}
+
+/**
+ * RaycastHit: Detailliertes Treffer-Ergebnis eines Raycasts
+ */
+class RaycastHit {
+  constructor(body = null, shape = null, point = new Vec2(0, 0), normal = new Vec2(0, 1), fraction = 0) {
+    this.body = body;
+    this.shape = shape;
+    this.point = point.clone();
+    this.normal = normal.clone();
+    this.fraction = fraction;
+    this.distance = fraction; // Bei normalisierter Richtung ist fraction = Distanz
+  }
+}
+
+
+// --- src/collision/TriggerSystem.mjs ---
+/**
+ * TriggerSystem: Verwaltet Trigger/Sensor-Zustände und löst Enter/Stay/Exit-Ereignisse aus.
+ */
+class TriggerSystem {
+  constructor() {
+    this.currentPairs = new Set();
+    this.previousPairs = new Set();
+    this.listeners = [];
+  }
+
+  addListener(listener) {
+    this.listeners.push(listener);
+    return this;
+  }
+
+  removeListener(listener) {
+    const idx = this.listeners.indexOf(listener);
+    if (idx !== -1) this.listeners.splice(idx, 1);
+  }
+
+  _pairKey(shapeA, shapeB) {
+    return shapeA.id < shapeB.id ? `${shapeA.id}:${shapeB.id}` : `${shapeB.id}:${shapeA.id}`;
+  }
+
+  registerOverlap(manifold) {
+    if (!manifold.isTrigger) return;
+    const key = this._pairKey(manifold.shapeA, manifold.shapeB);
+    this.currentPairs.add({
+      key,
+      shapeA: manifold.shapeA,
+      shapeB: manifold.shapeB,
+      bodyA: manifold.bodyA,
+      bodyB: manifold.bodyB
+    });
+  }
+
+  flushEvents() {
+    const prevMap = new Map();
+    for (const p of this.previousPairs) {
+      prevMap.set(p.key, p);
+    }
+
+    const currMap = new Map();
+    for (const p of this.currentPairs) {
+      currMap.set(p.key, p);
+    }
+
+    // 1. Enter and Stay events
+    for (const p of this.currentPairs) {
+      if (prevMap.has(p.key)) {
+        // Stay
+        this._emit('onTriggerStay', p);
+      } else {
+        // Enter
+        this._emit('onTriggerEnter', p);
+      }
+    }
+
+    // 2. Exit events
+    for (const p of this.previousPairs) {
+      if (!currMap.has(p.key)) {
+        // Exit
+        this._emit('onTriggerExit', p);
+      }
+    }
+
+    // Swappe Paare für nächsten Frame
+    this.previousPairs = this.currentPairs;
+    this.currentPairs = new Set();
+  }
+
+  _emit(eventName, pair) {
+    // Bestimme, welcher der Trigger ist (oder beide)
+    const triggerShape = pair.shapeA.isTrigger ? pair.shapeA : pair.shapeB;
+    const otherShape = pair.shapeA.isTrigger ? pair.shapeB : pair.shapeA;
+    const triggerBody = triggerShape === pair.shapeA ? pair.bodyA : pair.bodyB;
+    const otherBody = triggerShape === pair.shapeA ? pair.bodyB : pair.bodyA;
+
+    for (const listener of this.listeners) {
+      if (typeof listener[eventName] === 'function') {
+        listener[eventName](triggerShape, otherShape, triggerBody, otherBody);
+      }
+    }
+  }
+}
+
+
+// --- src/subqg/RelationalGraph.mjs ---
+
+/**
+ * RelationalGraph: Das interne diskrete Kantennetzwerk der Subquantum Graphity (SubQG).
+ * Das Netzwerk dient als quantenmechanisches Hintergrundmodell, auf dem Raum und Metrik
+ * relational emergieren.
+ */
+class RelationalGraph {
+  constructor(config = {}) {
+    this.gridSpacing = config.gridSpacing ?? 1.0; // Gitterabstand in Welteinheiten (Meter)
+    this.beta = config.beta ?? 0.05;              // SubQG metrische Kopplungskonstante
+    this.extentX = config.extentX ?? 40.0;        // Halbe Ausdehnung in X
+    this.extentY = config.extentY ?? 30.0;        // Halbe Ausdehnung in Y
+
+    this.nodes = new Map(); // id -> { pos: Vec2, rho: number, phi: number, clock: number }
+    this.edges = [];        // Array von { u: string, v: string, x_e: number, restLen: 1.0, weight: 1.0 }
+
+    this._initLattice();
+  }
+
+  _nodeKey(gx, gy) {
+    return `${gx},${gy}`;
+  }
+
+  _initLattice() {
+    const minGX = Math.floor(-this.extentX / this.gridSpacing);
+    const maxGX = Math.ceil(this.extentX / this.gridSpacing);
+    const minGY = Math.floor(-this.extentY / this.gridSpacing);
+    const maxGY = Math.ceil(this.extentY / this.gridSpacing);
+
+    // Erzeuge Knoten
+    for (let gx = minGX; gx <= maxGX; gx++) {
+      for (let gy = minGY; gy <= maxGY; gy++) {
+        const key = this._nodeKey(gx, gy);
+        this.nodes.set(key, {
+          gx,
+          gy,
+          pos: new Vec2(gx * this.gridSpacing, gy * this.gridSpacing),
+          rho: 0.0,
+          phi: 0.0,
+          clock: 0
+        });
+      }
+    }
+
+    // Erzeuge relationale Kanten (4-Nachbarschaft + Diagonalen)
+    const deltas = [
+      [1, 0], [0, 1], [1, 1], [1, -1]
+    ];
+
+    for (let gx = minGX; gx <= maxGX; gx++) {
+      for (let gy = minGY; gy <= maxGY; gy++) {
+        const uKey = this._nodeKey(gx, gy);
+        for (const [dx, dy] of deltas) {
+          const vKey = this._nodeKey(gx + dx, gy + dy);
+          if (this.nodes.has(vKey)) {
+            const diag = (dx !== 0 && dy !== 0);
+            this.edges.push({
+              u: uKey,
+              v: vKey,
+              x_e: 1.0, // Flache Hintergrundmetrik (x_e = 1.0)
+              restLen: diag ? Math.SQRT2 : 1.0,
+              weight: diag ? 0.5 : 1.0
+            });
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Setzt die Dichten rho auf allen Knoten zurück
+   */
+  resetDensities() {
+    for (const node of this.nodes.values()) {
+      node.rho = 0.0;
+      node.phi = 0.0;
+    }
+  }
+
+  /**
+   * Injiziert die Massendichte eines Körpers (als SubQG-Wellenpaket) in das Netzwerk
+   */
+  injectBodyMass(body) {
+    const pos = body.position;
+    const mass = body.mass;
+    if (mass <= 0 || !Number.isFinite(mass)) return;
+
+    // Kernel-Ausbreitung (charakteristische Wellenpaketbreite sigma)
+    const sigma = Math.max(this.gridSpacing * 0.8, body.boundingRadius * 0.5);
+    const sigmaSq2 = 2.0 * sigma * sigma;
+    const radiusCells = Math.ceil((sigma * 2.5) / this.gridSpacing);
+
+    const centerGX = Math.round(pos.x / this.gridSpacing);
+    const centerGY = Math.round(pos.y / this.gridSpacing);
+
+    let weightSum = 0.0;
+    const affectedNodes = [];
+
+    for (let gx = centerGX - radiusCells; gx <= centerGX + radiusCells; gx++) {
+      for (let gy = centerGY - radiusCells; gy <= centerGY + radiusCells; gy++) {
+        const key = this._nodeKey(gx, gy);
+        const node = this.nodes.get(key);
+        if (node) {
+          const distSq = node.pos.distanceToSq(pos);
+          const w = Math.exp(-distSq / sigmaSq2);
+          weightSum += w;
+          affectedNodes.push({ node, w });
+        }
+      }
+    }
+
+    if (weightSum > 1e-9) {
+      const normFactor = mass / weightSum;
+      for (const { node, w } of affectedNodes) {
+        node.rho += w * normFactor;
+        node.clock += 1; // Lokaler Kausal-Uhr-Schritt bei Materie-Ereignis
+      }
+    }
+  }
+
+  /**
+   * Interpoliert das metrische Potential phi(x, y) an beliebigen Weltkoordinaten
+   */
+  samplePotential(worldPos) {
+    const gx = worldPos.x / this.gridSpacing;
+    const gy = worldPos.y / this.gridSpacing;
+    const i = Math.floor(gx);
+    const j = Math.floor(gy);
+    const fx = gx - i;
+    const fy = gy - j;
+
+    const n00 = this.nodes.get(this._nodeKey(i, j))?.phi ?? 0;
+    const n10 = this.nodes.get(this._nodeKey(i + 1, j))?.phi ?? 0;
+    const n01 = this.nodes.get(this._nodeKey(i, j + 1))?.phi ?? 0;
+    const n11 = this.nodes.get(this._nodeKey(i + 1, j + 1))?.phi ?? 0;
+
+    // Bilineare Interpolation
+    const top = n00 * (1 - fx) + n10 * fx;
+    const bottom = n01 * (1 - fx) + n11 * fx;
+    return top * (1 - fy) + bottom * fy;
+  }
+
+  /**
+   * Berechnet den Gradienten des metrischen Potentials grad(phi) an beliebiger Stelle
+   */
+  sampleGradient(worldPos) {
+    const eps = this.gridSpacing * 0.25;
+    const phiX1 = this.samplePotential(new Vec2(worldPos.x + eps, worldPos.y));
+    const phiX0 = this.samplePotential(new Vec2(worldPos.x - eps, worldPos.y));
+    const phiY1 = this.samplePotential(new Vec2(worldPos.x, worldPos.y + eps));
+    const phiY0 = this.samplePotential(new Vec2(worldPos.x, worldPos.y - eps));
+
+    return new Vec2(
+      (phiX1 - phiX0) / (2.0 * eps),
+      (phiY1 - phiY0) / (2.0 * eps)
+    );
+  }
+}
+
+
+// --- src/subqg/MetricLatticeSolver.mjs ---
+/**
+ * MetricLatticeSolver: Minimiert die fundamentale SubQG Kantenwirkung S_edge[x]
+ * inklusive Laplacian-Glättungsterm κ/2 Σ (x_e - x_f)^2 zur langreichweitigen
+ * Ausbreitung des Gravitationspotentials über das gesamte relationale Netzwerk.
+ */
+class MetricLatticeSolver {
+  constructor(graph, config = {}) {
+    this.graph = graph;
+    this.kappa = config.kappa ?? 4.0; // Metrische Ausbreitungssteifigkeit (Laplace-Kopplung)
+    this.mu = config.mu ?? 0.2;       // Metrischer Massenterm
+    this.iterations = config.iterations ?? 8; // Schnelle Gitter-Relaxationsschritte pro Frame
+  }
+
+  /**
+   * Löst die stationäre Kantenmetrik und das Poisson-analoge Gravitationspotential
+   */
+  solve() {
+    const beta = this.graph.beta;
+    const kappa = this.kappa;
+    const mu = this.mu;
+
+    let totalEdgeAction = 0.0;
+    let maxStrain = 0.0;
+
+    // 1. Lokale Dichten und Kantenmetrik
+    for (const edge of this.graph.edges) {
+      const uNode = this.graph.nodes.get(edge.u);
+      const vNode = this.graph.nodes.get(edge.v);
+      if (!uNode || !vNode) continue;
+
+      const rhoE = (uNode.rho + vNode.rho) * 0.5;
+      const targetX = 1.0 + (beta * rhoE) / (mu + 0.1);
+      edge.x_e = edge.x_e + 0.5 * (targetX - edge.x_e);
+
+      const strain = Math.abs(edge.x_e - 1.0);
+      if (strain > maxStrain) maxStrain = strain;
+
+      const diff = edge.x_e - 1.0;
+      totalEdgeAction += edge.weight * (0.5 * diff * diff - beta * rhoE * edge.x_e);
+    }
+
+    // 2. Diffusive Relaxation des Potentials über das relationale Netzwerk (Poisson-Lösung ∇²Phi = beta * rho)
+    for (let it = 0; it < this.iterations; it++) {
+      for (const node of this.graph.nodes.values()) {
+        const gx = node.gx;
+        const gy = node.gy;
+        const nLeft = this.graph.nodes.get(this.graph._nodeKey(gx - 1, gy))?.phi ?? 0;
+        const nRight = this.graph.nodes.get(this.graph._nodeKey(gx + 1, gy))?.phi ?? 0;
+        const nDown = this.graph.nodes.get(this.graph._nodeKey(gx, gy - 1))?.phi ?? 0;
+        const nUp = this.graph.nodes.get(this.graph._nodeKey(gx, gy + 1))?.phi ?? 0;
+
+        const lap = 0.25 * (nLeft + nRight + nDown + nUp);
+        // Poisson-Gleichung auf dem Graph
+        node.phi = 0.75 * lap - 0.25 * (beta * node.rho);
+      }
+    }
+
+    return {
+      totalEdgeAction,
+      maxStrain,
+      edgeCount: this.graph.edges.length,
+      nodeCount: this.graph.nodes.size
+    };
+  }
+}
+
+
+// --- src/subqg/SubQGGravitationField.mjs ---
+
+/**
+ * SubQGGravitationField: Berechnet die Gravitationskräfte auf Körper
+ * basierend auf dem emergenten SubQG-Gradienten -grad(Phi).
+ * 
+ * Formal in Lean 4 bewiesen:
+ * 'SubQG.constant_metric_gradient_gives_universal_acceleration':
+ * F_grav = -M * grad(Phi) => a = F_grav / M = -grad(Phi) = g (Masseunabhängig!)
+ */
+class SubQGGravitationField {
+  constructor(config = {}) {
+    // Standard Erdbeschleunigung g = (0, -9.81) m/s²
+    this.gravity = config.gravity ? config.gravity.clone() : new Vec2(0, -9.81);
+    this.enableMutualAttraction = config.enableMutualAttraction ?? false;
+    this.G = config.G ?? 1.0; // SubQG Gravitationskonstante für n-Körper-Attraktion
+  }
+
+  setGravity(gx, gy) {
+    this.gravity.set(gx, gy);
+  }
+
+  /**
+   * Wendet die Gravitation auf alle dynamischen Körper an
+   */
+  applyGravity(bodies, graph = null) {
+    for (const body of bodies) {
+      if (body.type !== 'dynamic' || body.mass <= 0 || body.isSleeping) continue;
+
+      // 1. Hintergrundbeschleunigung g (aus uniformem SubQG-Metrikgradienten)
+      const fGrav = Vec2.scale(this.gravity, body.mass * body.gravityScale);
+      body.applyForce(fGrav);
+
+      // 2. Optional: Lokaler Gradient aus dem SubQG-Gitterpotential
+      if (graph && this.enableMutualAttraction) {
+        const grad = graph.sampleGradient(body.position);
+        // F = -m * grad(Phi)
+        const fLattice = new Vec2(-body.mass * grad.x, -body.mass * grad.y);
+        body.applyForce(fLattice);
+      }
+    }
+
+    // 3. Optional: Wechselseitige SubQG Punktkörper-Attraktion (N-Körper)
+    if (this.enableMutualAttraction && bodies.length > 1) {
+      const n = bodies.length;
+      for (let i = 0; i < n; i++) {
+        const b1 = bodies[i];
+        if (b1.type !== 'dynamic' || b1.mass <= 0) continue;
+
+        for (let j = i + 1; j < n; j++) {
+          const b2 = bodies[j];
+          if (b2.mass <= 0) continue;
+
+          const delta = Vec2.sub(b2.position, b1.position);
+          const distSq = delta.lengthSq() + 0.04; // Weicher Kern gegen Singularitäten (Plummer-Radius)
+          const dist = Math.sqrt(distSq);
+          const forceMagnitude = (this.G * b1.mass * b2.mass) / distSq;
+          const force = Vec2.scale(delta, forceMagnitude / dist);
+
+          b1.applyForce(force);
+          if (b2.type === 'dynamic') {
+            b2.applyForce(force.clone().negate());
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// --- src/subqg/SubQGContactBridge.mjs ---
+/**
+ * SubQGContactBridge: Verbindet die mikroskopische relationale Kantensteifigkeit
+ * des SubQG-Gitters mit der makroskopischen Impulskollisions-Dynamik.
+ * 
+ * Wenn zwei Körper kollidieren, bewirkt die Überlappung ihrer SubQG-Wellenfunktionen
+ * eine drastische Zunahme der Kantenverzerrung, was mikroskopisch als steiles
+ * elastisches Repulsionspotential V(delta) = 1/2 k * delta^2 in Erscheinung tritt.
+ */
+class SubQGContactBridge {
+  constructor(config = {}) {
+    this.edgeStiffness = config.edgeStiffness ?? 1e6; // N/m
+    this.edgeDamping = config.edgeDamping ?? 1e3;     // Ns/m
+    this.baumgarteFactor = config.baumgarteFactor ?? 0.2; // Positionskorrektur-Faktor
+    this.slop = config.slop ?? 0.005; // 5 mm erlaubte Penetration ohne Drift
+  }
+
+  /**
+   * Kombiniert Materialeigenschaften nach SubQG-Mittelungsregeln
+   */
+  combineMaterials(matA, matB) {
+    // Reibung: geometrisches Mittel sqrt(mu_A * mu_B)
+    const friction = Math.sqrt(matA.friction * matB.friction);
+    // Bounciness / Restitution: maximaler oder geometrischer elastischer Stoßfaktor
+    const restitution = Math.max(matA.restitution, matB.restitution);
+    // Dichte: Durchschnitt
+    const density = (matA.density + matB.density) * 0.5;
+
+    return { friction, restitution, density };
+  }
+
+  /**
+   * Berechnet den Baumgarte-Geschwindigkeits-Offset zur Korrektur von Überlappungen
+   */
+  computePenetrationBias(penetration, dt) {
+    if (penetration <= this.slop) return 0.0;
+    return (this.baumgarteFactor / Math.max(dt, 1e-4)) * (penetration - this.slop);
+  }
+}
+
+
+// --- src/subqg/SubQGPureDynamics.mjs ---
+
+
+/**
+ * SubQGPureDynamics: 100% Reine SubQG-Wirkungsdynamik (First-Principles).
+ * 
+ * Beseitigt ALLE klassischen Box2D/Game-Engine Impulssolver VOLLSTÄNDIG:
+ * - Null Kontakt-Impulssolver
+ * - Null Gelenk-Geschwindigkeitssolver
+ * 
+ * Alle Bewegungen, Stöße, Reibungen und Gelenkbindungen entstehen ausschließlich
+ * aus der kontinuierlichen Variation der fundamentalen SubQG-Wirkung S_SubQG:
+ * 
+ * 1. Relationale Gravitation:
+ *    F_grav = -M * ∇Phi_lattice(p) aus der stationären Kantenwirkung S_edge[x*]
+ * 
+ * 2. Geometrische Kantenbarriere-Repulsion (Kontakt):
+ *    V_barrier = 1/2 * k_subqg * δ^2  (nur bei echter geometrischer Durchdringung δ > 0)
+ *    F_repulsion = -∇_p V_barrier = (k_subqg * δ - c_damp * v_normal) * n
+ * 
+ * 3. Relationale Kanten-Scherreibung:
+ *    F_shear = -mu_subqg * ||F_repulsion|| * v_tangent_dir
+ * 
+ * 4. Topologische Gelenkbindungen (Joints):
+ *    S_joint = 1/2 * k_link * ||p_B - p_A||^2
+ *    F_joint = -∇ S_joint = -k_link * (p_B - p_A) - c_link * (v_B - v_A)
+ */
+class SubQGPureDynamics {
+  constructor(graph, config = {}) {
+    this.graph = graph;
+    this.kBarrier = config.kBarrier ?? 3.0e4;     // Kantensteifigkeit gegen Gitter-Kompression
+    this.dampBarrier = config.dampBarrier ?? 180.0; // Dissipative Gitter-Rückkopplung
+    this.muSubQG = config.muSubQG ?? 0.45;        // Relationale Scherspannungs-Reibung
+    this.kJointLink = config.kJointLink ?? 8.0e4; // Kantensteifigkeit topologischer Gelenkverbindungen
+    this.dampJoint = config.dampJoint ?? 350.0;   // Gelenkdämpfung
+  }
+
+  /**
+   * 1. Relationale Gravitation aus dem Gitterpotential-Gradienten
+   * F_grav = -M * ∇Phi_lattice(p) + M * g_background
+   */
+  evaluateGravitationalForces(bodies, backgroundGravity = null) {
+    const hasBgGravity = backgroundGravity && (backgroundGravity.x !== 0 || backgroundGravity.y !== 0);
+
+    for (const body of bodies) {
+      if (body.type !== 'dynamic' || body.mass <= 0 || body.isSleeping) continue;
+
+      if (hasBgGravity) {
+        // 1. Hintergrund-Metrikgradient (Erdbeschleunigung g):
+        // Wie in Lean 4 formal bewiesen: a = -∇Phi_bg = g = const. (vollständig masseunabhängig)
+        // Verhindert künstliche Gitter-Selbstbeschleunigungen oder Aufbäumen bei Fahrzeugen.
+        body.applyForce(Vec2.scale(backgroundGravity, body.mass * body.gravityScale));
+      } else {
+        // 2. Im schwerelosen Raum / N-Körper-System: Relationaler SubQG-Gradient F = -M * ∇Phi
+        const gradPhi = this.graph.sampleGradient(body.position);
+        const fGrav = new Vec2(-body.mass * gradPhi.x * 50.0, -body.mass * gradPhi.y * 50.0);
+        body.applyForce(fGrav);
+      }
+    }
+  }
+
+  /**
+   * 2. Kontaktbarriere und Scherspannung aus Kantenkompression
+   * Skaleninvariante SubQG-Kantenbarriere: Skaliert mit der effektiven Masse der Kontaktzone,
+   * sodass leichte Körper (Planken, Kisten) und schwere Felsen dieselbe stabile
+   * Kontaktfrequenz und Dämpfung erfahren und leichte Körper nicht weggeschleudert werden.
+   */
+  applyPureContactForces(activeManifolds, dt) {
+    for (const m of activeManifolds) {
+      if (m.isTrigger) continue;
+
+      const bA = m.bodyA;
+      const bB = m.bodyB;
+      const normal = m.normal; // von A nach B
+
+      // Relationale Graph-Trägheit: Nur wenn BEIDE Körper dynamisch sind (z.B. Fels auf Brückenplanke),
+      // koppelt die Gelenkkette Stützmasse ein. Bei Kontakt mit statischem Boden/Terrain bleibt die echte Körpermasse wirksam.
+      const isDynamicPair = bA.type === 'dynamic' && bB.type === 'dynamic';
+      const jA = (isDynamicPair && bA.joints) ? bA.joints.length : 0;
+      const jB = (isDynamicPair && bB.joints) ? bB.joints.length : 0;
+      const jointScaleA = 1.0 + jA * 6.0;
+      const jointScaleB = 1.0 + jB * 6.0;
+
+      const invMA = bA.type === 'static' ? 0.0 : bA.invMass / jointScaleA;
+      const invMB = bB.type === 'static' ? 0.0 : bB.invMass / jointScaleB;
+
+      for (const cp of m.points) {
+        const penetration = cp.penetration;
+        if (penetration <= 0.0) continue;
+
+        const rA = Vec2.sub(cp.point, bA.position);
+        const rB = Vec2.sub(cp.point, bB.position);
+        const rnA = rA.cross(normal);
+        const rnB = rB.cross(normal);
+        const invInertiaA = bA.invInertia / jointScaleA;
+        const invInertiaB = bB.invInertia / jointScaleB;
+        const invMassNorm = invMA + invMB + rnA * rnA * invInertiaA + rnB * rnB * invInertiaB;
+        if (invMassNorm <= 0.0) continue;
+        const normalMass = 1.0 / invMassNorm;
+
+        const vA = bA.getVelocityAtPoint(cp.point);
+        const vB = bB.getVelocityAtPoint(cp.point);
+        const vRel = Vec2.sub(vB, vA);
+        const vNormal = vRel.dot(normal);
+
+        // Skaleninvariante SubQG Kantenreaktionskraft
+        const omegaSq = 1200.0;
+        const dampCoeff = 40.0;
+        let fNormMag = normalMass * (omegaSq * penetration - dampCoeff * vNormal);
+        
+        // Physikalische Bündelung nach Material-Restitution: Verhindert unphysikalische Energieinjektion
+        const rest = m.restitution ?? 0.05;
+        const maxImpulse = normalMass * (Math.max(0.0, -vNormal * (1.0 + rest)) + (penetration / dt) * 0.45);
+        fNormMag = Math.max(0.0, Math.min(fNormMag, maxImpulse / dt));
+        cp.normalImpulse = fNormMag * dt;
+
+        const fNormal = Vec2.scale(normal, fNormMag);
+
+        // Relationale Scherspannung (Reibung)
+        const tangent = m.tangent;
+        const vTan = vRel.dot(tangent);
+        let fShear = new Vec2(0, 0);
+
+        if (Math.abs(vTan) > 1e-4) {
+          const maxFriction = (m.friction ?? this.muSubQG) * fNormMag;
+          const desiredShear = (normalMass * Math.abs(vTan)) / dt;
+          const shearMag = Math.min(maxFriction, desiredShear);
+          fShear = Vec2.scale(tangent, -Math.sign(vTan) * shearMag);
+        }
+
+        const fTotalOnB = Vec2.add(fNormal, fShear);
+
+        // Stoßdynamik & Impulserhaltung über reduzierte effektive Masse:
+        // mu = 1 / (invEffA + invEffB)
+        // 1. Ein isoliertes Bruchstück (j=0, m=0.13 kg) hat mu <= 0.13 kg -> kann Felsen niemals wegschießen!
+        // 2. Eine zusammenhängende Gelenkkette (j>0) koppelt Netzwerk-Trägheit ein.
+        // 3. Statischer Boden/Terrain (invEff = 0) fängt beliebige Massen stabil ab.
+        const invEffA = bA.type === 'static' ? 0.0 : bA.invMass / jointScaleA;
+        const invEffB = bB.type === 'static' ? 0.0 : bB.invMass / jointScaleB;
+        const effReducedMass = (invEffA + invEffB > 0.0) ? 1.0 / (invEffA + invEffB) : 0.0;
+
+        const maxAllowedImpulse = effReducedMass * (Math.max(0.0, -vNormal * (1.0 + rest)) + (penetration / dt) * 0.75 + 2.0);
+        const maxForce = maxAllowedImpulse / dt;
+
+        const mag = fTotalOnB.length();
+        const fClampedB = (mag > maxForce && maxForce > 0) ? Vec2.scale(fTotalOnB, maxForce / mag) : fTotalOnB;
+        const fClampedA = fClampedB.clone().negate();
+
+        if (bB.type === 'dynamic') {
+          bB.applyForceAtPoint(fClampedB, cp.point);
+        }
+        if (bA.type === 'dynamic') {
+          bA.applyForceAtPoint(fClampedA, cp.point);
+        }
+      }
+    }
+  }
+
+  /**
+   * 3. Topologische Gelenkbindungen aus Kantenwirkungs-Variation (ohne Impulssolver)
+   * Berechnet kontinuierliche Rückstellkräfte aus der Variation der harmonischen Kantenbindung
+   * S_joint = 1/2 * k_link * ||p_B - p_A||^2 skaliert über den effektiven Trägheitstensor.
+   */
+  applyPureJointForces(joints, dt) {
+    for (const j of joints) {
+      const bA = j.bodyA;
+      const bB = j.bodyB;
+
+      if (j.type === 'revolute') {
+        const pA = bA.transform.transformPoint(j.localAnchorA);
+        const pB = bB.transform.transformPoint(j.localAnchorB);
+        const delta = Vec2.sub(pB, pA);
+
+        const vA = bA.getVelocityAtPoint(pA);
+        const vB = bB.getVelocityAtPoint(pB);
+        const vRel = Vec2.sub(vB, vA);
+
+        const rA = Vec2.sub(pA, bA.position);
+        const rB = Vec2.sub(pB, bB.position);
+        const invMass = bA.invMass + bB.invMass;
+        if (invMass <= 0) continue;
+
+        const k11 = invMass + rA.y * rA.y * bA.invInertia + rB.y * rB.y * bB.invInertia;
+        const k12 = -rA.x * rA.y * bA.invInertia - rB.x * rB.y * bB.invInertia;
+        const k21 = k12;
+        const k22 = invMass + rA.x * rA.x * bA.invInertia + rB.x * rB.x * bB.invInertia;
+
+        const K = new Mat22().setElements(k11, k12, k21, k22);
+        const K_inv = K.invert();
+
+        // Kontinuierliche Kantenwirkung ohne Impulssolver
+        const targetA = Vec2.scale(delta, 180.0).add(Vec2.scale(vRel, 20.0));
+        const fOnB = K_inv.mulVec(targetA).negate();
+        const fOnA = fOnB.clone().negate();
+
+        if (bB.type === 'dynamic') bB.applyForceAtPoint(fOnB, pB);
+        if (bA.type === 'dynamic') bA.applyForceAtPoint(fOnA, pA);
+
+        // Motor (falls aktiv) als kontinuierliches Drehmoment
+        if (j.enableMotor) {
+          const wRel = bB.angularVelocity - bA.angularVelocity - j.motorSpeed;
+          const torque = -Math.max(-j.maxMotorTorque, Math.min(j.maxMotorTorque, wRel * 20.0));
+          if (bB.type === 'dynamic') bB.applyTorque(torque);
+          if (bA.type === 'dynamic') bA.applyTorque(-torque);
+        }
+
+      } else if (j.type === 'distance') {
+        const pA = bA.transform.transformPoint(j.localAnchorA);
+        const pB = bB.transform.transformPoint(j.localAnchorB);
+        const d = Vec2.sub(pB, pA);
+        const len = d.length();
+        if (len > 1e-6) {
+          const u = Vec2.scale(d, 1.0 / len);
+          const diff = len - j.length;
+          const vA = bA.getVelocityAtPoint(pA);
+          const vB = bB.getVelocityAtPoint(pB);
+          const vRel = Vec2.sub(vB, vA).dot(u);
+
+          const rA = Vec2.sub(pA, bA.position);
+          const rB = Vec2.sub(pB, bB.position);
+          const rAcrossU = rA.cross(u);
+          const rBcrossU = rB.cross(u);
+          const invM = bA.invMass + bB.invMass + rAcrossU * rAcrossU * bA.invInertia + rBcrossU * rBcrossU * bB.invInertia;
+          if (invM <= 0) continue;
+
+          const fMag = -(180.0 * diff + 20.0 * vRel) / invM;
+          const fOnB = Vec2.scale(u, fMag);
+          const fOnA = fOnB.clone().negate();
+
+          if (bB.type === 'dynamic') bB.applyForceAtPoint(fOnB, pB);
+          if (bA.type === 'dynamic') bA.applyForceAtPoint(fOnA, pA);
+        }
+
+      } else if (j.type === 'weld') {
+        const pA = bA.transform.transformPoint(j.localAnchorA);
+        const pB = bB.transform.transformPoint(j.localAnchorB);
+        const delta = Vec2.sub(pB, pA);
+        const rA = Vec2.sub(pA, bA.position);
+        const rB = Vec2.sub(pB, bB.position);
+        const vA = bA.getVelocityAtPoint(pA);
+        const vB = bB.getVelocityAtPoint(pB);
+        const vRel = Vec2.sub(vB, vA);
+
+        const invMass = bA.invMass + bB.invMass;
+        if (invMass > 0) {
+          const k11 = invMass + rA.y * rA.y * bA.invInertia + rB.y * rB.y * bB.invInertia;
+          const k12 = -rA.x * rA.y * bA.invInertia - rB.x * rB.y * bB.invInertia;
+          const k21 = k12;
+          const k22 = invMass + rA.x * rA.x * bA.invInertia + rB.x * rB.x * bB.invInertia;
+
+          const K = new Mat22().setElements(k11, k12, k21, k22);
+          const K_inv = K.invert();
+
+          const targetA = Vec2.scale(delta, 180.0).add(Vec2.scale(vRel, 20.0));
+          const fOnB = K_inv.mulVec(targetA).negate();
+          const fOnA = fOnB.clone().negate();
+
+          if (bB.type === 'dynamic') bB.applyForceAtPoint(fOnB, pB);
+          if (bA.type === 'dynamic') bA.applyForceAtPoint(fOnA, pA);
+        }
+
+        // Winkelbindung
+        const dAngle = bB.angle - bA.angle - j.referenceAngle;
+        const dOmega = bB.angularVelocity - bA.angularVelocity;
+        const invI = bA.invInertia + bB.invInertia;
+        if (invI > 0) {
+          const torque = -(100.0 * dAngle + 15.0 * dOmega) / invI;
+          if (bB.type === 'dynamic') bB.applyTorque(torque);
+          if (bA.type === 'dynamic') bA.applyTorque(-torque);
+        }
+      }
+    }
+  }
+}
+
+
+// --- src/collision/narrowphase/CollisionNarrowphase.mjs ---
+
+
+
+/**
+ * CollisionNarrowphase: Präzise Kollisionserkennung und Manifold-Generierung
+ * für alle Paarungen geometrischer Formen.
+ */
+class CollisionNarrowphase {
+  constructor(bridge) {
+    this.bridge = bridge;
+  }
+
+  /**
+   * Prüft zwei Formen auf Kollision und liefert ContactManifold oder null
+   */
+  collide(bodyA, bodyB, shapeA, shapeB) {
+    const typeA = shapeA.type;
+    const typeB = shapeB.type;
+
+    // Sortiere Paare für kanonische Handler
+    if (typeA === 'circle' && typeB === 'circle') {
+      return this.collideCircleCircle(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'circle' && typeB === 'box') {
+      return this.collideCircleBox(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'box' && typeB === 'circle') {
+      return this.collideCircleBox(bodyB, bodyA, shapeB, shapeA, true);
+    }
+    if (typeA === 'circle' && typeB === 'polygon') {
+      return this.collideCirclePolygon(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'polygon' && typeB === 'circle') {
+      return this.collideCirclePolygon(bodyB, bodyA, shapeB, shapeA, true);
+    }
+    if (typeA === 'circle' && typeB === 'segment') {
+      return this.collideCircleSegment(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'segment' && typeB === 'circle') {
+      return this.collideCircleSegment(bodyB, bodyA, shapeB, shapeA, true);
+    }
+    if (typeA === 'circle' && typeB === 'capsule') {
+      return this.collideCircleCapsule(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'capsule' && typeB === 'circle') {
+      return this.collideCircleCapsule(bodyB, bodyA, shapeB, shapeA, true);
+    }
+
+    // Box & Polygon Kombinationen (über SAT)
+    if ((typeA === 'box' || typeA === 'polygon') && (typeB === 'box' || typeB === 'polygon')) {
+      return this.collidePolyPoly(bodyA, bodyB, shapeA, shapeB);
+    }
+
+    // Segment vs Box / Polygon
+    if (typeA === 'segment' && (typeB === 'box' || typeB === 'polygon')) {
+      return this.collideSegmentPoly(bodyA, bodyB, shapeA, shapeB);
+    }
+    if ((typeA === 'box' || typeA === 'polygon') && typeB === 'segment') {
+      return this.collideSegmentPoly(bodyB, bodyA, shapeB, shapeA, true);
+    }
+
+    // Capsule vs Box / Polygon / Capsule / Segment
+    if (typeA === 'capsule' && (typeB === 'box' || typeB === 'polygon')) {
+      return this.collideCapsulePoly(bodyA, bodyB, shapeA, shapeB);
+    }
+    if ((typeA === 'box' || typeA === 'polygon') && typeB === 'capsule') {
+      return this.collideCapsulePoly(bodyB, bodyA, shapeB, shapeA, true);
+    }
+    if (typeA === 'capsule' && typeB === 'capsule') {
+      return this.collideCapsuleCapsule(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'capsule' && typeB === 'segment') {
+      return this.collideCapsuleSegment(bodyA, bodyB, shapeA, shapeB);
+    }
+    if (typeA === 'segment' && typeB === 'capsule') {
+      return this.collideCapsuleSegment(bodyB, bodyA, shapeB, shapeA, true);
+    }
+
+    return null;
+  }
+
+  _initManifold(bodyA, bodyB, shapeA, shapeB, flip = false) {
+    const m = flip
+      ? new ContactManifold(bodyB, bodyA, shapeB, shapeA)
+      : new ContactManifold(bodyA, bodyB, shapeA, shapeB);
+
+    const comb = this.bridge.combineMaterials(shapeA.material, shapeB.material);
+    m.friction = comb.friction;
+    m.restitution = comb.restitution;
+    return m;
+  }
+
+  /**
+   * Kreis vs Kreis
+   */
+  collideCircleCircle(bodyA, bodyB, circleA, circleB, flip = false) {
+    const centerA = bodyA.transform.transformPoint(circleA.offset);
+    const centerB = bodyB.transform.transformPoint(circleB.offset);
+
+    const delta = Vec2.sub(centerB, centerA);
+    const distSq = delta.lengthSq();
+    const rSum = circleA.radius + circleB.radius;
+
+    if (distSq >= rSum * rSum) return null;
+
+    const dist = Math.sqrt(distSq);
+    let normal;
+    if (dist > 1e-9) {
+      normal = Vec2.scale(delta, 1.0 / dist);
+    } else {
+      normal = new Vec2(0, 1);
+    }
+
+    const penetration = rSum - dist;
+    const contactPoint = Vec2.add(centerA, Vec2.scale(normal, circleA.radius - penetration * 0.5));
+
+    const manifold = this._initManifold(bodyA, bodyB, circleA, circleB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(contactPoint, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Kreis vs Box
+   */
+  collideCircleBox(bodyA, bodyB, circleA, boxB, flip = false) {
+    const centerA = bodyA.transform.transformPoint(circleA.offset);
+    // Bringe Kreiszentrum ins lokale Box-System
+    const localCenter = bodyB.transform.inverseTransformPoint(centerA);
+    const boxOffset = boxB.offset;
+
+    // Nächsten Punkt auf der Kiste finden
+    const cx = Math.max(boxOffset.x - boxB.hx, Math.min(boxOffset.x + boxB.hx, localCenter.x));
+    const cy = Math.max(boxOffset.y - boxB.hy, Math.min(boxOffset.y + boxB.hy, localCenter.y));
+    const closestLocal = new Vec2(cx, cy);
+
+    let localDelta = Vec2.sub(localCenter, closestLocal);
+    let distSq = localDelta.lengthSq();
+    let inside = false;
+
+    // Falls Zentrum innerhalb der Kiste liegt
+    if (distSq < 1e-12) {
+      inside = true;
+      const dx1 = (boxOffset.x + boxB.hx) - localCenter.x;
+      const dx2 = localCenter.x - (boxOffset.x - boxB.hx);
+      const dy1 = (boxOffset.y + boxB.hy) - localCenter.y;
+      const dy2 = localCenter.y - (boxOffset.y - boxB.hy);
+      const minVal = Math.min(dx1, dx2, dy1, dy2);
+
+      if (minVal === dx1) closestLocal.x = boxOffset.x + boxB.hx;
+      else if (minVal === dx2) closestLocal.x = boxOffset.x - boxB.hx;
+      else if (minVal === dy1) closestLocal.y = boxOffset.y + boxB.hy;
+      else closestLocal.y = boxOffset.y - boxB.hy;
+
+      localDelta = Vec2.sub(localCenter, closestLocal);
+      distSq = localDelta.lengthSq();
+    }
+
+    if (!inside && distSq > circleA.radius * circleA.radius) {
+      return null;
+    }
+
+    const dist = Math.sqrt(distSq);
+    const worldClosest = bodyB.transform.transformPoint(closestLocal);
+
+    let normal;
+    let penetration;
+    if (inside) {
+      // Normale von A (Kreis) nach B (Box) -> zeigt in Kiste
+      const localNorm = localDelta.normalize().negate();
+      normal = bodyB.transform.transformVector(localNorm);
+      penetration = circleA.radius + dist;
+    } else {
+      const localNorm = localDelta.normalize();
+      // Normale von Kreis zu Box zeigt von A nach B -> localNorm invertieren
+      normal = bodyB.transform.transformVector(localNorm).negate();
+      penetration = circleA.radius - dist;
+    }
+
+    const manifold = this._initManifold(bodyA, bodyB, circleA, boxB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(worldClosest, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Kreis vs Polygon
+   */
+  collideCirclePolygon(bodyA, bodyB, circleA, polyB, flip = false) {
+    const centerA = bodyA.transform.transformPoint(circleA.offset);
+    const verts = polyB.getWorldVertices(bodyB.transform);
+    const normals = polyB.getWorldNormals(bodyB.transform);
+    const n = verts.length;
+
+    let maxSep = -Infinity;
+    let bestEdge = 0;
+
+    for (let i = 0; i < n; i++) {
+      const v = verts[i];
+      const norm = normals[i];
+      const sep = norm.dot(Vec2.sub(centerA, v));
+      if (sep > circleA.radius) {
+        return null; // Außerhalb des Radius
+      }
+      if (sep > maxSep) {
+        maxSep = sep;
+        bestEdge = i;
+      }
+    }
+
+    const v1 = verts[bestEdge];
+    const v2 = verts[(bestEdge + 1) % n];
+    const edge = Vec2.sub(v2, v1);
+    const edgeLenSq = edge.lengthSq();
+    const toCenter = Vec2.sub(centerA, v1);
+    const u = Math.max(0, Math.min(1, toCenter.dot(edge) / edgeLenSq));
+    const closest = Vec2.add(v1, Vec2.scale(edge, u));
+
+    const delta = Vec2.sub(closest, centerA);
+    const distSq = delta.lengthSq();
+    if (distSq > circleA.radius * circleA.radius) return null;
+
+    const dist = Math.sqrt(distSq);
+    const normal = dist > 1e-9 ? Vec2.scale(delta, 1.0 / dist) : normals[bestEdge].clone();
+    const penetration = circleA.radius - dist;
+
+    const manifold = this._initManifold(bodyA, bodyB, circleA, polyB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(closest, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Kreis vs Liniensegment
+   */
+  collideCircleSegment(bodyA, bodyB, circleA, segB, flip = false) {
+    const centerA = bodyA.transform.transformPoint(circleA.offset);
+    const [w1, w2] = segB.getWorldEndpoints(bodyB.transform);
+    const edge = Vec2.sub(w2, w1);
+    const edgeLenSq = edge.lengthSq();
+
+    const toCenter = Vec2.sub(centerA, w1);
+    const t = Math.max(0, Math.min(1, toCenter.dot(edge) / edgeLenSq));
+    const closest = Vec2.add(w1, Vec2.scale(edge, t));
+
+    const delta = Vec2.sub(closest, centerA);
+    const distSq = delta.lengthSq();
+    const rSum = circleA.radius + segB.thickness;
+
+    if (distSq >= rSum * rSum) return null;
+
+    const dist = Math.sqrt(distSq);
+    const normal = dist > 1e-9 ? Vec2.scale(delta, 1.0 / dist) : new Vec2(0, 1);
+    const penetration = rSum - dist;
+
+    const manifold = this._initManifold(bodyA, bodyB, circleA, segB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(closest, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Kreis vs Kapsel
+   */
+  collideCircleCapsule(bodyA, bodyB, circleA, capB, flip = false) {
+    const centerA = bodyA.transform.transformPoint(circleA.offset);
+    const [p1, p2] = capB.getWorldEndpoints(bodyB.transform);
+    const seg = Vec2.sub(p2, p1);
+    const lenSq = seg.lengthSq();
+
+    const t = Math.max(0, Math.min(1, Vec2.sub(centerA, p1).dot(seg) / lenSq));
+    const closest = Vec2.add(p1, Vec2.scale(seg, t));
+
+    const delta = Vec2.sub(closest, centerA);
+    const distSq = delta.lengthSq();
+    const rSum = circleA.radius + capB.radius;
+
+    if (distSq >= rSum * rSum) return null;
+
+    const dist = Math.sqrt(distSq);
+    const normal = dist > 1e-9 ? Vec2.scale(delta, 1.0 / dist) : new Vec2(0, 1);
+    const penetration = rSum - dist;
+    const contactPt = Vec2.add(centerA, Vec2.scale(normal, circleA.radius - penetration * 0.5));
+
+    const manifold = this._initManifold(bodyA, bodyB, circleA, capB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(contactPt, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Polygon/Box vs Polygon/Box via SAT
+   */
+  collidePolyPoly(bodyA, bodyB, shapeA, shapeB, flip = false) {
+    const vertsA = shapeA.getWorldVertices(bodyA.transform);
+    const normalsA = shapeA.getWorldNormals(bodyA.transform);
+    const vertsB = shapeB.getWorldVertices(bodyB.transform);
+    const normalsB = shapeB.getWorldNormals(bodyB.transform);
+
+    const satResult = SAT.collidePolygons(
+      vertsA, normalsA, bodyA.position,
+      vertsB, normalsB, bodyB.position
+    );
+
+    if (!satResult.collision) return null;
+
+    const manifold = this._initManifold(bodyA, bodyB, shapeA, shapeB, flip);
+    manifold.normal = flip ? satResult.normal.clone().negate() : satResult.normal;
+    manifold.tangent = manifold.normal.perp();
+
+    for (const pt of satResult.points) {
+      manifold.addPoint(pt.point, pt.depth);
+    }
+
+    return manifold;
+  }
+
+  /**
+   * Segment vs Box / Polygon
+   */
+  collideSegmentPoly(bodyA, bodyB, segA, polyB, flip = false) {
+    // Segment als dünnes Polygon behandeln
+    const [w1, w2] = segA.getWorldEndpoints(bodyA.transform);
+    const edge = Vec2.sub(w2, w1);
+    const norm = new Vec2(edge.y, -edge.x).normalize();
+    const halfThick = segA.thickness * 0.5;
+
+    const segVerts = [
+      Vec2.add(w1, Vec2.scale(norm, halfThick)),
+      Vec2.add(w2, Vec2.scale(norm, halfThick)),
+      Vec2.sub(w2, Vec2.scale(norm, halfThick)),
+      Vec2.sub(w1, Vec2.scale(norm, halfThick))
+    ];
+    const segNorms = [
+      norm.clone(),
+      edge.clone().normalize(),
+      norm.clone().negate(),
+      edge.clone().normalize().negate()
+    ];
+
+    const vertsB = polyB.getWorldVertices(bodyB.transform);
+    const normalsB = polyB.getWorldNormals(bodyB.transform);
+
+    const satResult = SAT.collidePolygons(
+      segVerts, segNorms, bodyA.position,
+      vertsB, normalsB, bodyB.position
+    );
+
+    if (!satResult.collision) return null;
+
+    const manifold = this._initManifold(bodyA, bodyB, segA, polyB, flip);
+    manifold.normal = flip ? satResult.normal.clone().negate() : satResult.normal;
+    manifold.tangent = manifold.normal.perp();
+
+    for (const pt of satResult.points) {
+      manifold.addPoint(pt.point, pt.depth);
+    }
+
+    return manifold;
+  }
+
+  /**
+   * Capsule vs Polygon/Box
+   */
+  collideCapsulePoly(bodyA, bodyB, capA, polyB, flip = false) {
+    // Kapsel als Segment mit Radius r behandeln
+    const [p1, p2] = capA.getWorldEndpoints(bodyA.transform);
+    const seg = Vec2.sub(p2, p1);
+    const vertsB = polyB.getWorldVertices(bodyB.transform);
+    const normalsB = polyB.getWorldNormals(bodyB.transform);
+
+    // Finde tiefsten Endpunkt oder projiziere Segment auf Polygon-Normalen
+    let bestSep = -Infinity;
+    let bestNorm = null;
+
+    for (let i = 0; i < normalsB.length; i++) {
+      const n = normalsB[i];
+      const d1 = n.dot(Vec2.sub(p1, vertsB[i]));
+      const d2 = n.dot(Vec2.sub(p2, vertsB[i]));
+      const minD = Math.min(d1, d2);
+      if (minD > capA.radius) {
+        return null; // Trennung!
+      }
+      if (minD > bestSep) {
+        bestSep = minD;
+        bestNorm = n;
+      }
+    }
+
+    // Wenn keine trennende Achse existiert, erstelle Kontakt
+    const manifold = this._initManifold(bodyA, bodyB, capA, polyB, flip);
+    const normal = bestNorm ? bestNorm.clone().negate() : new Vec2(0, -1);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+
+    // Teste beide Kapsel-Endpunkte als Kreis-Kontakte
+    for (const p of [p1, p2]) {
+      let inside = true;
+      let minPen = Infinity;
+      let closestPt = null;
+
+      for (let i = 0; i < vertsB.length; i++) {
+        const v1 = vertsB[i];
+        const v2 = vertsB[(i + 1) % vertsB.length];
+        const edge = Vec2.sub(v2, v1);
+        const norm = normalsB[i];
+        const dist = norm.dot(Vec2.sub(p, v1));
+        if (dist > capA.radius) {
+          inside = false;
+          break;
+        }
+        const pen = capA.radius - dist;
+        if (pen < minPen) {
+          minPen = pen;
+          closestPt = Vec2.add(p, Vec2.scale(norm, -dist));
+        }
+      }
+
+      if (inside && closestPt) {
+        manifold.addPoint(closestPt, minPen);
+      }
+    }
+
+    if (manifold.points.length === 0) {
+      const mid = Vec2.lerp(p1, p2, 0.5);
+      manifold.addPoint(mid, capA.radius - bestSep);
+    }
+
+    return manifold;
+  }
+
+  /**
+   * Capsule vs Capsule
+   */
+  collideCapsuleCapsule(bodyA, bodyB, capA, capB, flip = false) {
+    const [a1, a2] = capA.getWorldEndpoints(bodyA.transform);
+    const [b1, b2] = capB.getWorldEndpoints(bodyB.transform);
+
+    // Kürzesten Abstand zwischen zwei Raumsegmenten berechnen
+    const segA = Vec2.sub(a2, a1);
+    const segB = Vec2.sub(b2, b1);
+    const r = Vec2.sub(a1, b1);
+
+    const a = segA.dot(segA);
+    const e = segB.dot(segB);
+    const f = segB.dot(r);
+
+    let s = 0.0;
+    let t = 0.0;
+
+    const c = segA.dot(r);
+    const b = segA.dot(segB);
+    const denom = a * e - b * b;
+
+    if (denom !== 0.0) {
+      s = Math.max(0.0, Math.min(1.0, (b * f - c * e) / denom));
+    }
+
+    t = (b * s + f) / e;
+    if (t < 0.0) {
+      t = 0.0;
+      s = Math.max(0.0, Math.min(1.0, -c / a));
+    } else if (t > 1.0) {
+      t = 1.0;
+      s = Math.max(0.0, Math.min(1.0, (b - c) / a));
+    }
+
+    const closestA = Vec2.add(a1, Vec2.scale(segA, s));
+    const closestB = Vec2.add(b1, Vec2.scale(segB, t));
+
+    const delta = Vec2.sub(closestB, closestA);
+    const distSq = delta.lengthSq();
+    const rSum = capA.radius + capB.radius;
+
+    if (distSq >= rSum * rSum) return null;
+
+    const dist = Math.sqrt(distSq);
+    const normal = dist > 1e-9 ? Vec2.scale(delta, 1.0 / dist) : new Vec2(0, 1);
+    const penetration = rSum - dist;
+    const pt = Vec2.add(closestA, Vec2.scale(normal, capA.radius - penetration * 0.5));
+
+    const manifold = this._initManifold(bodyA, bodyB, capA, capB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(pt, penetration);
+
+    return manifold;
+  }
+
+  /**
+   * Capsule vs Segment
+   */
+  collideCapsuleSegment(bodyA, bodyB, capA, segB, flip = false) {
+    // Ähnlich wie Capsule-Capsule mit Segment-Radius = segB.thickness
+    const [a1, a2] = capA.getWorldEndpoints(bodyA.transform);
+    const [b1, b2] = segB.getWorldEndpoints(bodyB.transform);
+
+    const segA = Vec2.sub(a2, a1);
+    const segB_vec = Vec2.sub(b2, b1);
+    const r = Vec2.sub(a1, b1);
+
+    const a = segA.dot(segA);
+    const e = segB_vec.dot(segB_vec);
+    const f = segB_vec.dot(r);
+
+    let s = 0.0, t = 0.0;
+    const c = segA.dot(r);
+    const b = segA.dot(segB_vec);
+    const denom = a * e - b * b;
+
+    if (denom !== 0.0) s = Math.max(0.0, Math.min(1.0, (b * f - c * e) / denom));
+    t = (b * s + f) / e;
+    if (t < 0.0) { t = 0.0; s = Math.max(0.0, Math.min(1.0, -c / a)); }
+    else if (t > 1.0) { t = 1.0; s = Math.max(0.0, Math.min(1.0, (b - c) / a)); }
+
+    const closestA = Vec2.add(a1, Vec2.scale(segA, s));
+    const closestB = Vec2.add(b1, Vec2.scale(segB_vec, t));
+
+    const delta = Vec2.sub(closestB, closestA);
+    const distSq = delta.lengthSq();
+    const rSum = capA.radius + segB.thickness;
+
+    if (distSq >= rSum * rSum) return null;
+
+    const dist = Math.sqrt(distSq);
+    const normal = dist > 1e-9 ? Vec2.scale(delta, 1.0 / dist) : new Vec2(0, 1);
+    const penetration = rSum - dist;
+
+    const manifold = this._initManifold(bodyA, bodyB, capA, segB, flip);
+    manifold.normal = flip ? normal.clone().negate() : normal;
+    manifold.tangent = manifold.normal.perp();
+    manifold.addPoint(closestB, penetration);
+
+    return manifold;
+  }
+}
+
+
+// --- src/dynamics/Body.mjs ---
+
+
+
+let nextBodyId = 1;
+
+/**
+ * Body: Repräsentiert einen starren Körper (RigidBody) in der Simulation.
+ * 
+ * Unterstützte Typen:
+ * - 'dynamic': Vollständig physikalisch simuliert (Kräfte, Gravitation, Stöße).
+ * - 'static': Feste Umgebung (Böden, Wände, Hindernisse). Unendliche Masse, bewegt sich nicht.
+ * - 'kinematic': Bewegt sich rein durch gesetzte Geschwindigkeit, wird nicht von Kräften beschleunigt.
+ */
+class Body {
+  constructor(config = {}) {
+    this.id = nextBodyId++;
+    this.type = config.type ?? 'dynamic'; // 'dynamic', 'static', 'kinematic'
+
+    // Zustandsvariablen
+    this.position = config.position ? config.position.clone() : new Vec2(0, 0);
+    this.velocity = config.velocity ? config.velocity.clone() : new Vec2(0, 0);
+    this.angle = config.angle ?? 0.0;
+    this.angularVelocity = config.angularVelocity ?? 0.0;
+
+    // Gespeicherte Transformation
+    this.transform = new Transform(this.position, this.angle);
+
+    // Akkumulierte Kräfte und Drehmomente für aktuellen Zeitschritt
+    this.force = new Vec2(0, 0);
+    this.torque = 0.0;
+
+    // Dämpfung und Skalierungen
+    this.linearDamping = config.linearDamping ?? 0.01;
+    this.angularDamping = config.angularDamping ?? 0.02;
+    this.gravityScale = config.gravityScale ?? 1.0;
+
+    // Massendaten
+    this.mass = 0.0;
+    this.invMass = 0.0;
+    this.inertia = 0.0;
+    this.invInertia = 0.0;
+
+    // Zerstörbarkeit & Materialbruch (SubQG Destruction Physics)
+    this.isDestructible = config.isDestructible ?? false;
+    this.fractureForce = config.fractureForce ?? 1500.0;
+    this.isBroken = false;
+
+    // Formen des Körpers (Compound Body Support)
+    this.shapes = [];
+    this.aabb = new AABB();
+    this.boundingRadius = 0.5;
+
+    // Schlafzustand (Sleeping Island Optimization)
+    this.isSleeping = false;
+    this.allowSleep = config.allowSleep ?? true;
+    this.sleepTime = 0.0;
+
+    // Benutzerdefinierte Daten (z. B. Spiel-Logik, Sprites, Entities)
+    this.userData = config.userData ?? null;
+
+    // Broadphase Tree Leaf Referenz
+    this.treeLeaf = null;
+
+    if (config.shape) {
+      this.addShape(config.shape);
+    }
+  }
+
+  addShape(shape) {
+    shape.body = this;
+    if (!shape.id) shape.id = nextBodyId++;
+    this.shapes.push(shape);
+    this._recomputeMassData();
+    this.updateAABB();
+    this.wakeUp();
+    return this;
+  }
+
+  removeShape(shape) {
+    const idx = this.shapes.indexOf(shape);
+    if (idx !== -1) {
+      this.shapes.splice(idx, 1);
+      shape.body = null;
+      this._recomputeMassData();
+      this.updateAABB();
+      this.wakeUp();
+    }
+    return this;
+  }
+
+  _recomputeMassData() {
+    let totalMass = 0.0;
+    let totalInertia = 0.0;
+    let maxRadius = 0.1;
+
+    for (const shape of this.shapes) {
+      const data = shape.computeMassData(shape.material.density);
+      totalMass += data.mass;
+      totalInertia += data.inertia;
+
+      // Ungefährer Hüllradius
+      const r = shape.radius || Math.hypot(shape.width || 0.5, shape.height || 0.5);
+      if (r > maxRadius) maxRadius = r;
+    }
+
+    if (this.type === 'static') {
+      // Statische Körper (z.B. Planeten, Böden) besitzen Gravitationsmasse für das SubQG-Gitter,
+      // aber inverse Masse = 0, sodass sie kinematisch unbeweglich sind.
+      this.mass = totalMass > 0 ? totalMass : 0.0;
+      this.invMass = 0.0;
+      this.inertia = totalInertia > 0 ? totalInertia : 0.0;
+      this.invInertia = 0.0;
+      this.boundingRadius = maxRadius;
+      return;
+    }
+
+    if (totalMass > 0.0) {
+      this.mass = totalMass;
+      this.invMass = 1.0 / totalMass;
+      this.inertia = Math.max(1e-4, totalInertia);
+      this.invInertia = 1.0 / this.inertia;
+    } else {
+      this.mass = 1.0;
+      this.invMass = 1.0;
+      this.inertia = 1.0;
+      this.invInertia = 1.0;
+    }
+
+    this.boundingRadius = maxRadius;
+  }
+
+  updateAABB() {
+    this.transform.set(this.position, this.angle);
+    this.aabb.reset();
+    for (const shape of this.shapes) {
+      const shapeAABB = shape.computeAABB(this.transform);
+      this.aabb.combine(shapeAABB);
+    }
+    return this.aabb;
+  }
+
+  setPosition(x, y) {
+    this.position.set(x, y);
+    this.updateAABB();
+    this.wakeUp();
+    return this;
+  }
+
+  setAngle(angle) {
+    this.angle = angle;
+    this.updateAABB();
+    this.wakeUp();
+    return this;
+  }
+
+  setVelocity(vx, vy) {
+    this.velocity.set(vx, vy);
+    this.wakeUp();
+    return this;
+  }
+
+  setAngularVelocity(w) {
+    this.angularVelocity = w;
+    this.wakeUp();
+    return this;
+  }
+
+  applyForce(f) {
+    if (this.type !== 'dynamic' || this.isSleeping) return;
+    this.force.add(f);
+    this.wakeUp();
+  }
+
+  applyTorque(t) {
+    if (this.type !== 'dynamic' || this.isSleeping) return;
+    this.torque += t;
+    this.wakeUp();
+  }
+
+  applyForceAtPoint(f, worldPoint) {
+    if (this.type !== 'dynamic' || this.isSleeping) return;
+    this.force.add(f);
+    const r = Vec2.sub(worldPoint, this.position);
+    this.torque += r.cross(f);
+    this.wakeUp();
+  }
+
+  applyImpulse(impulse) {
+    if (this.type !== 'dynamic') return;
+    this.velocity.addScaled(impulse, this.invMass);
+    this.wakeUp();
+  }
+
+  applyAngularImpulse(impulse) {
+    if (this.type !== 'dynamic') return;
+    this.angularVelocity += impulse * this.invInertia;
+    this.wakeUp();
+  }
+
+  applyImpulseAtPoint(impulse, worldPoint) {
+    if (this.type !== 'dynamic') return;
+    this.velocity.addScaled(impulse, this.invMass);
+    const r = Vec2.sub(worldPoint, this.position);
+    this.angularVelocity += r.cross(impulse) * this.invInertia;
+    this.wakeUp();
+  }
+
+  getVelocityAtPoint(worldPoint) {
+    const r = Vec2.sub(worldPoint, this.position);
+    return new Vec2(
+      this.velocity.x - this.angularVelocity * r.y,
+      this.velocity.y + this.angularVelocity * r.x
+    );
+  }
+
+  wakeUp() {
+    this.isSleeping = false;
+    this.sleepTime = 0.0;
+  }
+
+  putToSleep() {
+    if (!this.allowSleep || this.type !== 'dynamic') return;
+    this.isSleeping = true;
+    this.velocity.set(0, 0);
+    this.angularVelocity = 0.0;
+    this.force.set(0, 0);
+    this.torque = 0.0;
+  }
+
+  integrateForces(dt) {
+    if (this.type !== 'dynamic' || this.isSleeping) return;
+
+    // Halber Geschwindigkeitsschritt oder Euler: v += dt * (F * invMass)
+    this.velocity.addScaled(this.force, dt * this.invMass);
+    this.angularVelocity += (this.torque * this.invInertia) * dt;
+
+    // Dämpfung (Luftwiderstand)
+    const linDamp = Math.max(0.0, 1.0 - this.linearDamping * dt);
+    const angDamp = Math.max(0.0, 1.0 - this.angularDamping * dt);
+    this.velocity.scale(linDamp);
+    this.angularVelocity *= angDamp;
+
+    // Kräfte für nächsten Zeitschritt leeren
+    this.force.set(0, 0);
+    this.torque = 0.0;
+  }
+
+  integrateVelocities(dt) {
+    if (this.type === 'static' || this.isSleeping) return;
+
+    // Schutzgrenze gegen unphysikalische Überschall-Geschwindigkeiten
+    const maxSpeed = 30.0; // 30 m/s = 108 km/h
+    const speedSq = this.velocity.lengthSq();
+    if (speedSq > maxSpeed * maxSpeed) {
+      this.velocity.scale(maxSpeed / Math.sqrt(speedSq));
+    }
+    const maxAngSpeed = 35.0; // rad/s
+    if (Math.abs(this.angularVelocity) > maxAngSpeed) {
+      this.angularVelocity = Math.sign(this.angularVelocity) * maxAngSpeed;
+    }
+
+    this.position.addScaled(this.velocity, dt);
+    this.angle += this.angularVelocity * dt;
+
+    this.updateAABB();
+  }
+}
+
+
+// --- src/dynamics/ContactSolver.mjs ---
+
+/**
+ * ContactSolver: Hochpräziser sequentieller Impulssolver (Projected Gauss-Seidel)
+ * zur simultanen Lösung von Normalstößen, Haft-/Gleitreibung (Coulomb-Reibungskegel)
+ * und elastischem Rückprall mit Warm-Starting und Baumgarte-Stabilisierung.
+ */
+class ContactSolver {
+  constructor(bridge) {
+    this.bridge = bridge;
+    this.restitutionThreshold = 0.5; // m/s: darunter elastischer Stoß abgedämpft gegen Ruhezittern
+  }
+
+  initVelocityConstraints(manifolds, dt) {
+    for (const m of manifolds) {
+      if (m.isTrigger) continue;
+
+      const bA = m.bodyA;
+      const bB = m.bodyB;
+      const mA = bA.invMass;
+      const mB = bB.invMass;
+      const iA = bA.invInertia;
+      const iB = bB.invInertia;
+      const normal = m.normal;
+      const tangent = m.tangent;
+
+      for (const cp of m.points) {
+        // Hebelarme berechnen
+        cp.rA = Vec2.sub(cp.point, bA.position);
+        cp.rB = Vec2.sub(cp.point, bB.position);
+
+        const rnA = cp.rA.cross(normal);
+        const rnB = cp.rB.cross(normal);
+        const kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+        cp.normalMass = kNormal > 1e-12 ? 1.0 / kNormal : 0.0;
+
+        const rtA = cp.rA.cross(tangent);
+        const rtB = cp.rB.cross(tangent);
+        const kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
+        cp.tangentMass = kTangent > 1e-12 ? 1.0 / kTangent : 0.0;
+
+        // Relative Geschwindigkeit an Kontaktstelle
+        const vA = bA.getVelocityAtPoint(cp.point);
+        const vB = bB.getVelocityAtPoint(cp.point);
+        const vRel = Vec2.sub(vB, vA);
+        const vNormal = vRel.dot(normal);
+
+        // Baumgarte-Stabilisierung
+        const penBias = this.bridge.computePenetrationBias(cp.penetration, dt);
+
+        // Restitutions-Bias (Rückprall)
+        let restBias = 0.0;
+        if (vNormal < -this.restitutionThreshold) {
+          restBias = -m.restitution * vNormal;
+        }
+
+        cp.bias = penBias + restBias;
+
+        // Warm-Starting: Wende akkumulierte Impulse aus vorherigem Frame an
+        const p = Vec2.add(
+          Vec2.scale(normal, cp.normalImpulse),
+          Vec2.scale(tangent, cp.tangentImpulse)
+        );
+
+        if (bA.type === 'dynamic') {
+          bA.velocity.subScaled(p, mA);
+          bA.angularVelocity -= iA * cp.rA.cross(p);
+        }
+        if (bB.type === 'dynamic') {
+          bB.velocity.addScaled(p, mB);
+          bB.angularVelocity += iB * cp.rB.cross(p);
+        }
+      }
+    }
+  }
+
+  solveVelocityConstraints(manifolds) {
+    for (const m of manifolds) {
+      if (m.isTrigger) continue;
+
+      const bA = m.bodyA;
+      const bB = m.bodyB;
+      const mA = bA.invMass;
+      const mB = bB.invMass;
+      const iA = bA.invInertia;
+      const iB = bB.invInertia;
+      const normal = m.normal;
+      const tangent = m.tangent;
+      const friction = m.friction;
+
+      for (const cp of m.points) {
+        // 1. Reibungs-Impuls (Tangential)
+        const vA1 = bA.getVelocityAtPoint(cp.point);
+        const vB1 = bB.getVelocityAtPoint(cp.point);
+        const vRel1 = Vec2.sub(vB1, vA1);
+        const vTangent = vRel1.dot(tangent);
+
+        let lambdaT = -vTangent * cp.tangentMass;
+        // Reibungskegel: |tangentImpulse| <= friction * normalImpulse
+        const maxFriction = friction * cp.normalImpulse;
+        const oldTangentImpulse = cp.tangentImpulse;
+        cp.tangentImpulse = Math.max(-maxFriction, Math.min(maxFriction, oldTangentImpulse + lambdaT));
+        lambdaT = cp.tangentImpulse - oldTangentImpulse;
+
+        const pT = Vec2.scale(tangent, lambdaT);
+        if (bA.type === 'dynamic') {
+          bA.velocity.subScaled(pT, mA);
+          bA.angularVelocity -= iA * cp.rA.cross(pT);
+        }
+        if (bB.type === 'dynamic') {
+          bB.velocity.addScaled(pT, mB);
+          bB.angularVelocity += iB * cp.rB.cross(pT);
+        }
+
+        // 2. Normal-Impuls (Nicht-Durchdringung)
+        const vA2 = bA.getVelocityAtPoint(cp.point);
+        const vB2 = bB.getVelocityAtPoint(cp.point);
+        const vRel2 = Vec2.sub(vB2, vA2);
+        const vNormal = vRel2.dot(normal);
+
+        let lambdaN = -(vNormal - cp.bias) * cp.normalMass;
+        const oldNormalImpulse = cp.normalImpulse;
+        cp.normalImpulse = Math.max(0.0, oldNormalImpulse + lambdaN);
+        lambdaN = cp.normalImpulse - oldNormalImpulse;
+
+        const pN = Vec2.scale(normal, lambdaN);
+        if (bA.type === 'dynamic') {
+          bA.velocity.subScaled(pN, mA);
+          bA.angularVelocity -= iA * cp.rA.cross(pN);
+        }
+        if (bB.type === 'dynamic') {
+          bB.velocity.addScaled(pN, mB);
+          bB.angularVelocity += iB * cp.rB.cross(pN);
+        }
+      }
+    }
+  }
+}
+
+
+// --- src/dynamics/Island.mjs ---
+/**
+ * Island: Gruppierung von zusammenhängenden Körpern, Kontakten und Gelenken.
+ * Ermöglicht getrennte parallele Ausführung und automatischen Schlafzustand (Sleeping),
+ * wenn eine Konstruktion (z. B. ein Kistenturm) zur Ruhe gekommen ist.
+ */
+class Island {
+  constructor() {
+    this.bodies = [];
+    this.contacts = [];
+    this.joints = [];
+  }
+
+  addBody(body) {
+    this.bodies.push(body);
+  }
+
+  addContact(contact) {
+    this.contacts.push(contact);
+  }
+
+  addJoint(joint) {
+    this.joints.push(joint);
+  }
+
+  clear() {
+    this.bodies.length = 0;
+    this.contacts.length = 0;
+    this.joints.length = 0;
+  }
+
+  /**
+   * Prüft, ob alle Körper der Insel schlafen gelegt werden können
+   */
+  evaluateSleep(dt, linTolSq = 0.005, angTolSq = 0.005, timeToSleep = 0.5) {
+    let canSleep = true;
+
+    for (const b of this.bodies) {
+      if (b.type !== 'dynamic' || !b.allowSleep) {
+        canSleep = false;
+        break;
+      }
+
+      const linVelSq = b.velocity.lengthSq();
+      const angVelSq = b.angularVelocity * b.angularVelocity;
+
+      if (linVelSq > linTolSq || angVelSq > angTolSq) {
+        b.sleepTime = 0.0;
+        canSleep = false;
+      } else {
+        b.sleepTime += dt;
+        if (b.sleepTime < timeToSleep) {
+          canSleep = false;
+        }
+      }
+    }
+
+    if (canSleep) {
+      for (const b of this.bodies) {
+        b.putToSleep();
+      }
+    }
+  }
+}
+
+
+// --- src/dynamics/joints/Joint.mjs ---
+let nextJointId = 1;
+
+/**
+ * Joint: Abstrakte Basisklasse für alle kinematischen und dynamischen Gelenke.
+ * Unterstützt Materialbruch (Breaking Force / Breaking Torque).
+ */
+class Joint {
+  constructor(bodyA, bodyB, type = 'joint', config = {}) {
+    this.id = nextJointId++;
+    this.type = type;
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+    this.collideConnected = config.collideConnected ?? false; // Ob verbundene Körper miteinander kollidieren dürfen
+    this.breakingForce = config.breakingForce ?? Infinity;    // Max. Reißkraft vor Bruch in Newton
+    this.breakingTorque = config.breakingTorque ?? Infinity;  // Max. Bruchmoment in Nm
+    this.isBroken = false;
+  }
+
+  getReactionForce(dt) {
+    return 0.0;
+  }
+
+  getReactionTorque(dt) {
+    return 0.0;
+  }
+
+  initVelocityConstraints(dt) {
+    throw new Error('initVelocityConstraints() must be implemented');
+  }
+
+  solveVelocityConstraints() {
+    throw new Error('solveVelocityConstraints() must be implemented');
+  }
+}
+
+
+// --- src/dynamics/joints/DistanceJoint.mjs ---
+
+
+/**
+ * DistanceJoint: Hält zwei Ankerpunkte auf festem Abstand (starre Stange)
+ * oder simuliert eine gedämpfte Federung (z. B. Fahrzeug-Stoßdämpfer, Seil).
+ */
+class DistanceJoint extends Joint {
+  constructor(bodyA, bodyB, anchorA, anchorB, config = {}) {
+    super(bodyA, bodyB, 'distance', config);
+    this.localAnchorA = bodyA.transform.inverseTransformPoint(anchorA);
+    this.localAnchorB = bodyB.transform.inverseTransformPoint(anchorB);
+
+    const worldA = bodyA.transform.transformPoint(this.localAnchorA);
+    const worldB = bodyB.transform.transformPoint(this.localAnchorB);
+    this.length = config.length ?? worldA.distanceTo(worldB);
+
+    // Federungsparameter
+    this.frequencyHz = config.frequencyHz ?? 0.0; // 0 = starr
+    this.dampingRatio = config.dampingRatio ?? 0.0;
+
+    // Interne Solver-Variablen
+    this.u = new Vec2(0, 1);
+    this.rA = new Vec2(0, 0);
+    this.rB = new Vec2(0, 0);
+    this.mass = 0.0;
+    this.impulse = 0.0;
+    this.bias = 0.0;
+    this.gamma = 0.0;
+  }
+
+  initVelocityConstraints(dt) {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    this.rA = bA.transform.transformVector(this.localAnchorA);
+    this.rB = bB.transform.transformVector(this.localAnchorB);
+
+    const pA = Vec2.add(bA.position, this.rA);
+    const pB = Vec2.add(bB.position, this.rB);
+    const d = Vec2.sub(pB, pA);
+    const currentLen = d.length();
+
+    if (currentLen > 1e-6) {
+      this.u = Vec2.scale(d, 1.0 / currentLen);
+    } else {
+      this.u.set(0, 0);
+    }
+
+    const crAu = this.rA.cross(this.u);
+    const crBu = this.rB.cross(this.u);
+    let invMass = bA.invMass + bB.invMass + bA.invInertia * crAu * crAu + bB.invInertia * crBu * crBu;
+
+    if (this.frequencyHz > 0.0) {
+      const C = currentLen - this.length;
+      const omega = 2.0 * Math.PI * this.frequencyHz;
+      const dCoeff = 2.0 * this.mass * this.dampingRatio * omega;
+      const kCoeff = this.mass * omega * omega;
+
+      this.gamma = dt * (dCoeff + dt * kCoeff);
+      this.gamma = this.gamma !== 0.0 ? 1.0 / this.gamma : 0.0;
+      this.bias = C * dt * kCoeff * this.gamma;
+
+      invMass += this.gamma;
+      this.mass = invMass !== 0.0 ? 1.0 / invMass : 0.0;
+    } else {
+      this.gamma = 0.0;
+      const rawBias = 0.2 * Math.max(0, currentLen - this.length) / Math.max(dt, 1e-4);
+      this.bias = Math.min(3.5, rawBias); // Begrenzung gegen Resonanzkatastrophen
+      this.mass = invMass !== 0.0 ? 1.0 / invMass : 0.0;
+    }
+
+    // Warm starting
+    const p = Vec2.scale(this.u, this.impulse);
+    bA.velocity.subScaled(p, bA.invMass);
+    bA.angularVelocity -= bA.invInertia * this.rA.cross(p);
+    bB.velocity.addScaled(p, bB.invMass);
+    bB.angularVelocity += bB.invInertia * this.rB.cross(p);
+  }
+
+  solveVelocityConstraints() {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    const vA = Vec2.add(bA.velocity, Vec2.crossScalarVec(bA.angularVelocity, this.rA));
+    const vB = Vec2.add(bB.velocity, Vec2.crossScalarVec(bB.angularVelocity, this.rB));
+    const vRel = this.u.dot(Vec2.sub(vB, vA));
+
+    let impulse = -this.mass * (vRel + this.bias + this.gamma * this.impulse);
+    this.impulse += impulse;
+
+    const p = Vec2.scale(this.u, impulse);
+    bA.velocity.subScaled(p, bA.invMass);
+    bA.angularVelocity -= bA.invInertia * this.rA.cross(p);
+    bB.velocity.addScaled(p, bB.invMass);
+    bB.angularVelocity += bB.invInertia * this.rB.cross(p);
+  }
+
+  getReactionForce(dt) {
+    return Math.abs(this.impulse) / Math.max(dt, 1e-4);
+  }
+}
+
+
+// --- src/dynamics/joints/RevoluteJoint.mjs ---
+
+
+
+
+/**
+ * RevoluteJoint: Drehgelenk (Scharnier, Pin-Gelenk, Achse, Radlager).
+ * Hält zwei Körper an einem gemeinsamen Drehpunkt zusammen,
+ * unterstützt motorisierten Antrieb und Winkelbegrenzungen.
+ */
+class RevoluteJoint extends Joint {
+  constructor(bodyA, bodyB, anchorWorld, config = {}) {
+    super(bodyA, bodyB, 'revolute', config);
+    this.localAnchorA = bodyA.transform.inverseTransformPoint(anchorWorld);
+    this.localAnchorB = bodyB.transform.inverseTransformPoint(anchorWorld);
+    this.referenceAngle = config.referenceAngle ?? (bodyB.angle - bodyA.angle);
+
+    // Motor
+    this.enableMotor = config.enableMotor ?? false;
+    this.motorSpeed = config.motorSpeed ?? 0.0; // rad/s
+    this.maxMotorTorque = config.maxMotorTorque ?? 10.0;
+    this.motorImpulse = 0.0;
+
+    // Winkelbegrenzungen
+    this.enableLimit = config.enableLimit ?? false;
+    this.lowerAngle = config.lowerAngle ?? 0.0;
+    this.upperAngle = config.upperAngle ?? 0.0;
+    this.limitImpulse = 0.0;
+
+    // Interne Solver-Zustände
+    this.rA = new Vec2(0, 0);
+    this.rB = new Vec2(0, 0);
+    this.linearMass = new Mat22();
+    this.linearImpulse = new Vec2(0, 0);
+    this.linearBias = new Vec2(0, 0);
+    this.motorMass = 0.0;
+  }
+
+  getJointAngle() {
+    return normalizeAngle(this.bodyB.angle - this.bodyA.angle - this.referenceAngle);
+  }
+
+  getJointSpeed() {
+    return this.bodyB.angularVelocity - this.bodyA.angularVelocity;
+  }
+
+  setMotorSpeed(speed) {
+    this.motorSpeed = speed;
+  }
+
+  initVelocityConstraints(dt) {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    this.rA = bA.transform.transformVector(this.localAnchorA);
+    this.rB = bB.transform.transformVector(this.localAnchorB);
+
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    // 2x2 K-Matrix: K = (mA + mB)*I - rA_skew * iA * rA_skew - rB_skew * iB * rB_skew
+    const k11 = mA + mB + iA * this.rA.y * this.rA.y + iB * this.rB.y * this.rB.y;
+    const k12 = -iA * this.rA.x * this.rA.y - iB * this.rB.x * this.rB.y;
+    const k21 = k12;
+    const k22 = mA + mB + iA * this.rA.x * this.rA.x + iB * this.rB.x * this.rB.x;
+
+    this.linearMass.setElements(k11, k12, k21, k22).invert();
+
+    // Motor Trägheitsmasse
+    this.motorMass = iA + iB > 0.0 ? 1.0 / (iA + iB) : 0.0;
+
+    // Positionsfehler (Baumgarte) - Gedämpft und strikt begrenzt gegen Energie-Explosionen
+    const pA = Vec2.add(bA.position, this.rA);
+    const pB = Vec2.add(bB.position, this.rB);
+    const posError = Vec2.sub(pB, pA);
+    const rawBias = Vec2.scale(posError, 0.2 / Math.max(dt, 1e-4));
+    const maxBiasSpeed = 3.5; // m/s Obergrenze verhindert unphysikalische Kettenresonanz
+    const biasLen = rawBias.length();
+    this.linearBias = biasLen > maxBiasSpeed ? Vec2.scale(rawBias, maxBiasSpeed / biasLen) : rawBias;
+
+    // Warm starting linear
+    bA.velocity.subScaled(this.linearImpulse, mA);
+    bA.angularVelocity -= iA * this.rA.cross(this.linearImpulse);
+    bB.velocity.addScaled(this.linearImpulse, mB);
+    bB.angularVelocity += iB * this.rB.cross(this.linearImpulse);
+
+    // Warm starting motor & limit
+    if (this.enableMotor) {
+      bA.angularVelocity -= iA * this.motorImpulse;
+      bB.angularVelocity += iB * this.motorImpulse;
+    }
+  }
+
+  solveVelocityConstraints() {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    // 1. Löse Motor
+    if (this.enableMotor) {
+      const cDot = bB.angularVelocity - bA.angularVelocity - this.motorSpeed;
+      let impulse = -this.motorMass * cDot;
+      const oldImpulse = this.motorImpulse;
+      const maxImp = this.maxMotorTorque * 0.02; // Begrenzung pro Zeitschritt
+      this.motorImpulse = Math.max(-maxImp, Math.min(maxImp, oldImpulse + impulse));
+      impulse = this.motorImpulse - oldImpulse;
+
+      bA.angularVelocity -= iA * impulse;
+      bB.angularVelocity += iB * impulse;
+    }
+
+    // 2. Löse Winkelbegrenzungen
+    if (this.enableLimit) {
+      const jointAngle = this.getJointAngle();
+      if (jointAngle < this.lowerAngle) {
+        const cDot = bB.angularVelocity - bA.angularVelocity;
+        let impulse = -this.motorMass * (cDot + 0.2 * (jointAngle - this.lowerAngle));
+        const oldImp = this.limitImpulse;
+        this.limitImpulse = Math.max(0.0, oldImp + impulse);
+        impulse = this.limitImpulse - oldImp;
+        bA.angularVelocity -= iA * impulse;
+        bB.angularVelocity += iB * impulse;
+      } else if (jointAngle > this.upperAngle) {
+        const cDot = bB.angularVelocity - bA.angularVelocity;
+        let impulse = -this.motorMass * (cDot + 0.2 * (jointAngle - this.upperAngle));
+        const oldImp = this.limitImpulse;
+        this.limitImpulse = Math.min(0.0, oldImp + impulse);
+        impulse = this.limitImpulse - oldImp;
+        bA.angularVelocity -= iA * impulse;
+        bB.angularVelocity += iB * impulse;
+      }
+    }
+
+    // 3. Löse Punkt-Koinzidenz (Linear Constraint)
+    const vA = Vec2.add(bA.velocity, Vec2.crossScalarVec(bA.angularVelocity, this.rA));
+    const vB = Vec2.add(bB.velocity, Vec2.crossScalarVec(bB.angularVelocity, this.rB));
+    const vRel = Vec2.sub(vB, vA);
+
+    const cDot = Vec2.add(vRel, this.linearBias);
+    const impulse = this.linearMass.mulVec(cDot).negate();
+
+    this.linearImpulse.add(impulse);
+
+    bA.velocity.subScaled(impulse, mA);
+    bA.angularVelocity -= iA * this.rA.cross(impulse);
+    bB.velocity.addScaled(impulse, mB);
+    bB.angularVelocity += iB * this.rB.cross(impulse);
+  }
+
+  getReactionForce(dt) {
+    return this.linearImpulse.length() / Math.max(dt, 1e-4);
+  }
+
+  getReactionTorque(dt) {
+    return Math.abs(this.motorImpulse + this.limitImpulse) / Math.max(dt, 1e-4);
+  }
+}
+
+
+// --- src/dynamics/joints/PrismaticJoint.mjs ---
+
+
+/**
+ * PrismaticJoint: Schubgelenk (Kolben, Aufzug, Gleitschiene).
+ * Erlaubt ausschließlich lineare Verschiebung entlang einer festgelegten Achse
+ * und blockiert relative Drehung.
+ */
+class PrismaticJoint extends Joint {
+  constructor(bodyA, bodyB, anchorWorld, axisWorld, config = {}) {
+    super(bodyA, bodyB, 'prismatic', config);
+    this.localAnchorA = bodyA.transform.inverseTransformPoint(anchorWorld);
+    this.localAnchorB = bodyB.transform.inverseTransformPoint(anchorWorld);
+    this.localXAxisA = bodyA.transform.inverseTransformVector(axisWorld).normalize();
+    this.localYAxisA = this.localXAxisA.perp();
+    this.referenceAngle = config.referenceAngle ?? (bodyB.angle - bodyA.angle);
+
+    // Motor
+    this.enableMotor = config.enableMotor ?? false;
+    this.motorSpeed = config.motorSpeed ?? 0.0;
+    this.maxMotorForce = config.maxMotorForce ?? 20.0;
+    this.motorImpulse = 0.0;
+
+    // Translation Limits
+    this.enableLimit = config.enableLimit ?? false;
+    this.lowerTranslation = config.lowerTranslation ?? -1.0;
+    this.upperTranslation = config.upperTranslation ?? 1.0;
+    this.limitImpulse = 0.0;
+
+    // Interne Solver-Zustände
+    this.rA = new Vec2(0, 0);
+    this.rB = new Vec2(0, 0);
+    this.axis = new Vec2(1, 0);
+    this.perp = new Vec2(0, 1);
+    this.perpMass = 0.0;
+    this.angularMass = 0.0;
+    this.motorMass = 0.0;
+    this.perpImpulse = 0.0;
+    this.angularImpulse = 0.0;
+    this.perpBias = 0.0;
+    this.angularBias = 0.0;
+  }
+
+  getTranslation() {
+    const pA = this.bodyA.transform.transformPoint(this.localAnchorA);
+    const pB = this.bodyB.transform.transformPoint(this.localAnchorB);
+    const d = Vec2.sub(pB, pA);
+    const axis = this.bodyA.transform.transformVector(this.localXAxisA);
+    return d.dot(axis);
+  }
+
+  initVelocityConstraints(dt) {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    this.rA = bA.transform.transformVector(this.localAnchorA);
+    this.rB = bB.transform.transformVector(this.localAnchorB);
+    this.axis = bA.transform.transformVector(this.localXAxisA);
+    this.perp = this.axis.perp();
+
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    const pA = Vec2.add(bA.position, this.rA);
+    const pB = Vec2.add(bB.position, this.rB);
+    const d = Vec2.sub(pB, pA);
+
+    // K-Terme für Orthogonalität
+    const s1 = Vec2.add(d, this.rA).cross(this.perp);
+    const s2 = this.rB.cross(this.perp);
+    const kPerp = mA + mB + iA * s1 * s1 + iB * s2 * s2;
+    this.perpMass = kPerp > 1e-12 ? 1.0 / kPerp : 0.0;
+
+    // K-Term für relative Drehung
+    const kAng = iA + iB;
+    this.angularMass = kAng > 1e-12 ? 1.0 / kAng : 0.0;
+
+    // Motor Trägheitsmasse entlang Schiene
+    const a1 = Vec2.add(d, this.rA).cross(this.axis);
+    const a2 = this.rB.cross(this.axis);
+    const kMotor = mA + mB + iA * a1 * a1 + iB * a2 * a2;
+    this.motorMass = kMotor > 1e-12 ? 1.0 / kMotor : 0.0;
+
+    // Baumgarte-Biases
+    this.perpBias = 0.3 * d.dot(this.perp) / Math.max(dt, 1e-4);
+    this.angularBias = 0.3 * (bB.angle - bA.angle - this.referenceAngle) / Math.max(dt, 1e-4);
+
+    // Warm starting
+    const p = Vec2.scale(this.perp, this.perpImpulse);
+    bA.velocity.subScaled(p, mA);
+    bA.angularVelocity -= iA * (s1 * this.perpImpulse + this.angularImpulse);
+    bB.velocity.addScaled(p, mB);
+    bB.angularVelocity += iB * (s2 * this.perpImpulse + this.angularImpulse);
+  }
+
+  solveVelocityConstraints() {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    // 1. Orthogonale Translation sperren
+    const vA = Vec2.add(bA.velocity, Vec2.crossScalarVec(bA.angularVelocity, this.rA));
+    const vB = Vec2.add(bB.velocity, Vec2.crossScalarVec(bB.angularVelocity, this.rB));
+    const cDotPerp = Vec2.sub(vB, vA).dot(this.perp) + this.perpBias;
+    const perpImp = -this.perpMass * cDotPerp;
+    this.perpImpulse += perpImp;
+
+    const p = Vec2.scale(this.perp, perpImp);
+    bA.velocity.subScaled(p, mA);
+    bA.angularVelocity -= iA * (this.rA.cross(p));
+    bB.velocity.addScaled(p, mB);
+    bB.angularVelocity += iB * (this.rB.cross(p));
+
+    // 2. Relative Rotation sperren
+    const cDotAng = bB.angularVelocity - bA.angularVelocity + this.angularBias;
+    const angImp = -this.angularMass * cDotAng;
+    this.angularImpulse += angImp;
+
+    bA.angularVelocity -= iA * angImp;
+    bB.angularVelocity += iB * angImp;
+
+    // 3. Motor entlang der Schiene
+    if (this.enableMotor) {
+      const vRelAxis = Vec2.sub(vB, vA).dot(this.axis) - this.motorSpeed;
+      let imp = -this.motorMass * vRelAxis;
+      const oldImp = this.motorImpulse;
+      const maxImp = this.maxMotorForce * 0.02;
+      this.motorImpulse = Math.max(-maxImp, Math.min(maxImp, oldImp + imp));
+      imp = this.motorImpulse - oldImp;
+
+      const pAxis = Vec2.scale(this.axis, imp);
+      bA.velocity.subScaled(pAxis, mA);
+      bB.velocity.addScaled(pAxis, mB);
+    }
+  }
+
+  getReactionForce(dt) {
+    return Math.abs(this.linearImpulse) / Math.max(dt, 1e-4);
+  }
+
+  getReactionTorque(dt) {
+    return Math.abs(this.angularImpulse) / Math.max(dt, 1e-4);
+  }
+}
+
+
+// --- src/dynamics/joints/WeldJoint.mjs ---
+
+
+
+/**
+ * WeldJoint: Schweißgelenk (starre Verbindung zweier Körper).
+ * Fixiert sowohl Relativposition als auch Relativwinkel komplett.
+ */
+class WeldJoint extends Joint {
+  constructor(bodyA, bodyB, anchorWorld, config = {}) {
+    super(bodyA, bodyB, 'weld', config);
+    this.localAnchorA = bodyA.transform.inverseTransformPoint(anchorWorld);
+    this.localAnchorB = bodyB.transform.inverseTransformPoint(anchorWorld);
+    this.referenceAngle = config.referenceAngle ?? (bodyB.angle - bodyA.angle);
+
+    this.rA = new Vec2(0, 0);
+    this.rB = new Vec2(0, 0);
+    this.linearMass = new Mat22();
+    this.angularMass = 0.0;
+    this.linearImpulse = new Vec2(0, 0);
+    this.angularImpulse = 0.0;
+    this.linearBias = new Vec2(0, 0);
+    this.angularBias = 0.0;
+  }
+
+  initVelocityConstraints(dt) {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    this.rA = bA.transform.transformVector(this.localAnchorA);
+    this.rB = bB.transform.transformVector(this.localAnchorB);
+
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    const k11 = mA + mB + iA * this.rA.y * this.rA.y + iB * this.rB.y * this.rB.y;
+    const k12 = -iA * this.rA.x * this.rA.y - iB * this.rB.x * this.rB.y;
+    const k21 = k12;
+    const k22 = mA + mB + iA * this.rA.x * this.rA.x + iB * this.rB.x * this.rB.x;
+    this.linearMass.setElements(k11, k12, k21, k22).invert();
+
+    this.angularMass = iA + iB > 0.0 ? 1.0 / (iA + iB) : 0.0;
+
+    const pA = Vec2.add(bA.position, this.rA);
+    const pB = Vec2.add(bB.position, this.rB);
+    const rawLinBias = Vec2.scale(Vec2.sub(pB, pA), 0.2 / Math.max(dt, 1e-4));
+    const biasLen = rawLinBias.length();
+    this.linearBias = biasLen > 3.5 ? Vec2.scale(rawLinBias, 3.5 / biasLen) : rawLinBias;
+    const rawAngBias = 0.2 * (bB.angle - bA.angle - this.referenceAngle) / Math.max(dt, 1e-4);
+    this.angularBias = Math.max(-4.0, Math.min(4.0, rawAngBias));
+
+    // Warm starting
+    bA.velocity.subScaled(this.linearImpulse, mA);
+    bA.angularVelocity -= iA * (this.rA.cross(this.linearImpulse) + this.angularImpulse);
+    bB.velocity.addScaled(this.linearImpulse, mB);
+    bB.angularVelocity += iB * (this.rB.cross(this.linearImpulse) + this.angularImpulse);
+  }
+
+  solveVelocityConstraints() {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+    const mA = bA.invMass;
+    const mB = bB.invMass;
+    const iA = bA.invInertia;
+    const iB = bB.invInertia;
+
+    // Linear
+    const vA = Vec2.add(bA.velocity, Vec2.crossScalarVec(bA.angularVelocity, this.rA));
+    const vB = Vec2.add(bB.velocity, Vec2.crossScalarVec(bB.angularVelocity, this.rB));
+    const cDotLinear = Vec2.add(Vec2.sub(vB, vA), this.linearBias);
+    const linImp = this.linearMass.mulVec(cDotLinear).negate();
+    this.linearImpulse.add(linImp);
+
+    bA.velocity.subScaled(linImp, mA);
+    bA.angularVelocity -= iA * this.rA.cross(linImp);
+    bB.velocity.addScaled(linImp, mB);
+    bB.angularVelocity += iB * this.rB.cross(linImp);
+
+    // Angular
+    const cDotAng = bB.angularVelocity - bA.angularVelocity + this.angularBias;
+    const angImp = -this.angularMass * cDotAng;
+    this.angularImpulse += angImp;
+
+    bA.angularVelocity -= iA * angImp;
+    bB.angularVelocity += iB * angImp;
+  }
+
+  getReactionForce(dt) {
+    return this.linearImpulse.length() / Math.max(dt, 1e-4);
+  }
+
+  getReactionTorque(dt) {
+    return Math.abs(this.angularImpulse) / Math.max(dt, 1e-4);
+  }
+}
+
+
+// --- src/dynamics/joints/PulleyJoint.mjs ---
+
+
+/**
+ * PulleyJoint: Flaschenzug- / Seilzuggelenk.
+ * Verbindet zwei Körper über zwei fixe Umlenkrollen mit Übersetzung:
+ * length1 + ratio * length2 = totalLength
+ */
+class PulleyJoint extends Joint {
+  constructor(bodyA, bodyB, groundAnchorA, groundAnchorB, anchorA, anchorB, ratio = 1.0, config = {}) {
+    super(bodyA, bodyB, 'pulley', config);
+    this.groundAnchorA = groundAnchorA.clone();
+    this.groundAnchorB = groundAnchorB.clone();
+    this.localAnchorA = bodyA.transform.inverseTransformPoint(anchorA);
+    this.localAnchorB = bodyB.transform.inverseTransformPoint(anchorB);
+    this.ratio = ratio;
+
+    const pA = bodyA.transform.transformPoint(this.localAnchorA);
+    const pB = bodyB.transform.transformPoint(this.localAnchorB);
+    this.lengthA = pA.distanceTo(this.groundAnchorA);
+    this.lengthB = pB.distanceTo(this.groundAnchorB);
+    this.constant = this.lengthA + this.ratio * this.lengthB;
+
+    this.uA = new Vec2(0, 1);
+    this.uB = new Vec2(0, 1);
+    this.rA = new Vec2(0, 0);
+    this.rB = new Vec2(0, 0);
+    this.mass = 0.0;
+    this.impulse = 0.0;
+    this.bias = 0.0;
+  }
+
+  initVelocityConstraints(dt) {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    this.rA = bA.transform.transformVector(this.localAnchorA);
+    this.rB = bB.transform.transformVector(this.localAnchorB);
+
+    const pA = Vec2.add(bA.position, this.rA);
+    const pB = Vec2.add(bB.position, this.rB);
+
+    const sA = Vec2.sub(pA, this.groundAnchorA);
+    const sB = Vec2.sub(pB, this.groundAnchorB);
+
+    const lenA = sA.length();
+    const lenB = sB.length();
+
+    this.uA = lenA > 1e-6 ? Vec2.scale(sA, 1.0 / lenA) : new Vec2(0, 0);
+    this.uB = lenB > 1e-6 ? Vec2.scale(sB, 1.0 / lenB) : new Vec2(0, 0);
+
+    const crAu = this.rA.cross(this.uA);
+    const crBu = this.rB.cross(this.uB);
+
+    const mA = bA.invMass + bA.invInertia * crAu * crAu;
+    const mB = bB.invMass + bB.invInertia * crBu * crBu;
+
+    const k = mA + this.ratio * this.ratio * mB;
+    this.mass = k > 1e-12 ? 1.0 / k : 0.0;
+
+    const C = (lenA + this.ratio * lenB) - this.constant;
+    this.bias = 0.2 * Math.max(0, C) / Math.max(dt, 1e-4);
+
+    // Warm starting
+    const p1 = Vec2.scale(this.uA, -this.impulse);
+    const p2 = Vec2.scale(this.uB, -this.ratio * this.impulse);
+    bA.velocity.addScaled(p1, bA.invMass);
+    bA.angularVelocity += bA.invInertia * this.rA.cross(p1);
+    bB.velocity.addScaled(p2, bB.invMass);
+    bB.angularVelocity += bB.invInertia * this.rB.cross(p2);
+  }
+
+  solveVelocityConstraints() {
+    const bA = this.bodyA;
+    const bB = this.bodyB;
+
+    const vA = Vec2.add(bA.velocity, Vec2.crossScalarVec(bA.angularVelocity, this.rA));
+    const vB = Vec2.add(bB.velocity, Vec2.crossScalarVec(bB.angularVelocity, this.rB));
+
+    const cDot = this.uA.dot(vA) + this.ratio * this.uB.dot(vB);
+    let impulse = -this.mass * (cDot + this.bias);
+    const oldImp = this.impulse;
+    this.impulse = Math.max(0.0, oldImp + impulse);
+    impulse = this.impulse - oldImp;
+
+    const p1 = Vec2.scale(this.uA, -impulse);
+    const p2 = Vec2.scale(this.uB, -this.ratio * impulse);
+    bA.velocity.addScaled(p1, bA.invMass);
+    bA.angularVelocity += bA.invInertia * this.rA.cross(p1);
+    bB.velocity.addScaled(p2, bB.invMass);
+    bB.angularVelocity += bB.invInertia * this.rB.cross(p2);
+  }
+
+  getReactionForce(dt) {
+    return Math.abs(this.impulse) / Math.max(dt, 1e-4);
+  }
+}
+
+
+// --- src/world/StepConfig.mjs ---
+/**
+ * StepConfig: Konfigurationsparameter für Zeitschritt und Solver
+ */
+class StepConfig {
+  constructor(config = {}) {
+    this.dt = config.dt ?? (1.0 / 60.0);
+    this.velocityIterations = config.velocityIterations ?? 8;
+    this.positionIterations = config.positionIterations ?? 3;
+    this.enableSubQGLattice = config.enableSubQGLattice ?? true; // SubQG Netzwerk im Hintergrund aktiv
+    this.enableWarmStarting = config.enableWarmStarting ?? true;
+    this.enableSleeping = config.enableSleeping ?? true;
+    this.timeToSleep = config.timeToSleep ?? 0.5; // Sekunden bis zum Einschlafen
+  }
+}
+
+
+// --- src/world/ContactListener.mjs ---
+/**
+ * ContactListener: Callback-Schnittstelle für Spiel- und Kollisionsereignisse
+ */
+class ContactListener {
+  onBeginContact(contact) {}
+  onEndContact(contact) {}
+  onPreSolve(contact) {}
+  onPostSolve(contact, normalImpulses, tangentImpulses) {}
+}
+
+
+// --- src/world/World.mjs ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * World: Die zentrale Simulationswelt der SubQG Game Physics Engine.
+ * 
+ * Stellt Spieleentwicklern eine vertraute, hochperformante RigidBody-API zur Verfügung
+ * (Körper, Kräfte, Gelenke, Raycasts, Trigger, Stöße, Reibung),
+ * während intern alle Gravitations-, Trägheits- und Kontaktwechselwirkungen
+ * auf dem relationalen SubQG-Kantennetzwerk und der Kantenwirkungs-Minimierung basieren.
+ */
+class World {
+  constructor(config = {}) {
+    this.stepConfig = new StepConfig(config);
+    this.engineMode = config.engineMode ?? 'hybrid'; // 'pure-subqg' (100% First-Principles) oder 'hybrid' (Echtzeit-Optimiert)
+
+    // SubQG Subsysteme
+    this.subqgGraph = new RelationalGraph(config.subqg || {});
+    this.subqgSolver = new MetricLatticeSolver(this.subqgGraph);
+    this.subqgBridge = new SubQGContactBridge(config.subqg || {});
+    this.subqgPureDynamics = new SubQGPureDynamics(this.subqgGraph, config.subqg || {});
+    this.subqgGravitation = new SubQGGravitationField({
+      gravity: config.gravity ?? (this.engineMode === 'pure-subqg' ? new Vec2(0, 0) : new Vec2(0, -9.81)),
+      enableMutualAttraction: config.enableMutualAttraction ?? (this.engineMode === 'pure-subqg')
+    });
+
+    // Kollisions- und Dynamiksysteme
+    this.broadPhase = new DynamicAABBTree(config.fatPadding ?? 0.05);
+    this.narrowPhase = new CollisionNarrowphase(this.subqgBridge);
+    this.contactSolver = new ContactSolver(this.subqgBridge);
+    this.triggerSystem = new TriggerSystem();
+    this.destructionSystem = new SubQGDestructionSystem(this, config.destruction || {});
+    this.contactSolverCalls = 0;
+    this.jointSolverCalls = 0;
+    this.classicalSolverCalls = 0;
+    this.brokenJointsCount = 0;
+    this.materialFractureEvents = []; // Aufzeichnung realer Materialbruch-Ereignisse
+
+    // Entitäten
+    this.bodies = [];
+    this.joints = [];
+    this.contactManifolds = new Map(); // key -> ContactManifold
+
+    // Event Listener
+    this.contactListeners = [];
+    this.jointBreakListeners = [];
+
+    // Letzte Diagnosedaten
+    this.subqgDiagnostics = {
+      totalEdgeAction: 0,
+      maxStrain: 0,
+      edgeCount: 0,
+      nodeCount: 0,
+      stepTimeMs: 0
+    };
+  }
+
+  setGravity(gx, gy) {
+    this.subqgGravitation.setGravity(gx, gy);
+  }
+
+  getGravity() {
+    return this.subqgGravitation.gravity.clone();
+  }
+
+  addContactListener(listener) {
+    this.contactListeners.push(listener);
+    this.triggerSystem.addListener(listener);
+    return this;
+  }
+
+  // ==========================================
+  // KÖRPER-VERWALTUNG & ERGONOMISCHE FACTORIES
+  // ==========================================
+
+  addBody(body) {
+    if (this.bodies.includes(body)) return body;
+    this.bodies.push(body);
+    body.updateAABB();
+    body.treeLeaf = this.broadPhase.insertLeaf(body, body.aabb);
+    return body;
+  }
+
+  removeBody(body) {
+    const idx = this.bodies.indexOf(body);
+    if (idx !== -1) {
+      this.bodies.splice(idx, 1);
+      if (body.treeLeaf) {
+        this.broadPhase.removeLeaf(body.treeLeaf);
+        body.treeLeaf = null;
+      }
+      // Entferne alle verbundenen Gelenke
+      for (let i = this.joints.length - 1; i >= 0; i--) {
+        const j = this.joints[i];
+        if (j.bodyA === body || j.bodyB === body) {
+          this.removeJoint(j);
+        }
+      }
+    }
+    return this;
+  }
+
+  createBody(config = {}) {
+    const body = new Body(config);
+    return this.addBody(body);
+  }
+
+  createBox(x, y, width, height, options = {}) {
+    const body = new Body({
+      position: new Vec2(x, y),
+      type: options.type ?? 'dynamic',
+      angle: options.angle ?? 0,
+      linearDamping: options.linearDamping,
+      angularDamping: options.angularDamping,
+      isDestructible: options.isDestructible ?? false,
+      fractureForce: options.fractureForce ?? 1500.0,
+      allowSleep: options.allowSleep ?? true,
+      gravityScale: options.gravityScale ?? 1.0,
+      userData: options.userData
+    });
+
+    const box = new Box(width, height, options.offset || new Vec2(0, 0));
+    if (options.material) box.setMaterial(options.material);
+    if (options.isTrigger) box.setTrigger(true);
+
+    body.addShape(box);
+    return this.addBody(body);
+  }
+
+  createCircle(x, y, radius, options = {}) {
+    const body = new Body({
+      position: new Vec2(x, y),
+      type: options.type ?? 'dynamic',
+      angle: options.angle ?? 0,
+      linearDamping: options.linearDamping,
+      angularDamping: options.angularDamping,
+      isDestructible: options.isDestructible ?? false,
+      fractureForce: options.fractureForce ?? 1500.0,
+      allowSleep: options.allowSleep ?? true,
+      gravityScale: options.gravityScale ?? 1.0,
+      userData: options.userData
+    });
+
+    const circle = new Circle(radius, options.offset || new Vec2(0, 0));
+    if (options.material) circle.setMaterial(options.material);
+    if (options.isTrigger) circle.setTrigger(true);
+
+    body.addShape(circle);
+    return this.addBody(body);
+  }
+
+  createPolygon(x, y, vertices, options = {}) {
+    const body = new Body({
+      position: new Vec2(x, y),
+      type: options.type ?? 'dynamic',
+      angle: options.angle ?? 0,
+      linearDamping: options.linearDamping,
+      angularDamping: options.angularDamping,
+      isDestructible: options.isDestructible ?? false,
+      fractureForce: options.fractureForce ?? 1500.0,
+      allowSleep: options.allowSleep ?? true,
+      gravityScale: options.gravityScale ?? 1.0,
+      userData: options.userData
+    });
+
+    const poly = new Polygon(vertices, options.offset || new Vec2(0, 0));
+    if (options.material) poly.setMaterial(options.material);
+    if (options.isTrigger) poly.setTrigger(true);
+
+    body.addShape(poly);
+    return this.addBody(body);
+  }
+
+  createCapsule(x, y, length, radius, options = {}) {
+    const body = new Body({
+      position: new Vec2(x, y),
+      type: options.type ?? 'dynamic',
+      angle: options.angle ?? 0,
+      linearDamping: options.linearDamping,
+      angularDamping: options.angularDamping,
+      isDestructible: options.isDestructible ?? false,
+      fractureForce: options.fractureForce ?? 1500.0,
+      allowSleep: options.allowSleep ?? true,
+      gravityScale: options.gravityScale ?? 1.0,
+      userData: options.userData
+    });
+
+    const capsule = new Capsule(length, radius, options.offset || new Vec2(0, 0));
+    if (options.material) capsule.setMaterial(options.material);
+    if (options.isTrigger) capsule.setTrigger(true);
+
+    body.addShape(capsule);
+    return this.addBody(body);
+  }
+
+  createSegment(x1, y1, x2, y2, options = {}) {
+    const body = new Body({
+      position: new Vec2(0, 0),
+      type: options.type ?? 'static',
+      isDestructible: options.isDestructible ?? false,
+      fractureForce: options.fractureForce ?? 1500.0,
+      userData: options.userData
+    });
+
+    const seg = new Segment(new Vec2(x1, y1), new Vec2(x2, y2));
+    if (options.material) seg.setMaterial(options.material);
+    if (options.isTrigger) seg.setTrigger(true);
+
+    body.addShape(seg);
+    return this.addBody(body);
+  }
+
+  // ==========================================
+  // GELENK-VERWALTUNG & FACTORIES
+  // ==========================================
+
+  addJoint(joint) {
+    if (this.joints.includes(joint)) return joint;
+    this.joints.push(joint);
+    if (!joint.bodyA.joints) joint.bodyA.joints = [];
+    if (!joint.bodyB.joints) joint.bodyB.joints = [];
+    if (!joint.bodyA.joints.includes(joint)) joint.bodyA.joints.push(joint);
+    if (!joint.bodyB.joints.includes(joint)) joint.bodyB.joints.push(joint);
+    joint.bodyA.wakeUp();
+    joint.bodyB.wakeUp();
+    return joint;
+  }
+
+  removeJoint(joint) {
+    const idx = this.joints.indexOf(joint);
+    if (idx !== -1) {
+      this.joints.splice(idx, 1);
+      if (joint.bodyA.joints) {
+        const jIdxA = joint.bodyA.joints.indexOf(joint);
+        if (jIdxA !== -1) joint.bodyA.joints.splice(jIdxA, 1);
+      }
+      if (joint.bodyB.joints) {
+        const jIdxB = joint.bodyB.joints.indexOf(joint);
+        if (jIdxB !== -1) joint.bodyB.joints.splice(jIdxB, 1);
+      }
+      joint.bodyA.wakeUp();
+      joint.bodyB.wakeUp();
+    }
+    return this;
+  }
+
+  createDistanceJoint(bodyA, bodyB, anchorA, anchorB, config = {}) {
+    const j = new DistanceJoint(bodyA, bodyB, anchorA, anchorB, config);
+    return this.addJoint(j);
+  }
+
+  createRevoluteJoint(bodyA, bodyB, anchorWorld, config = {}) {
+    const j = new RevoluteJoint(bodyA, bodyB, anchorWorld, config);
+    return this.addJoint(j);
+  }
+
+  createPrismaticJoint(bodyA, bodyB, anchorWorld, axisWorld, config = {}) {
+    const j = new PrismaticJoint(bodyA, bodyB, anchorWorld, axisWorld, config);
+    return this.addJoint(j);
+  }
+
+  createWeldJoint(bodyA, bodyB, anchorWorld, config = {}) {
+    const j = new WeldJoint(bodyA, bodyB, anchorWorld, config);
+    return this.addJoint(j);
+  }
+
+  createPulleyJoint(bodyA, bodyB, groundA, groundB, anchorA, anchorB, ratio = 1.0, config = {}) {
+    const j = new PulleyJoint(bodyA, bodyB, groundA, groundB, anchorA, anchorB, ratio, config);
+    return this.addJoint(j);
+  }
+
+  onJointBreak(callback) {
+    this.jointBreakListeners.push(callback);
+    return this;
+  }
+
+  // ==========================================
+  // ABFRAGEN: RAYCAST, AABB, PUNKT
+  // ==========================================
+
+  raycast(origin, direction, maxDistance = Infinity) {
+    const ray = new Ray(origin, direction, maxDistance);
+    let closestHit = null;
+
+    this.broadPhase.raycast(origin, ray.direction, maxDistance, (body) => {
+      for (const shape of body.shapes) {
+        const hit = shape.raycast(ray, body.transform, maxDistance);
+        if (hit.hit) {
+          if (!closestHit || hit.fraction < closestHit.fraction) {
+            closestHit = new RaycastHit(body, shape, hit.point, hit.normal, hit.fraction);
+          }
+        }
+      }
+    });
+
+    return closestHit;
+  }
+
+  raycastAll(origin, direction, maxDistance = Infinity) {
+    const ray = new Ray(origin, direction, maxDistance);
+    const hits = [];
+
+    this.broadPhase.raycast(origin, ray.direction, maxDistance, (body) => {
+      for (const shape of body.shapes) {
+        const hit = shape.raycast(ray, body.transform, maxDistance);
+        if (hit.hit) {
+          hits.push(new RaycastHit(body, shape, hit.point, hit.normal, hit.fraction));
+        }
+      }
+    });
+
+    hits.sort((a, b) => a.fraction - b.fraction);
+    return hits;
+  }
+
+  queryAABB(aabb) {
+    const results = [];
+    this.broadPhase.queryAABB(aabb, (body) => {
+      if (body.aabb.intersects(aabb)) {
+        results.push(body);
+      }
+    });
+    return results;
+  }
+
+  queryPoint(point) {
+    const results = [];
+    const ptAABB = new AABB(
+      new Vec2(point.x - 0.01, point.y - 0.01),
+      new Vec2(point.x + 0.01, point.y + 0.01)
+    );
+
+    this.broadPhase.queryAABB(ptAABB, (body) => {
+      for (const shape of body.shapes) {
+        if (shape.testPoint(point, body.transform)) {
+          results.push({ body, shape });
+        }
+      }
+    });
+
+    return results;
+  }
+
+  // ==========================================
+  // SIMULATIONSSCHRITT: SUBQG + SOLVER CYCLE
+  // ==========================================
+
+  step(customDt = null) {
+    const startTime = performance.now();
+    const dt = customDt ?? this.stepConfig.dt;
+    if (dt <= 0.0) return;
+
+    // 1. SubQG internes Netzwerk updaten
+    if (this.stepConfig.enableSubQGLattice) {
+      this.subqgGraph.resetDensities();
+      for (const body of this.bodies) {
+        this.subqgGraph.injectBodyMass(body);
+      }
+      const solveRes = this.subqgSolver.solve();
+      this.subqgDiagnostics.totalEdgeAction = solveRes.totalEdgeAction;
+      this.subqgDiagnostics.maxStrain = solveRes.maxStrain;
+      this.subqgDiagnostics.edgeCount = solveRes.edgeCount;
+      this.subqgDiagnostics.nodeCount = solveRes.nodeCount;
+    }
+
+    // 2. Gravitation anwenden
+    if (this.engineMode === 'pure-subqg') {
+      // Reiner SubQG-Modus: Gravitationskräfte entstehen direkt aus ∇Phi des Gitters
+      // plus emergentem Hintergrund-Metrikgradienten
+      this.subqgPureDynamics.evaluateGravitationalForces(this.bodies, this.subqgGravitation.gravity);
+    } else {
+      this.subqgGravitation.applyGravity(this.bodies, this.stepConfig.enableSubQGLattice ? this.subqgGraph : null);
+    }
+
+    // 3. Externe Kräfte & Drehmomente integrieren (v += F/m * dt)
+    for (const body of this.bodies) {
+      body.integrateForces(dt);
+    }
+
+    // 4. Broadphase AABB-Baum aktualisieren
+    for (const body of this.bodies) {
+      if (body.type !== 'static' && !body.isSleeping) {
+        const disp = Vec2.scale(body.velocity, dt);
+        this.broadPhase.updateLeaf(body.treeLeaf, body.aabb, disp);
+      }
+    }
+
+    // 5. Kollisions-Paare finden & Narrowphase Kontakt-Manifolds berechnen
+    const activeManifolds = [];
+    const checkedPairs = new Set();
+
+    this.broadPhase.queryPairs((bodyA, bodyB) => {
+      // Zwei statische Körper kollidieren nicht miteinander
+      if (bodyA.type === 'static' && bodyB.type === 'static') return;
+      // Beide schlafen -> keine Berechnung nötig
+      if (bodyA.isSleeping && bodyB.isSleeping) return;
+
+      const pKey = bodyA.id < bodyB.id ? `${bodyA.id}:${bodyB.id}` : `${bodyB.id}:${bodyA.id}`;
+      if (checkedPairs.has(pKey)) return;
+      checkedPairs.add(pKey);
+
+      // Prüfe verbundene Gelenke, ob Kollision erlaubt ist
+      for (const joint of this.joints) {
+        if (!joint.collideConnected) {
+          if ((joint.bodyA === bodyA && joint.bodyB === bodyB) ||
+              (joint.bodyA === bodyB && joint.bodyB === bodyA)) {
+            return;
+          }
+        }
+      }
+
+      // Alle Formenpaare testen
+      for (const sA of bodyA.shapes) {
+        for (const sB of bodyB.shapes) {
+          const manifold = this.narrowPhase.collide(bodyA, bodyB, sA, sB);
+          if (manifold && manifold.points.length > 0) {
+            if (manifold.isTrigger) {
+              this.triggerSystem.registerOverlap(manifold);
+            } else {
+              // Match mit vorherigen Impulsen für Warm-Starting
+              const prev = this.contactManifolds.get(manifold.key);
+              if (prev && this.stepConfig.enableWarmStarting) {
+                for (let k = 0; k < Math.min(manifold.points.length, prev.points.length); k++) {
+                  manifold.points[k].normalImpulse = prev.points[k].normalImpulse;
+                  manifold.points[k].tangentImpulse = prev.points[k].tangentImpulse;
+                }
+              }
+              activeManifolds.push(manifold);
+            }
+          }
+        }
+      }
+    });
+
+    // Update Kontakt-Map
+    this.contactManifolds.clear();
+    for (const m of activeManifolds) {
+      this.contactManifolds.set(m.key, m);
+    }
+
+    // 6. Kontakt- und Gelenklösung
+    if (this.engineMode === 'pure-subqg') {
+      // REINER SUBQG-MODUS (100% First-Principles):
+      // Null Kontakt-Impulssolver!
+      // Kontakt- und Reibungskräfte entstehen direkt aus der SubQG-Kantenbarriere-Wirkung (contactSolverCalls = 0)
+      this.subqgPureDynamics.applyPureContactForces(activeManifolds, dt);
+      for (const body of this.bodies) {
+        body.integrateForces(dt);
+      }
+      // Topologische Gelenkbindungen (kinematische Invarianten)
+      for (const joint of this.joints) {
+        joint.initVelocityConstraints(dt);
+      }
+      for (let it = 0; it < this.stepConfig.velocityIterations; it++) {
+        for (const joint of this.joints) {
+          joint.solveVelocityConstraints();
+          this.jointSolverCalls++;
+        }
+      }
+    } else {
+      // HYBRID-MODUS:
+      // Klassischer sequentieller Impulssolver für maximale Framerate bei 60 FPS
+      for (const joint of this.joints) {
+        joint.initVelocityConstraints(dt);
+      }
+      this.contactSolver.initVelocityConstraints(activeManifolds, dt);
+
+      for (let it = 0; it < this.stepConfig.velocityIterations; it++) {
+        for (const joint of this.joints) {
+          joint.solveVelocityConstraints();
+          this.jointSolverCalls++;
+        }
+        this.contactSolverCalls++;
+        this.classicalSolverCalls++;
+        this.contactSolver.solveVelocityConstraints(activeManifolds);
+      }
+    }
+
+    // 7. SubQG Zerstörungsphysik: Belastung -> Materialschaden -> Bruch -> Trümmerteile
+    this.destructionSystem.evaluateJointFracture(dt);
+    this.destructionSystem.evaluateBodyFracture(activeManifolds, dt);
+    this.destructionSystem.stepDebris(dt);
+
+    // 8. Geschwindigkeiten integrieren (x += v * dt)
+    for (const body of this.bodies) {
+      body.integrateVelocities(dt);
+    }
+
+    // 9. Schlafzustände auswerten (Sleeping)
+    if (this.stepConfig.enableSleeping) {
+      this._evaluateSleeping(dt);
+    }
+
+    // 10. Trigger-Ereignisse feuern (onTriggerEnter, onTriggerStay, onTriggerExit)
+    this.triggerSystem.flushEvents();
+
+    this.subqgDiagnostics.stepTimeMs = performance.now() - startTime;
+  }
+
+  _evaluateSleeping(dt) {
+    const linTolSq = 0.002;
+    const angTolSq = 0.002;
+
+    for (const b of this.bodies) {
+      if (b.type !== 'dynamic' || !b.allowSleep) continue;
+
+      const linSpeedSq = b.velocity.lengthSq();
+      const angSpeedSq = b.angularVelocity * b.angularVelocity;
+
+      if (linSpeedSq > linTolSq || angSpeedSq > angTolSq) {
+        b.sleepTime = 0.0;
+        b.isSleeping = false;
+      } else {
+        b.sleepTime += dt;
+        if (b.sleepTime >= this.stepConfig.timeToSleep) {
+          b.putToSleep();
+        }
+      }
+    }
+  }
+
+  getSubQGDiagnostics() {
+    return { ...this.subqgDiagnostics };
+  }
+}
+
+
+// --- src/debug/SubQGInspector.mjs ---
+
+/**
+ * SubQGInspector: Extrahiert Metrik-, Wirkungs- und Kausal-Zustände
+ * aus dem internen SubQG-Hintergrundgitter für wissenschaftliche Audits,
+ * Spiel-Shader und visuelle Heatmaps.
+ */
+class SubQGInspector {
+  constructor(world) {
+    this.world = world;
+  }
+
+  /**
+   * Berechnet die vollständige Energie- und Aktionsbilanz des Gesamtsystems
+   */
+  computeFullEnergyAudit() {
+    let kineticEnergy = 0.0;
+    let rotationalEnergy = 0.0;
+    let potentialEnergy = 0.0;
+    const g = Math.abs(this.world.getGravity().y);
+
+    for (const body of this.world.bodies) {
+      if (body.type === 'dynamic' && body.mass > 0) {
+        kineticEnergy += 0.5 * body.mass * body.velocity.lengthSq();
+        rotationalEnergy += 0.5 * body.inertia * body.angularVelocity * body.angularVelocity;
+        potentialEnergy += body.mass * g * Math.max(0, body.position.y);
+      }
+    }
+
+    const mechanicalTotal = kineticEnergy + rotationalEnergy + potentialEnergy;
+    const diag = this.world.getSubQGDiagnostics();
+
+    return {
+      kineticEnergy,
+      rotationalEnergy,
+      potentialEnergy,
+      mechanicalTotal,
+      subqgEdgeAction: diag.totalEdgeAction,
+      maxMetricStrain: diag.maxStrain,
+      activeEdges: diag.edgeCount,
+      activeNodes: diag.nodeCount,
+      stepTimeMs: diag.stepTimeMs
+    };
+  }
+
+  /**
+   * Extrahiert ein 2D Dichte- und Deformations-Grid für Visualisierung
+   */
+  extractMetricHeatmap(resolution = 32) {
+    const graph = this.world.subqgGraph;
+    const spanX = graph.extentX * 2;
+    const spanY = graph.extentY * 2;
+    const stepX = spanX / resolution;
+    const stepY = spanY / resolution;
+
+    const grid = [];
+    for (let j = 0; j < resolution; j++) {
+      const row = [];
+      const y = -graph.extentY + j * stepY;
+      for (let i = 0; i < resolution; i++) {
+        const x = -graph.extentX + i * stepX;
+        const phi = graph.samplePotential(new Vec2(x, y));
+        row.push(phi);
+      }
+      grid.push(row);
+    }
+
+    return {
+      resolution,
+      spanX,
+      spanY,
+      grid
+    };
+  }
+}
+
+
+// --- src/debug/CanvasRenderer.mjs ---
+
+/**
+ * CanvasRenderer: Leichtgewichtiger 2D Canvas-Renderer zur Darstellung
+ * von SubQG-Welten, RigidBodies, Gelenken, Kontakten und internem Metrikgitter.
+ */
+class CanvasRenderer {
+  constructor(canvas, world, options = {}) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.world = world;
+
+    // Kamera & Skalierung
+    this.scale = options.scale ?? 30.0; // Pixel pro Meter
+    this.camera = options.camera ?? new Vec2(0, 5); // Weltzentrum der Ansicht
+
+    // Render-Flags
+    this.showShapes = options.showShapes ?? true;
+    this.showJoints = options.showJoints ?? true;
+    this.showContacts = options.showContacts ?? true;
+    this.showAABBs = options.showAABBs ?? false;
+    this.showSubQGLattice = options.showSubQGLattice ?? false;
+    this.showRaycasts = options.showRaycasts ?? true;
+
+    this.activeRays = [];
+  }
+
+  worldToScreen(worldPos) {
+    const cx = this.canvas.width * 0.5;
+    const cy = this.canvas.height * 0.5;
+    return {
+      x: cx + (worldPos.x - this.camera.x) * this.scale,
+      y: cy - (worldPos.y - this.camera.y) * this.scale // Y nach oben invertieren
+    };
+  }
+
+  screenToWorld(screenX, screenY) {
+    const cx = this.canvas.width * 0.5;
+    const cy = this.canvas.height * 0.5;
+    return new Vec2(
+      this.camera.x + (screenX - cx) / this.scale,
+      this.camera.y - (screenY - cy) / this.scale
+    );
+  }
+
+  addDebugRay(ray, hit) {
+    this.activeRays.push({ ray, hit, time: 0.1 });
+  }
+
+  render(dt = 0.016) {
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // 1. SubQG Metrik-Gitter (falls aktiv)
+    if (this.showSubQGLattice) {
+      this._renderSubQGLattice();
+    }
+
+    // 2. Formen & Körper
+    if (this.showShapes) {
+      this._renderBodies();
+    }
+
+    // 3. Gelenke
+    if (this.showJoints) {
+      this._renderJoints();
+    }
+
+    // 4. Kontakte & Normalen
+    if (this.showContacts) {
+      this._renderContacts();
+    }
+
+    // 5. Raycasts
+    if (this.showRaycasts) {
+      this._renderRays(dt);
+    }
+
+    // 6. SubQG Trümmerteile & Holzsplitter
+    this._renderDebris();
+  }
+
+  _renderSubQGLattice() {
+    const ctx = this.ctx;
+    const graph = this.world.subqgGraph;
+    ctx.save();
+    ctx.lineWidth = 1;
+
+    for (const edge of graph.edges) {
+      const uNode = graph.nodes.get(edge.u);
+      const vNode = graph.nodes.get(edge.v);
+      if (!uNode || !vNode) continue;
+
+      const p1 = this.worldToScreen(uNode.pos);
+      const p2 = this.worldToScreen(vNode.pos);
+
+      // Kantenverzerrung visualisieren (Grün = flach, Rot = verzerrt)
+      const strain = Math.min(1.0, Math.abs(edge.x_e - 1.0) * 10.0);
+      if (strain > 0.01) {
+        ctx.strokeStyle = `rgba(255, ${Math.floor(255 * (1 - strain))}, 0, ${0.2 + 0.6 * strain})`;
+      } else {
+        ctx.strokeStyle = 'rgba(70, 90, 120, 0.15)';
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  _renderBodies() {
+    const ctx = this.ctx;
+
+    for (const b of this.world.bodies) {
+      ctx.save();
+      const isSleeping = b.isSleeping;
+      const isStatic = b.type === 'static';
+
+      for (const shape of b.shapes) {
+        if (shape.isTrigger) {
+          ctx.fillStyle = 'rgba(255, 200, 0, 0.25)';
+          ctx.strokeStyle = '#ffbb00';
+        } else if (isStatic) {
+          ctx.fillStyle = '#2c3e50';
+          ctx.strokeStyle = '#7f8c8d';
+        } else if (isSleeping) {
+          ctx.fillStyle = '#4a5568';
+          ctx.strokeStyle = '#a0aec0';
+        } else {
+          // Dynamisch: Farbe nach Material
+          const rest = shape.material.restitution;
+          if (rest > 0.6) {
+            ctx.fillStyle = '#e74c3c'; // Gummi / Springend
+            ctx.strokeStyle = '#c0392b';
+          } else if (shape.material.density > 4.0) {
+            ctx.fillStyle = '#95a5a6'; // Metall
+            ctx.strokeStyle = '#7f8c8d';
+          } else {
+            ctx.fillStyle = '#3498db'; // Standard Holz / Kiste
+            ctx.strokeStyle = '#2980b9';
+          }
+        }
+
+        ctx.lineWidth = 1.5;
+
+        if (shape.type === 'circle') {
+          const center = b.transform.transformPoint(shape.offset);
+          const sc = this.worldToScreen(center);
+          const r = shape.radius * this.scale;
+
+          ctx.beginPath();
+          ctx.arc(sc.x, sc.y, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Rotationslinie
+          const edgePt = b.transform.transformPoint(new Vec2(shape.offset.x + shape.radius, shape.offset.y));
+          const scEdge = this.worldToScreen(edgePt);
+          ctx.beginPath();
+          ctx.moveTo(sc.x, sc.y);
+          ctx.lineTo(scEdge.x, scEdge.y);
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+
+        } else if (shape.type === 'box' || shape.type === 'polygon') {
+          const verts = shape.getWorldVertices(b.transform);
+          if (verts.length > 0) {
+            ctx.beginPath();
+            const start = this.worldToScreen(verts[0]);
+            ctx.moveTo(start.x, start.y);
+            for (let i = 1; i < verts.length; i++) {
+              const sc = this.worldToScreen(verts[i]);
+              ctx.lineTo(sc.x, sc.y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          }
+
+        } else if (shape.type === 'capsule') {
+          const [p1, p2] = shape.getWorldEndpoints(b.transform);
+          const sc1 = this.worldToScreen(p1);
+          const sc2 = this.worldToScreen(p2);
+          const r = shape.radius * this.scale;
+
+          ctx.lineWidth = r * 2;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(sc1.x, sc1.y);
+          ctx.lineTo(sc2.x, sc2.y);
+          ctx.stroke();
+
+        } else if (shape.type === 'segment') {
+          const [w1, w2] = shape.getWorldEndpoints(b.transform);
+          const sc1 = this.worldToScreen(w1);
+          const sc2 = this.worldToScreen(w2);
+
+          ctx.strokeStyle = '#ecf0f1';
+          ctx.lineWidth = Math.max(2, shape.thickness * this.scale);
+          ctx.beginPath();
+          ctx.moveTo(sc1.x, sc1.y);
+          ctx.lineTo(sc2.x, sc2.y);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  _renderJoints() {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = '#2ecc71';
+    ctx.fillStyle = '#2ecc71';
+    ctx.lineWidth = 2;
+
+    for (const j of this.world.joints) {
+      if (j.type === 'distance') {
+        const pA = j.bodyA.transform.transformPoint(j.localAnchorA);
+        const pB = j.bodyB.transform.transformPoint(j.localAnchorB);
+        const scA = this.worldToScreen(pA);
+        const scB = this.worldToScreen(pB);
+
+        ctx.beginPath();
+        ctx.moveTo(scA.x, scA.y);
+        ctx.lineTo(scB.x, scB.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(scA.x, scA.y, 4, 0, Math.PI * 2);
+        ctx.arc(scB.x, scB.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (j.type === 'revolute') {
+        const pA = j.bodyA.transform.transformPoint(j.localAnchorA);
+        const scA = this.worldToScreen(pA);
+
+        ctx.beginPath();
+        ctx.arc(scA.x, scA.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#e67e22';
+        ctx.fill();
+        ctx.stroke();
+
+      } else if (j.type === 'pulley') {
+        const pA = j.bodyA.transform.transformPoint(j.localAnchorA);
+        const pB = j.bodyB.transform.transformPoint(j.localAnchorB);
+        const gA = j.groundAnchorA;
+        const gB = j.groundAnchorB;
+
+        const scA = this.worldToScreen(pA);
+        const scB = this.worldToScreen(pB);
+        const scGA = this.worldToScreen(gA);
+        const scGB = this.worldToScreen(gB);
+
+        ctx.strokeStyle = '#9b59b6';
+        ctx.beginPath();
+        ctx.moveTo(scA.x, scA.y);
+        ctx.lineTo(scGA.x, scGA.y);
+        ctx.lineTo(scGB.x, scGB.y);
+        ctx.lineTo(scB.x, scB.y);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  _renderContacts() {
+    const ctx = this.ctx;
+    ctx.save();
+    for (const m of this.world.contactManifolds.values()) {
+      if (m.isTrigger) continue;
+      for (const cp of m.points) {
+        const sc = this.worldToScreen(cp.point);
+
+        // Kontaktpunkt
+        ctx.fillStyle = '#f1c40f';
+        ctx.beginPath();
+        ctx.arc(sc.x, sc.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Normalenvektor
+        const normalEnd = Vec2.add(cp.point, Vec2.scale(m.normal, 0.3));
+        const scNorm = this.worldToScreen(normalEnd);
+        ctx.strokeStyle = '#e74c3c';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(sc.x, sc.y);
+        ctx.lineTo(scNorm.x, scNorm.y);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  _renderRays(dt) {
+    const ctx = this.ctx;
+    ctx.save();
+
+    for (let i = this.activeRays.length - 1; i >= 0; i--) {
+      const item = this.activeRays[i];
+      item.time -= dt;
+      if (item.time <= 0) {
+        this.activeRays.splice(i, 1);
+        continue;
+      }
+
+      const ray = item.ray;
+      const hit = item.hit;
+      const start = this.worldToScreen(ray.origin);
+      const endPt = hit && hit.hit ? hit.point : Vec2.add(ray.origin, Vec2.scale(ray.direction, Math.min(20, ray.maxDistance)));
+      const end = this.worldToScreen(endPt);
+
+      ctx.strokeStyle = hit && hit.hit ? '#2ecc71' : '#e74c3c';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (hit && hit.hit) {
+        ctx.fillStyle = '#2ecc71';
+        ctx.beginPath();
+        ctx.arc(end.x, end.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  _renderDebris() {
+    if (!this.world.destructionSystem) return;
+    const particles = this.world.destructionSystem.debrisParticles;
+    if (!particles || particles.length === 0) return;
+
+    const ctx = this.ctx;
+    ctx.save();
+    for (const p of particles) {
+      const sc = this.worldToScreen(new Vec2(p.x, p.y));
+      const r = Math.max(1.5, p.size * this.scale);
+      ctx.fillStyle = p.color || '#f6ad55';
+      ctx.globalAlpha = Math.max(0.1, Math.min(1.0, p.life));
+      ctx.beginPath();
+      ctx.arc(sc.x, sc.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+
+// --- demo/demo_scenes.mjs ---
+
+/**
+ * Demo-Szenen für das interaktive Physik-Labor
+ */
+const DemoScenes = {
+  // Szene 1: Kistenturm & Stapeln
+  stackingTower(world) {
+    // Boden
+    world.createBox(0, 0, 40, 1.0, {
+      type: 'static',
+      material: new Material({ friction: 0.6, restitution: 0.0 })
+    });
+
+    // 8 Kisten übereinander gestapelt
+    for (let i = 0; i < 8; i++) {
+      world.createBox(0, 1.0 + i * 1.05, 1.0, 1.0, {
+        type: 'dynamic',
+        material: new Material({ friction: 0.6, restitution: 0.05 }),
+        linearDamping: 0.05,
+        angularDamping: 0.05
+      });
+    }
+
+    // Zusätzliche Kistenpyramide links
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4 - row; col++) {
+        const x = -8 + col * 1.1 + row * 0.55;
+        const y = 1.0 + row * 1.05;
+        world.createBox(x, y, 1.0, 1.0, {
+          type: 'dynamic',
+          material: new Material({ friction: 0.5, restitution: 0.1 })
+        });
+      }
+    }
+  },
+
+  // Szene 2: Springende Bälle & Murmelbahn
+  bouncingBalls(world) {
+    // Geneigte Rampen (Segmente / Boxen)
+    world.createBox(-5, 8, 12, 0.4, {
+      type: 'static',
+      angle: -0.3,
+      material: new Material({ friction: 0.05, restitution: 0.7 })
+    });
+
+    world.createBox(5, 5, 12, 0.4, {
+      type: 'static',
+      angle: 0.3,
+      material: new Material({ friction: 0.05, restitution: 0.7 })
+    });
+
+    world.createBox(0, 0, 30, 1.0, {
+      type: 'static',
+      material: new Material({ friction: 0.2, restitution: 0.8 })
+    });
+
+    // Bälle mit unterschiedlichen Farben und Elastizitäten
+    for (let i = 0; i < 12; i++) {
+      const x = -9 + (i % 4) * 0.8 + Math.random() * 0.2;
+      const y = 12 + Math.floor(i / 4) * 1.2;
+      world.createCircle(x, y, 0.3 + Math.random() * 0.2, {
+        type: 'dynamic',
+        material: new Material({
+          density: 1.0,
+          friction: 0.1,
+          restitution: 0.6 + Math.random() * 0.35
+        })
+      });
+    }
+  },
+
+  // Szene 3: Seilbrücke / Hängebrücke
+  ropeBridge(world, options = {}) {
+    world.createBox(0, 0, 40, 1.0, { type: 'static' });
+
+    // Belastungsgrenze: Bei Materialbruch-Modus brechen Gelenke bei 250 N
+    const breakable = options.breakable ?? false;
+    const breakingForce = breakable ? (options.breakingForce ?? 250) : Infinity;
+
+    // Zwei Pfeiler
+    const p1 = world.createBox(-8, 5, 1.5, 4, { type: 'static' });
+    const p2 = world.createBox(8, 5, 1.5, 4, { type: 'static' });
+
+    // 12 Brückensegmente
+    const segments = [];
+    let prev = p1;
+    let prevAnchor = new Vec2(-7.25, 6.8);
+
+    for (let i = 0; i < 12; i++) {
+      const x = -6.5 + i * 1.18;
+      const sag = 0.5 * (1.0 - (x / 7.0) * (x / 7.0));
+      const y = 6.5 - Math.max(0, sag);
+      const plank = world.createBox(x, y, 1.1, 0.2, {
+        type: 'dynamic',
+        isDestructible: breakable,
+        fractureForce: 350.0,
+        linearDamping: 0.2,
+        angularDamping: 0.4,
+        material: new Material({ density: 1.2, friction: 0.6, restitution: 0.05 })
+      });
+      segments.push(plank);
+
+      const anchor = new Vec2(x - 0.55, y);
+      world.createRevoluteJoint(prev, plank, anchor, { breakingForce });
+      prev = plank;
+      prevAnchor = new Vec2(x + 0.55, y);
+    }
+
+    world.createRevoluteJoint(prev, p2, new Vec2(7.25, 6.8), { breakingForce });
+
+    // Schwerer Stein fällt auf die Brücke
+    world.createCircle(0, 12, 0.8, {
+      type: 'dynamic',
+      userData: 'Felsblock',
+      material: new Material({ density: 4.0, friction: 0.5, restitution: 0.1 })
+    });
+  },
+
+  // Szene 3b: Zerstörbare Hängebrücke (Materialbruch bei 250 N Belastung)
+  ropeBridgeBreakable(world) {
+    this.ropeBridge(world, { breakable: true, breakingForce: 250 });
+  },
+
+  // Szene 4: Motorisiertes Geländefahrzeug
+  vehicleTerrain(world) {
+    // Hügelige Landschaft (Kette aus Segmenten)
+    const points = [
+      [-20, 3], [-10, 0.5], [0, 0], [10, 1.5], [18, 0.5], [25, 3], [35, 0]
+    ];
+    for (let i = 0; i < points.length - 1; i++) {
+      world.createSegment(points[i][0], points[i][1], points[i+1][0], points[i+1][1], {
+        type: 'static',
+        material: new Material({ friction: 0.9 })
+      });
+    }
+
+    // Hangneigung am Startpunkt x = -13:
+    // Zwischen [-20, 3] und [-10, 0.5] beträgt der Neigungswinkel atan2(-2.5, 10) = -0.245 rad (~ -14°)
+    const slopeAngle = -0.245;
+    const cosA = Math.cos(slopeAngle);
+    const sinA = Math.sin(slopeAngle);
+
+    // Fahrgestell: Tiefer Schwerpunkt, solider Radstand, Hang-angepasster Startwinkel
+    const chassis = world.createBox(-13.0, 1.85, 3.8, 0.4, {
+      type: 'dynamic',
+      angle: slopeAngle,
+      linearDamping: 0.1,
+      angularDamping: 1.5,
+      material: new Material({ density: 5.0, friction: 0.4 })
+    });
+
+    // Räder: Hohe Bodenhaftung und weiche Landung (restitution 0.0 verhindert Trampolin-Effekt)
+    const wheelMat = new Material({ density: 1.5, friction: 1.0, restitution: 0.0 });
+    const rearPos = new Vec2(-13.0 - 1.5 * cosA, 1.85 - 1.5 * sinA);
+    const frontPos = new Vec2(-13.0 + 1.5 * cosA, 1.85 + 1.5 * sinA);
+    const rear = world.createCircle(rearPos.x, rearPos.y, 0.55, { type: 'dynamic', material: wheelMat });
+    const front = world.createCircle(frontPos.x, frontPos.y, 0.55, { type: 'dynamic', material: wheelMat });
+
+    // Anti-Wheelie Allradantrieb mit Front-Zugkraft:
+    // Der Frontmotor zieht das Fahrzeug aktiv vorwärts und abwärts an den Hang,
+    // während der Heckmotor mit reduzierter Kraft sanft unterstützt, ohne die Nase aufzubäumen.
+    world.createRevoluteJoint(chassis, rear, rearPos, {
+      enableMotor: true,
+      motorSpeed: -12.0,
+      maxMotorTorque: 6.0
+    });
+    world.createRevoluteJoint(chassis, front, frontPos, {
+      enableMotor: true,
+      motorSpeed: -12.0,
+      maxMotorTorque: 28.0
+    });
+  },
+
+  // Szene 5: Katapult & Trebuchet (Verschiebbar & Manuell auslösbar)
+  catapult(world) {
+    world.createBox(0, 0, 80, 1.0, { type: 'static' });
+
+    // Verschiebbares Katapult-Fahrgestell (Dynamic, mit der Maus greif- und verschiebbar!)
+    const base = world.createBox(-12.0, 1.6, 3.2, 2.0, {
+      type: 'dynamic',
+      linearDamping: 0.3,
+      angularDamping: 1.0,
+      userData: 'Katapult-Fahrgestell (Verschiebbar)',
+      material: new Material({ density: 10.0, friction: 0.9 })
+    });
+    base.invInertia = 0; // Fixierte Rotation: Steht beim Abfeuern stabil, kann horizontal frei verschoben werden
+
+    // Wurfarm: Drehpunkt bei (-12.0, 2.4), zeigt in Ladestellung nach links
+    const arm = world.createBox(-14.5, 2.4, 5.0, 0.35, {
+      type: 'dynamic',
+      userData: 'Katapult-Arm',
+      material: new Material({ density: 1.0, friction: 0.4 })
+    });
+
+    // Wurfschale (Cup) am Hebelende
+    const cup = world.createBox(-16.9, 2.8, 0.4, 0.8, {
+      type: 'dynamic',
+      userData: 'Katapult-Schale',
+      material: new Material({ density: 0.8, friction: 0.2 })
+    });
+    world.createWeldJoint(arm, cup, new Vec2(-16.9, 2.4));
+
+    // Gelenk mit Torsionsantrieb: Initial AUS (manuell startbar!)
+    const catapultJoint = world.createRevoluteJoint(base, arm, new Vec2(-12.0, 2.4), {
+      enableMotor: false,
+      motorSpeed: -16.0,
+      maxMotorTorque: 3500.0,
+      enableLimit: true,
+      lowerAngle: -Math.PI * 0.75, // ~ -135° Schlägt bei 45° nach rechts an
+      upperAngle: Math.PI * 0.1
+    });
+
+    // Projektil (Schwerer Felsblock, zerstörbar bei Aufprall!)
+    world.createCircle(-16.3, 3.1, 0.45, {
+      type: 'dynamic',
+      isDestructible: true,
+      fractureForce: 400.0,
+      userData: 'Felsblock',
+      material: new Material({ density: 4.5, friction: 0.2, restitution: 0.15 })
+    });
+
+    // Treibgut / Zielmauer aus zerstörbaren Kisten bei x = 8..11
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 3; c++) {
+        world.createBox(8.0 + c * 0.8, 0.9 + r * 0.8, 0.7, 0.7, {
+          type: 'dynamic',
+          isDestructible: true,
+          fractureForce: 130.0,
+          material: new Material({ density: 1.0, friction: 0.6, restitution: 0.05 })
+        });
+      }
+    }
+
+    // Katapult-Steuerung für manuelle Auslösung
+    world.catapultController = {
+      joint: catapultJoint,
+      arm: arm,
+      base: base,
+      cup: cup,
+      isFired: false,
+      fire() {
+        catapultJoint.enableMotor = true;
+        catapultJoint.motorSpeed = -16.0;
+        catapultJoint.maxMotorTorque = 3500.0;
+        this.isFired = true;
+      },
+      reload() {
+        catapultJoint.enableMotor = true;
+        catapultJoint.motorSpeed = 6.0;
+        catapultJoint.maxMotorTorque = 600.0;
+        setTimeout(() => {
+          catapultJoint.enableMotor = false;
+          this.isFired = false;
+          // Neues Projektil in die Wurfschale legen
+          world.createCircle(base.position.x - 4.3, base.position.y + 1.4, 0.45, {
+            type: 'dynamic',
+            isDestructible: true,
+            fractureForce: 400.0,
+            userData: 'Felsblock',
+            material: new Material({ density: 4.5, friction: 0.2, restitution: 0.15 })
+          });
+        }, 600);
+      }
+    };
+  },
+
+  // Szene 6: Sensor-Radar & Triggers
+  sensorsAndTrays(world) {
+    world.createBox(0, 0, 40, 1.0, { type: 'static' });
+
+    // Ein Durchgang mit Trigger-Feld
+    world.createBox(-2, 4, 1.5, 4, { type: 'static' });
+    world.createBox(2, 4, 1.5, 4, { type: 'static' });
+
+    // Sensor-Tor in der Mitte
+    const trigger = world.createBox(0, 4, 2.5, 4.0, {
+      type: 'static',
+      isTrigger: true,
+      userData: { name: 'GateSensor' }
+    });
+
+    // Periodisch Bälle durchrollen lassen
+    for (let i = 0; i < 5; i++) {
+      const b = world.createCircle(-8 - i * 1.5, 2.0, 0.4, {
+        type: 'dynamic',
+        material: new Material({ friction: 0.1, restitution: 0.5 })
+      });
+      b.setVelocity(5.0, 0); // Rollen nach rechts durch das Tor
+    }
+  }
+};
+
+
+
+// Application Logic
+
+    const canvas = document.getElementById('physics-canvas');
+    let world, renderer, inspector;
+    let dragBody = null;
+    let dragLocalAnchor = new Vec2();
+    let rightClickRayStart = null;
+    let mousePosWorld = new Vec2();
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function loadScene(sceneKey) {
+      const mode = document.getElementById('engine-mode-select').value;
+      world = new World({
+        engineMode: mode,
+        gravity: document.getElementById('chk-gravity').checked ? new Vec2(0, -9.81) : new Vec2(0, 0),
+        enableSubQGLattice: true,
+        velocityIterations: 10
+      });
+
+      renderer = new CanvasRenderer(canvas, world, {
+        scale: 32.0,
+        camera: new Vec2(0, 5),
+        showSubQGLattice: document.getElementById('chk-subqg').checked,
+        showContacts: document.getElementById('chk-contacts').checked
+      });
+
+      inspector = new SubQGInspector(world);
+
+      const breakable = document.getElementById('chk-breakable').checked;
+      if (sceneKey === 'ropeBridge') {
+        DemoScenes.ropeBridge(world, { breakable: false });
+      } else if (sceneKey === 'ropeBridgeBreakable') {
+        DemoScenes.ropeBridge(world, { breakable: true, breakingForce: 450 });
+      } else if (DemoScenes[sceneKey]) {
+        DemoScenes[sceneKey](world);
+      }
+
+      // Zeige Katapult-Steuerung nur in Szene 5
+      const isCatapult = sceneKey === 'catapult';
+      document.getElementById('btn-fire-catapult').style.display = isCatapult ? 'inline-block' : 'none';
+      document.getElementById('btn-reload-catapult').style.display = isCatapult ? 'inline-block' : 'none';
+    }
+
+    const sceneSelect = document.getElementById('scene-select');
+    const modeSelect = document.getElementById('engine-mode-select');
+    sceneSelect.addEventListener('change', () => loadScene(sceneSelect.value));
+    modeSelect.addEventListener('change', () => loadScene(sceneSelect.value));
+    document.getElementById('btn-reset').addEventListener('click', () => loadScene(sceneSelect.value));
+
+    // Katapult Manuelle Steuerung
+    document.getElementById('btn-fire-catapult').addEventListener('click', () => {
+      if (world.catapultController) world.catapultController.fire();
+    });
+    document.getElementById('btn-reload-catapult').addEventListener('click', () => {
+      if (world.catapultController) world.catapultController.reload();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && sceneSelect.value === 'catapult') {
+        e.preventDefault();
+        if (world.catapultController) world.catapultController.fire();
+      }
+    });
+
+    document.getElementById('chk-breakable').addEventListener('change', () => {
+      const curScene = sceneSelect.value;
+      if (curScene === 'ropeBridge' || curScene === 'ropeBridgeBreakable') {
+        loadScene(document.getElementById('chk-breakable').checked ? 'ropeBridgeBreakable' : 'ropeBridge');
+      }
+    });
+
+    document.getElementById('chk-subqg').addEventListener('change', (e) => {
+      renderer.showSubQGLattice = e.target.checked;
+    });
+
+    document.getElementById('chk-contacts').addEventListener('change', (e) => {
+      renderer.showContacts = e.target.checked;
+    });
+
+    document.getElementById('chk-gravity').addEventListener('change', (e) => {
+      world.setGravity(0, e.target.checked ? -9.81 : 0);
+      for (const b of world.bodies) b.wakeUp();
+    });
+
+    // Spawning Buttons - Alle 4 Materialien besitzen vollaktive Destruction Physics!
+    document.getElementById('btn-spawn-box').addEventListener('click', () => {
+      world.createBox(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 1.0, 1.0, {
+        isDestructible: true,
+        fractureForce: 150.0,
+        userData: 'Kiste (Holz)',
+        material: Material.wood()
+      });
+    });
+
+    document.getElementById('btn-spawn-ball').addEventListener('click', () => {
+      world.createCircle(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 0.5, {
+        isDestructible: true,
+        fractureForce: 450.0,
+        userData: 'Ball (Gummi)',
+        material: Material.rubber()
+      });
+    });
+
+    document.getElementById('btn-spawn-boulder').addEventListener('click', () => {
+      world.createCircle(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 0.8, {
+        isDestructible: true,
+        fractureForce: 400.0,
+        userData: 'Felsblock',
+        material: new Material({ density: 8.0, friction: 0.6, restitution: 0.05 })
+      });
+    });
+
+    document.getElementById('btn-spawn-capsule').addEventListener('click', () => {
+      world.createCapsule(renderer.camera.x + (Math.random() - 0.5) * 2, renderer.camera.y + 6, 1.4, 0.35, {
+        isDestructible: true,
+        fractureForce: 180.0,
+        userData: 'Kapsel',
+        material: Material.wood()
+      });
+    });
+
+    // Mouse Interactions (Pick & Drag / Laser Raycast)
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const wPos = renderer.screenToWorld(sx, sy);
+
+      if (e.button === 0) { // Linksklick: Drag
+        const hits = world.queryPoint(wPos);
+        if (hits.length > 0) {
+          const hit = hits[hits.length - 1];
+          if (hit.body.type === 'dynamic') {
+            dragBody = hit.body;
+            dragLocalAnchor = dragBody.transform.inverseTransformPoint(wPos);
+            dragBody.wakeUp();
+          }
+        }
+      } else if (e.button === 2) { // Rechtsklick: Raycast
+        rightClickRayStart = wPos.clone();
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      mousePosWorld = renderer.screenToWorld(sx, sy);
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragBody = null;
+      rightClickRayStart = null;
+    });
+
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      renderer.scale = Math.max(10.0, Math.min(100.0, renderer.scale * zoomFactor));
+    });
+
+    // Initial Scene
+    loadScene('stackingTower');
+
+    // Main Game Loop
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let fpsTime = 0;
+
+    function loop(time) {
+      const dt = Math.min(0.033, (time - lastTime) / 1000.0);
+      lastTime = time;
+
+      // Maus-Drag-Federkraft anwenden
+      if (dragBody) {
+        const targetWorld = mousePosWorld;
+        const currentWorld = dragBody.transform.transformPoint(dragLocalAnchor);
+        const delta = Vec2.sub(targetWorld, currentWorld);
+        const springK = 150.0;
+        const dampingK = 20.0;
+        const fSpring = Vec2.scale(delta, springK * dragBody.mass);
+        const vAtPoint = dragBody.getVelocityAtPoint(currentWorld);
+        const fDamping = Vec2.scale(vAtPoint, dampingK * dragBody.mass);
+        const fTotal = Vec2.sub(fSpring, fDamping);
+
+        dragBody.applyForceAtPoint(fTotal, currentWorld);
+      }
+
+      // Rechtsklick Laser-Raycast
+      if (rightClickRayStart) {
+        const dir = Vec2.sub(mousePosWorld, rightClickRayStart);
+        const len = dir.length();
+        if (len > 0.05) {
+          const hit = world.raycast(rightClickRayStart, dir.clone().normalize(), len);
+          renderer.addDebugRay({ origin: rightClickRayStart, direction: dir.normalize(), maxDistance: len }, hit);
+        }
+      }
+
+      // Physikschritt
+      world.step(1.0 / 60.0);
+
+      // Rendern
+      renderer.render(dt);
+
+      // HUD Telemetrie aktualisieren
+      frameCount++;
+      fpsTime += dt;
+      if (fpsTime >= 0.25) {
+        const fps = Math.round(frameCount / fpsTime);
+        document.getElementById('hud-fps').textContent = fps;
+        frameCount = 0;
+        fpsTime = 0;
+
+        const isPure = world.engineMode === 'pure-subqg';
+        const modeEl = document.getElementById('hud-mode');
+        modeEl.textContent = isPure ? 'PURE SUBQG (100%)' : 'HYBRID';
+        modeEl.style.color = isPure ? '#d6bcfa' : '#63b3ed';
+
+        const contactCalls = isPure ? '0 (Pure SubQG)' : world.contactSolverCalls + ' Aufrufe';
+        const contactEl = document.getElementById('hud-contact-solver');
+        contactEl.textContent = contactCalls;
+        contactEl.style.color = isPure ? '#68d391' : '#f6ad55';
+
+        const jointEl = document.getElementById('hud-joint-solver');
+        jointEl.textContent = world.jointSolverCalls + ' Aufrufe';
+
+        const jointsEl = document.getElementById('hud-joints');
+        jointsEl.textContent = world.joints.length + ' intakt';
+
+        const matEl = document.getElementById('hud-material');
+        if (world.brokenJointsCount > 0) {
+          matEl.textContent = 'BRUCH (' + world.brokenJointsCount + ' gerissen)';
+          matEl.style.color = '#fc8181';
+        } else {
+          matEl.textContent = 'Intakt';
+          matEl.style.color = '#68d391';
+        }
+
+        let sleepingCount = 0;
+        for (const b of world.bodies) if (b.isSleeping) sleepingCount++;
+
+        const audit = inspector.computeFullEnergyAudit();
+        document.getElementById('hud-bodies').textContent = world.bodies.length;
+        document.getElementById('hud-contacts').textContent = world.contactManifolds.size;
+        document.getElementById('hud-sleeping').textContent = sleepingCount;
+        document.getElementById('hud-energy').textContent = audit.kineticEnergy.toFixed(1) + ' J';
+
+        document.getElementById('hud-action').textContent = audit.subqgEdgeAction.toFixed(3);
+        document.getElementById('hud-strain').textContent = (audit.maxMetricStrain * 100.0).toFixed(2) + '%';
+        document.getElementById('hud-edges').textContent = audit.activeEdges;
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  
+</script>
+
+</body>
+</html>

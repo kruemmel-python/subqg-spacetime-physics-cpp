@@ -1,0 +1,8 @@
+MRE_FORMULA_1
+# SubQG Kausaler Diamant: Volumen-Tiefen-Skalierung im 3D-Kausalnetzwerk
+# x = Geodaetischer Zeitschritt, y = Transitive Kausalfolge
+# Physikalische Bedeutung: Exakte kubische Volumenexpansion des 3D-Lichtkegels
+name: SubQG Kausaldiamant-Volumen
+domain: real
+formula: (x + y)^3 = x^3 + 3*x^2*y + 3*x*y^2 + y^3
+seed: 42

@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createSystem,forces,energy,step,run,interpolateAt,experiment} from '../src/modules/subqg_interacting_clocks.mjs';
+test('finite valid initial energy',()=>assert.ok(energy(createSystem())>0));
+test('invalid negative coupling rejected',()=>assert.throws(()=>createSystem({coupling:-1})));
+test('forces obey internal action-reaction',()=>assert.ok(Math.abs(forces(createSystem()).reduce((a,b)=>a+b,0))<1e-12));
+test('invalid integration rejected',()=>assert.throws(()=>run({dt:0})));
+test('uncoupled clocks retain calibrated time',()=>{const r=run({coupling:0});assert.ok(Math.abs(r.final.tauA-2)<1e-4);assert.ok(Math.abs(r.final.tauB-2)<1e-4)});
+test('interaction changes relative phase clock reading',()=>{const a=run({coupling:0}),b=run({coupling:0.04});assert.ok(Math.abs(b.final.tauA-b.final.tauB)>Math.abs(a.final.tauA-a.final.tauB)+1e-4)});
+test('weak coupling keeps clocks monotonic over test interval',()=>assert.equal(run().monotonicViolations,0));
+test('energy drift decreases on refinement',()=>{const a=run(),b=run({dt:0.001,steps:2000});assert.ok(Math.abs(b.energyDrift)<Math.abs(a.energyDrift))});
+test('relational interpolation is available for both reference clocks',()=>{const r=run();assert.ok(interpolateAt(r.samples,'tauA',1.5));assert.ok(interpolateAt(r.samples,'tauB',1.5))});
+test('relational comparison agrees under lapse reparameterization',()=>{const a=run(),b=run({dt:0.001,steps:1000,lapse:2});const x=interpolateAt(a.samples,'tauA',1.5),y=interpolateAt(b.samples,'tauA',1.5);assert.ok(Math.abs(x.tauOther-y.tauOther)<2e-5)});
+test('experiment states limitations',()=>assert.match(experiment().verdict,/no universal synchronization/));

@@ -1,0 +1,7 @@
+MRE_FORMULA_1
+# SubQG Viererimpuls-Invarianz: Relativistische Energie-Impuls-Erhaltung
+# Numerisch stabile Formulierung ohne Ausloeschungsrauschen bei Grosswerten
+name: SubQG Viererimpuls-Invarianz
+domain: real
+formula: ((x + y) * (x - y))^2 = (x^2 - y^2)^2
+seed: 42

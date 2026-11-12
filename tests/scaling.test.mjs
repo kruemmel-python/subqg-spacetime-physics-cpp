@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {graphDiagnostics,runScaling,controlScaling} from '../src/modules/subqg_scaling.mjs';
+test('empty graph diagnostics',()=>assert.equal(graphDiagnostics([]).nodes,0));
+test('path graph has expected density',()=>{const x=graphDiagnostics([[1],[0,2],[1]]);assert.equal(x.edges,2);assert.equal(x.components,1);assert.equal(x.edgeDensity,2/3);});
+test('disconnected graph component count',()=>assert.equal(graphDiagnostics([[1],[0],[]]).components,2));
+test('scaling reproducible',()=>{const p={caps:[20],seeds:[42],steps:200,sources:4,maxSteps:45};assert.deepEqual(runScaling(p),runScaling(p));});
+test('larger cap cannot reduce node count for fixed seed',()=>{const x=runScaling({caps:[15,30],seeds:[42],steps:250,sources:4,maxSteps:45});assert.ok(x.samples[1].nodes>=x.samples[0].nodes);});
+test('control dimensions are finite',()=>{const x=controlScaling();assert.equal(x.length,3);assert.ok(x.every(a=>a.spectral.every(Number.isFinite)));});
+test('invalid caps rejected',()=>assert.throws(()=>runScaling({caps:[0]}),RangeError));
