@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "canonicalGraph": {
+    "seed": 42,
+    "evolutionSteps": 400,
+    "nodes": 60,
+    "edges": 320
+  },
+  "fullComplex": {
+    "tetrahedralCells": 1003,
+    "uniqueTriangularFaces": 744,
+    "faceIncidenceHistogram": {
+      "2": 37,
+      "3": 104,
+      "4": 100,
+      "5": 197,
+      "6": 110,
+      "7": 76,
+      "8": 63,
+      "9": 38,
+      "10": 7,
+      "11": 11,
+      "12": 1
+    },
+    "boundaryFaces": 0,
+    "manifoldInteriorFaces": 37,
+    "nonManifoldFaces": 707,
+    "maximumFaceIncidence": 12,
+    "fullCliqueComplexIsFaceManifold": false
+  },
+  "selectedManifold": {
+    "tetrahedralCells": 186,
+    "vertices": 41,
+    "internalFacesAndDualBonds": 324,
+    "faceIncidenceHistogram": {
+      "1": 96,
+      "2": 324
+    },
+    "maximumFaceIncidence": 2,
+    "connected": true,
+    "orientable": true
+  },
+  "constrainedCollectiveAction": "S_TT = sum_A[ m/2 sum_C (dq_C^A/dt)^2 - k/2 sum_<CD> w_CD(q_C^A-q_D^A)^2 ], A in {plus,cross}",
+  "reusesCanonicalFpvDirichletForm": true,
+  "onSiteMassTerm": 0,
+  "physicalPolarizations": 2,
+  "exactUniformHessianResidual": 0,
+  "exactFlatDeformationAction": 0,
+  "nonconstantProbeAction": 90.14043057984678,
+  "twoIndependentMasslessUniformModes": 2,
+  "hessianPositiveSemidefiniteOnProbe": true,
+  "manifoldSupportedMasslessTTSector": true,
+  "dynamicSelectionOfThisSubcomplexDerived": false,
+  "fullCanonicalHessianMatchingClosed": false,
+  "verdict": {
+    "fullCliqueComplexAdmissibleAsSpatialManifold": false,
+    "orientableManifoldSubcomplexExists": true,
+    "constrainedTTHessianMassless": true,
+    "constrainedTTHessianPositiveSemidefinite": true,
+    "fullCanonicalDerivationClosed": false,
+    "nextNecessaryProof": "Derive the manifold-subcomplex selection and parallel transport from the canonical dynamics rather than the deterministic extraction audit."
+  }
+}

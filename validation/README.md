@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`FC0E5D96655A5E6A917299BD9BAB79C821C47D445D3D4A2BF0858C21F62CF958`.
+`F0219655D337E0D5DA1669FBFCE9A32CD89040735F2E497AEB4A9D959DE2AA34`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -311,3 +311,21 @@ Fierz-Pauli-Vakuumoperator erfüllen. Herleitung und Beweisgrenze stehen in
 
 Die deterministische Ergebnisdatei `simplex_tensor_bridge.json` hat SHA-256
 `D0E954A19F34D4A94BA8694D3BC105DFB954E76B16A87CF20D4C1926B8EF08CD`.
+
+## Test 9: Globaler Simplex-Komplex und TT-Hessian
+
+Der vollständige `K4`-Komplex wird ausdrücklich als nicht mannigfaltig
+erkannt. Aus demselben kanonischen Graphen wird deterministisch ein verbundener
+orientierbarer Unterkomplex mit 186 Tetraedern und höchstens zwei Zellen pro
+Dreiecksfläche extrahiert. Sein dualer FPV-Hessian besitzt für Plus und Kreuz
+zwei exakte ankerfreie Nullmoden und eine nichtnegative Dirichlet-Wirkung.
+
+```powershell
+npm run validation:collective-spin2-hessian
+```
+
+Der negative Vollkomplexbefund, die Orientierungsprüfung und die offene
+dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
+
+Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
+SHA-256 `4073A5FCE3EB5D1079736E2281B5D92BEBE94BD985517FB053F9CADB1838FB12`.

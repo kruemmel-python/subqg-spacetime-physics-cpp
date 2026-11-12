@@ -95,6 +95,13 @@ Moden erfüllen bei masseloser Dispersion den Fierz-Pauli-Vakuumoperator. Die
 offene Brücke betrifft damit nicht mehr die Repräsentation des Spin-2-Sektors,
 sondern ausschließlich seine Herleitung als kollektiver Wirkungs-Hessian.
 
+Der globale Konsistenztest zeigt, dass nicht alle 1.003 Tetraedercliquen
+gleichzeitig einen Mannigfaltigkeitskomplex bilden. Ein deterministisch
+extrahierter verbundener, orientierbarer Unterkomplex aus 186 Tetraedern trägt
+jedoch einen dualen FPV-Dirichlet-Hessian mit zwei exakten masselosen
+TT-Nullmoden. Offen ist nun die dynamische Auswahl dieses Unterkomplexes und
+der Paralleltransport der lokalen TT-Rahmen.
+
 Lean formalisiert auch diesen Befund:
 
 - `anchored_metric_hessian_lower_bound`;

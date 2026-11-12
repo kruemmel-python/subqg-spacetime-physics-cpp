@@ -78,6 +78,7 @@ export {
   directGravitationalWaveAudit
 } from './modules/subqg_gw_observations.mjs';
 export {
+  tetrahedralCells,
   tetrahedronGramFromSquaredLengths,
   tetrahedronSquaredLengthsFromGram,
   metricPerturbationFromSquaredLengthPerturbations,
@@ -93,6 +94,14 @@ export {
   simplexGramPerturbationToOrthonormal,
   simplexRadiativeGaugeAudit
 } from './modules/subqg_simplex_gauge_bridge.mjs';
+export {
+  tetrahedralIncidenceAudit,
+  extractOrientableManifoldSubcomplex,
+  applyDualGraphHessian,
+  dualGraphQuadraticAction,
+  collectiveSpinTwoHessianAudit,
+  canonicalCollectiveSpinTwoHessianAudit
+} from './modules/subqg_collective_spin2_hessian.mjs';
 export {
   SubQGAppleWorld,
   SubQGAppleExperiment,

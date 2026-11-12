@@ -185,6 +185,7 @@ export function directGravitationalWaveAudit(options?: {
   tensorVsScalarBayesFactorLower?: number;
 }): any;
 export function tetrahedronGramFromSquaredLengths(squaredLengths: Record<string, number>): number[][];
+export function tetrahedralCells(world: any): number[][];
 export function tetrahedronSquaredLengthsFromGram(gram: number[][]): Record<string, number>;
 export function metricPerturbationFromSquaredLengthPerturbations(delta: Record<string, number>): number[][];
 export function squaredLengthPerturbationsFromMetric(deltaMetric: number[][]): Record<string, number>;
@@ -200,6 +201,15 @@ export function simplexRadiativeGaugeAudit(options?: {
   plusAmplitude?: number;
   crossAmplitude?: number;
 }): any;
+export function tetrahedralIncidenceAudit(world: any): any;
+export function extractOrientableManifoldSubcomplex(world: any, options?: {
+  trials?: number;
+  searchSeed?: number;
+}): any;
+export function applyDualGraphHessian(amplitudes: number[], bonds: any[], stiffness?: number): number[];
+export function dualGraphQuadraticAction(amplitudes: number[], bonds: any[], stiffness?: number): number;
+export function collectiveSpinTwoHessianAudit(world: any): any;
+export function canonicalCollectiveSpinTwoHessianAudit(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

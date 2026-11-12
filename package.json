@@ -21,7 +21,8 @@
     "validation:local-gravity": "node validation/scripts/local_gravity_validation.mjs",
     "validation:binary-pulsar": "node validation/scripts/binary_pulsar_validation.mjs",
     "validation:gravitational-waves": "node validation/scripts/gravitational_wave_validation.mjs",
-    "validation:simplex-tensor-bridge": "node validation/scripts/simplex_tensor_bridge.mjs"
+    "validation:simplex-tensor-bridge": "node validation/scripts/simplex_tensor_bridge.mjs",
+    "validation:collective-spin2-hessian": "node validation/scripts/collective_spin2_hessian.mjs"
   },
   "keywords": [
     "quantum-gravity",

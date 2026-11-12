@@ -68,11 +68,10 @@ export function squaredLengthPerturbationsFromMetric(deltaMetric) {
   return tetrahedronSquaredLengthsFromGram(deltaMetric);
 }
 
-export function tetrahedralCliques(world, { exampleLimit = 8 } = {}) {
+export function tetrahedralCells(world) {
   if (!world || !Array.isArray(world.nodes) || !world.links || typeof world.links.values !== 'function') {
     throw new TypeError('world must expose nodes and undirected links');
   }
-  if (!Number.isInteger(exampleLimit) || exampleLimit < 0) throw new RangeError('exampleLimit must be a nonnegative integer');
   const adjacency = Array.from({ length: world.nodes.length }, () => new Set());
   for (const edge of world.links.values()) {
     if (!Number.isInteger(edge.a) || !Number.isInteger(edge.b) || !adjacency[edge.a] || !adjacency[edge.b]) {
@@ -81,19 +80,23 @@ export function tetrahedralCliques(world, { exampleLimit = 8 } = {}) {
     adjacency[edge.a].add(edge.b);
     adjacency[edge.b].add(edge.a);
   }
-  let count = 0;
-  const examples = [];
+  const cells = [];
   for (let a = 0; a < adjacency.length; a++) {
     for (const b of adjacency[a]) if (b > a) {
       for (const c of adjacency[a]) if (c > b && adjacency[b].has(c)) {
         for (const d of adjacency[a]) if (d > c && adjacency[b].has(d) && adjacency[c].has(d)) {
-          count++;
-          if (examples.length < exampleLimit) examples.push([a, b, c, d]);
+          cells.push([a, b, c, d]);
         }
       }
     }
   }
-  return { count, examples };
+  return cells;
+}
+
+export function tetrahedralCliques(world, { exampleLimit = 8 } = {}) {
+  if (!Number.isInteger(exampleLimit) || exampleLimit < 0) throw new RangeError('exampleLimit must be a nonnegative integer');
+  const cells = tetrahedralCells(world);
+  return { count: cells.length, examples: cells.slice(0, exampleLimit) };
 }
 
 export function simplexTensorKinematicsAudit(world) {
