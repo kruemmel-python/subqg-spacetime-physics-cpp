@@ -59,13 +59,17 @@ const result = {
       collectiveHessian.manifoldSupportedMasslessTTSector,
     causalManifoldSelectionIsParameterFree:
       collectiveHessian.causalParameterFreeSelectionImplemented,
+    causalSelectionHasExactIncrementalVariationalForm:
+      collectiveHessian.selectionRuleHasExactIncrementalVariationalForm,
+    selectionDerivedFromOriginalContinuousMicroaction:
+      collectiveHessian.selectionRuleDerivedFromOriginalContinuousMicroaction,
     localSpinTwoParallelTransportClosed:
       parallelTransport.localFrameTransportClosed && parallelTransport.spinTwoNormPreservingTransportClosed,
     closedLoopHolonomyConnectionDerived: holonomy.holonomyConnectionMathematicallyClosed,
     nontrivialDiscreteCurvatureDetected: holonomy.nontrivialDiscreteCurvatureDetected,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
-    requiredChange: 'Derive the causal admissibility rule variationally, match loop holonomy to dimensionful Regge/Einstein curvature, and derive the gauge-null Lorentzian collective dynamics and universal source coupling.'
+    requiredChange: 'Derive the incremental admissibility action from the original continuous microaction, match loop holonomy to dimensionful Regge/Einstein curvature, and derive gauge-null Lorentzian dynamics and universal source coupling.'
   }
 };
 

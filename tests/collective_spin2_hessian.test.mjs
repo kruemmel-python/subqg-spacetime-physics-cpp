@@ -5,6 +5,7 @@ import {
   tetrahedralIncidenceAudit,
   extractOrientableManifoldSubcomplex,
   extractCausalManifoldSector,
+  causalSelectionVariationalAudit,
   applyDualGraphHessian,
   dualGraphQuadraticAction,
   collectiveSpinTwoHessianAudit
@@ -21,6 +22,18 @@ test('full canonical clique complex exposes its non-manifold faces', () => {
   assert.equal(audit.tetrahedralCells, 1003);
   assert.equal(audit.nonManifoldFaces, 707);
   assert.equal(audit.fullCliqueComplexIsFaceManifold, false);
+});
+
+test('causal selection is the exact minimum of a parameter-free incremental action', () => {
+  const audit = causalSelectionVariationalAudit(canonicalWorld());
+  assert.equal(audit.tetrahedralCellsConsidered, 1003);
+  assert.equal(audit.acceptedCells, 264);
+  assert.equal(audit.rejectedCells, 739);
+  assert.equal(audit.everyDecisionMinimizesIncrementalAction, true);
+  assert.equal(audit.selectionMatchesCausalExtractor, true);
+  assert.equal(audit.variationalCharacterizationClosed, true);
+  assert.equal(audit.derivedFromOriginalContinuousMicroaction, false);
+  assert.equal(audit.cumulativeIncrementalAction, -264);
 });
 
 test('deterministic extraction finds a connected orientable face-manifold', () => {
@@ -58,7 +71,8 @@ test('collective audit reports two modes and preserves selection caveat', () => 
   assert.equal(audit.manifoldSupportedMasslessTTSector, true);
   assert(audit.nonconstantProbeAction > 0);
   assert.equal(audit.causalParameterFreeSelectionImplemented, true);
-  assert.equal(audit.selectionRuleDerivedAsCanonicalEulerLagrangeEquation, false);
+  assert.equal(audit.selectionRuleHasExactIncrementalVariationalForm, true);
+  assert.equal(audit.selectionRuleDerivedFromOriginalContinuousMicroaction, false);
   assert.equal(audit.fullCanonicalHessianMatchingClosed, false);
 });
 

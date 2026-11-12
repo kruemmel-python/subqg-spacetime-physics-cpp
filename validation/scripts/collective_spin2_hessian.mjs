@@ -26,6 +26,10 @@ const result = {
     orientableManifoldSubcomplexExists: audit.selectedManifold.orientable,
     constrainedTTHessianMassless: audit.twoIndependentMasslessUniformModes === 2,
     constrainedTTHessianPositiveSemidefinite: audit.hessianPositiveSemidefiniteOnProbe,
+    causalSelectionHasExactIncrementalVariationalForm:
+      audit.selectionRuleHasExactIncrementalVariationalForm,
+    selectionDerivedFromOriginalContinuousMicroaction:
+      audit.selectionRuleDerivedFromOriginalContinuousMicroaction,
     localFrameTransportClosed: parallelTransport.localFrameTransportClosed,
     spinTwoNormPreservingTransportClosed: parallelTransport.spinTwoNormPreservingTransportClosed,
     closedLoopHolonomyConnectionDerived: holonomy.holonomyConnectionMathematicallyClosed,
@@ -33,7 +37,7 @@ const result = {
     einsteinReggeCurvatureMatchingDerived: holonomy.einsteinReggeCurvatureMatchingDerived,
     fullCanonicalDerivationClosed: audit.fullCanonicalHessianMatchingClosed,
     nextNecessaryProof:
-      'Derive the causal admissibility rule as a canonical variational equation and match the dimensionless loop holonomies to Regge/Einstein curvature with a physical length scale.'
+      'Derive the exact incremental admissibility action from the original continuous microaction and match dimensionless loop holonomies to Regge/Einstein curvature with a physical length scale.'
   }
 };
 fs.mkdirSync(path.dirname(resultPath), { recursive: true });

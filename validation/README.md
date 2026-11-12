@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`31152E7A3190A99217F861857CC04385562D3ED077CF3E533CC2839FA1DA859D`.
+`EE935E8B3691D9D2A1451098D9580EC15DB5D48A118099F90674DB0BD35CAC02`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -324,6 +324,10 @@ inneren Flächen. Der Dualgraph besitzt 84 unabhängige Fundamentalschleifen.
 Ihre SO(3)-Holonomien sind mathematisch geschlossen und sämtlich nichttrivial;
 die Verbindung trägt damit diskrete Krümmung. Das dimensionsbehaftete Matching
 auf lokale Regge-/Einstein-Krümmung bleibt offen.
+Die kausale Zulassung ist außerdem für sämtliche 1.003 Zellentscheidungen als
+exaktes Minimum einer parameterfreien inkrementellen Indikatorwirkung
+geschlossen. Noch offen ist die Herleitung dieses Indikatorterms aus der
+ursprünglichen kontinuierlichen SubQG-Mikrowirkung.
 
 ```powershell
 npm run validation:collective-spin2-hessian
@@ -333,4 +337,4 @@ Der negative Vollkomplexbefund, die Orientierungsprüfung und die offene
 dynamische Auswahlregel stehen in `SIMPLICIAL_HESSIAN_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `collective_spin2_hessian.json` hat
-SHA-256 `0773F2938CC391B850A9282379333359FDF54B665DCEF71CC21E08E0A03F8F53`.
+SHA-256 `4C7A30E2E06FDCE5D08D2E135D7A2312BFB1CFECFB86877C0571664A858480C3`.

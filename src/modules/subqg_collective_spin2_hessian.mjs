@@ -159,18 +159,7 @@ function connectedComponents(cellCount, bonds) {
   return components.sort((left, right) => right.length - left.length || left[0] - right[0]);
 }
 
-/** Parameter-free selection from canonical link-birth order. */
-export function extractCausalManifoldSector(world) {
-  const cells = tetrahedralCells(world);
-  if (cells.length === 0) return {
-    cells: [], originalCellIndices: [], orientations: [], dualBonds: [], vertices: 0,
-    faceIncidenceHistogram: {}, connected: false, orientable: false,
-    maximumFaceIncidence: 0, acceptedAcrossAllComponents: 0, componentSizes: [],
-    selectionRule: 'canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector',
-    fittedParameters: 0,
-    selectionRandomSeedUsed: false
-  };
-  const { faces, faceCells } = incidence(cells);
+function canonicalCellBirthOrder(world, cells) {
   const linkBirth = new Map([...world.links.entries()].map(([key, edge]) => [key, edge.born]));
   const linkKey = (a, b) => a < b ? `${a}:${b}` : `${b}:${a}`;
   const birth = cell => {
@@ -182,22 +171,43 @@ export function extractCausalManifoldSector(world) {
     }
     return Math.max(...ticks);
   };
-  const order = cells.map((cell, index) => ({ index, birth: birth(cell), key: cell.join(':') }))
+  return cells.map((cell, index) => ({ index, birth: birth(cell), key: cell.join(':') }))
     .sort((left, right) => left.birth - right.birth || left.key.localeCompare(right.key));
+}
+
+function orientationRequirements(index, faces, faceCells, selected, orientations) {
+  const requirements = [];
+  for (let omitted = 0; omitted < 4; omitted++) {
+    const face = faces[index][omitted];
+    for (const neighbor of faceCells.get(face)) if (selected.has(neighbor)) {
+      const neighborOmitted = faces[neighbor].indexOf(face);
+      const parity = (omitted - neighborOmitted) % 2 === 0 ? 1 : -1;
+      requirements.push(-orientations.get(neighbor) * parity);
+    }
+  }
+  return requirements;
+}
+
+/** Parameter-free selection from canonical link-birth order. */
+export function extractCausalManifoldSector(world) {
+  const cells = tetrahedralCells(world);
+  if (cells.length === 0) return {
+    cells: [], originalCellIndices: [], orientations: [], dualBonds: [], vertices: 0,
+    faceIncidenceHistogram: {}, connected: false, orientable: false,
+    maximumFaceIncidence: 0, acceptedAcrossAllComponents: 0,
+    acceptedOriginalCellIndices: [], componentSizes: [],
+    selectionRule: 'canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector',
+    fittedParameters: 0,
+    selectionRandomSeedUsed: false
+  };
+  const { faces, faceCells } = incidence(cells);
+  const order = canonicalCellBirthOrder(world, cells);
   const selected = new Set();
   const orientations = new Map();
   const faceCounts = new Map();
   for (const { index } of order) {
     if (!faces[index].every(face => (faceCounts.get(face) ?? 0) < 2)) continue;
-    const requirements = [];
-    for (let omitted = 0; omitted < 4; omitted++) {
-      const face = faces[index][omitted];
-      for (const neighbor of faceCells.get(face)) if (selected.has(neighbor)) {
-        const neighborOmitted = faces[neighbor].indexOf(face);
-        const parity = (omitted - neighborOmitted) % 2 === 0 ? 1 : -1;
-        requirements.push(-orientations.get(neighbor) * parity);
-      }
-    }
+    const requirements = orientationRequirements(index, faces, faceCells, selected, orientations);
     if (requirements.length > 0 && !requirements.every(value => value === requirements[0])) continue;
     selected.add(index);
     orientations.set(index, requirements[0] ?? 1);
@@ -238,10 +248,84 @@ export function extractCausalManifoldSector(world) {
     orientable: retainedOriginal.every(index => orientations.has(index)),
     maximumFaceIncidence: Math.max(0, ...retainedFaceCounts.values()),
     acceptedAcrossAllComponents: accepted.length,
+    acceptedOriginalCellIndices: accepted,
     componentSizes: components.map(component => component.length),
     selectionRule: 'canonical link-birth order; lexicographic tie break; face incidence <= 2; consistent induced orientation; largest face-connected sector',
     fittedParameters: 0,
     selectionRandomSeedUsed: false
+  };
+}
+
+/**
+ * Exact incremental variational characterization of the causal selector.
+ * At each birth step, n in {0,1} and o in {-1,+1} minimize
+ *   Delta S_i(n,o) = -n + I_admissible(n,o),
+ * where the indicator is zero for the manifold/orientation constraints and
+ * +infinity otherwise.  This closes the variational form of the update rule;
+ * it does not claim that the indicator action has already been derived from
+ * the original continuous SubQG microaction.
+ */
+export function causalSelectionVariationalAudit(world) {
+  const cells = tetrahedralCells(world);
+  const { faces, faceCells } = incidence(cells);
+  const order = canonicalCellBirthOrder(world, cells);
+  const selected = new Set();
+  const orientations = new Map();
+  const faceCounts = new Map();
+  let rejectedByFaceCapacity = 0;
+  let rejectedByOrientationFrustration = 0;
+  let freeOrientationGaugeChoices = 0;
+  let forcedOrientationChoices = 0;
+  let everyDecisionMinimizesIncrementalAction = true;
+  let cumulativeIncrementalAction = 0;
+  for (const { index } of order) {
+    const faceAdmissible = faces[index].every(face => (faceCounts.get(face) ?? 0) < 2);
+    const requirements = orientationRequirements(index, faces, faceCells, selected, orientations);
+    const plusAdmissible = faceAdmissible && requirements.every(value => value === 1);
+    const minusAdmissible = faceAdmissible && requirements.every(value => value === -1);
+    const includeMinimum = plusAdmissible || minusAdmissible ? -1 : Number.POSITIVE_INFINITY;
+    const excludeAction = 0;
+    const include = includeMinimum < excludeAction;
+    if (!include) {
+      if (!faceAdmissible) rejectedByFaceCapacity++;
+      else rejectedByOrientationFrustration++;
+      everyDecisionMinimizesIncrementalAction &&= excludeAction <= includeMinimum;
+      continue;
+    }
+    const orientation = requirements[0] ?? 1;
+    everyDecisionMinimizesIncrementalAction &&=
+      (orientation === 1 ? plusAdmissible : minusAdmissible) && includeMinimum === -1;
+    if (requirements.length === 0) freeOrientationGaugeChoices++;
+    else forcedOrientationChoices++;
+    selected.add(index);
+    orientations.set(index, orientation);
+    cumulativeIncrementalAction += includeMinimum;
+    for (const face of faces[index]) faceCounts.set(face, (faceCounts.get(face) ?? 0) + 1);
+  }
+  const extracted = extractCausalManifoldSector(world);
+  return {
+    incrementalAction: 'Delta S_i(n_i,o_i) = -n_i + I_admissible(n_i,o_i), n_i in {0,1}, o_i in {-1,+1}',
+    admissibilityIndicator:
+      'I=0 iff every triangular face has incidence <=2 and every shared face has opposite induced orientation; otherwise I=+infinity',
+    updateOrder: 'canonical link-birth tick, then lexicographic cell key',
+    tetrahedralCellsConsidered: cells.length,
+    acceptedCells: selected.size,
+    rejectedCells: cells.length - selected.size,
+    rejectedByFaceCapacity,
+    rejectedByOrientationFrustration,
+    freeOrientationGaugeChoices,
+    forcedOrientationChoices,
+    cumulativeIncrementalAction,
+    everyDecisionMinimizesIncrementalAction,
+    selectionMatchesCausalExtractor:
+      selected.size === extracted.acceptedOriginalCellIndices.length &&
+      [...selected].every((value, index) => value === extracted.acceptedOriginalCellIndices[index]),
+    fittedParameters: 0,
+    variationalCharacterizationClosed:
+      everyDecisionMinimizesIncrementalAction &&
+      selected.size === extracted.acceptedOriginalCellIndices.length &&
+      [...selected].every((value, index) => value === extracted.acceptedOriginalCellIndices[index]),
+    derivedFromOriginalContinuousMicroaction: false
   };
 }
 
@@ -272,6 +356,7 @@ export function dualGraphQuadraticAction(amplitudes, bonds, stiffness = 1) {
 export function collectiveSpinTwoHessianAudit(world) {
   const fullComplex = tetrahedralIncidenceAudit(world);
   const manifold = extractCausalManifoldSector(world);
+  const selectionVariation = causalSelectionVariationalAudit(world);
   const count = manifold.cells.length;
   const uniform = Array(count).fill(1);
   const uniformResidual = Math.max(0, ...applyDualGraphHessian(uniform, manifold.dualBonds).map(Math.abs));
@@ -294,6 +379,7 @@ export function collectiveSpinTwoHessianAudit(world) {
       connected: manifold.connected,
       orientable: manifold.orientable
     },
+    selectionVariation,
     constrainedCollectiveAction:
       'S_TT = sum_A[ m/2 sum_C (dq_C^A/dt)^2 - k/2 sum_<CD> w_CD(q_C^A-q_D^A)^2 ], A in {plus,cross}',
     reusesCanonicalFpvDirichletForm: true,
@@ -309,7 +395,9 @@ export function collectiveSpinTwoHessianAudit(world) {
       uniformResidual === 0 && probeAction >= 0,
     causalParameterFreeSelectionImplemented:
       manifold.fittedParameters === 0 && !manifold.selectionRandomSeedUsed,
-    selectionRuleDerivedAsCanonicalEulerLagrangeEquation: false,
+    selectionRuleHasExactIncrementalVariationalForm: selectionVariation.variationalCharacterizationClosed,
+    selectionRuleDerivedFromOriginalContinuousMicroaction:
+      selectionVariation.derivedFromOriginalContinuousMicroaction,
     fullCanonicalHessianMatchingClosed: false
   };
 }

@@ -207,6 +207,7 @@ export function extractOrientableManifoldSubcomplex(world: any, options?: {
   searchSeed?: number;
 }): any;
 export function extractCausalManifoldSector(world: any): any;
+export function causalSelectionVariationalAudit(world: any): any;
 export function applyDualGraphHessian(amplitudes: number[], bonds: any[], stiffness?: number): number[];
 export function dualGraphQuadraticAction(amplitudes: number[], bonds: any[], stiffness?: number): number;
 export function collectiveSpinTwoHessianAudit(world: any): any;

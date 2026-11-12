@@ -98,6 +98,7 @@ export {
   tetrahedralIncidenceAudit,
   extractOrientableManifoldSubcomplex,
   extractCausalManifoldSector,
+  causalSelectionVariationalAudit,
   applyDualGraphHessian,
   dualGraphQuadraticAction,
   collectiveSpinTwoHessianAudit,

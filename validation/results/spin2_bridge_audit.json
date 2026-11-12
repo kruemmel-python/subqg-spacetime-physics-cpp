@@ -175,6 +175,24 @@
       "connected": true,
       "orientable": true
     },
+    "selectionVariation": {
+      "incrementalAction": "Delta S_i(n_i,o_i) = -n_i + I_admissible(n_i,o_i), n_i in {0,1}, o_i in {-1,+1}",
+      "admissibilityIndicator": "I=0 iff every triangular face has incidence <=2 and every shared face has opposite induced orientation; otherwise I=+infinity",
+      "updateOrder": "canonical link-birth tick, then lexicographic cell key",
+      "tetrahedralCellsConsidered": 1003,
+      "acceptedCells": 264,
+      "rejectedCells": 739,
+      "rejectedByFaceCapacity": 717,
+      "rejectedByOrientationFrustration": 22,
+      "freeOrientationGaugeChoices": 35,
+      "forcedOrientationChoices": 229,
+      "cumulativeIncrementalAction": -264,
+      "everyDecisionMinimizesIncrementalAction": true,
+      "selectionMatchesCausalExtractor": true,
+      "fittedParameters": 0,
+      "variationalCharacterizationClosed": true,
+      "derivedFromOriginalContinuousMicroaction": false
+    },
     "constrainedCollectiveAction": "S_TT = sum_A[ m/2 sum_C (dq_C^A/dt)^2 - k/2 sum_<CD> w_CD(q_C^A-q_D^A)^2 ], A in {plus,cross}",
     "reusesCanonicalFpvDirichletForm": true,
     "onSiteMassTerm": 0,
@@ -186,7 +204,8 @@
     "hessianPositiveSemidefiniteOnProbe": true,
     "manifoldSupportedMasslessTTSector": true,
     "causalParameterFreeSelectionImplemented": true,
-    "selectionRuleDerivedAsCanonicalEulerLagrangeEquation": false,
+    "selectionRuleHasExactIncrementalVariationalForm": true,
+    "selectionRuleDerivedFromOriginalContinuousMicroaction": false,
     "fullCanonicalHessianMatchingClosed": false
   },
   "parallelTransport": {
@@ -1440,11 +1459,13 @@
     "edgeDerivedRadiativeModesSolveFierzPauli": true,
     "orientableManifoldSubcomplexSupportsMasslessTTHessian": true,
     "causalManifoldSelectionIsParameterFree": true,
+    "causalSelectionHasExactIncrementalVariationalForm": true,
+    "selectionDerivedFromOriginalContinuousMicroaction": false,
     "localSpinTwoParallelTransportClosed": true,
     "closedLoopHolonomyConnectionDerived": true,
     "nontrivialDiscreteCurvatureDetected": true,
     "infraredCandidateSelfConsistent": true,
     "derivationComplete": false,
-    "requiredChange": "Derive the causal admissibility rule variationally, match loop holonomy to dimensionful Regge/Einstein curvature, and derive the gauge-null Lorentzian collective dynamics and universal source coupling."
+    "requiredChange": "Derive the incremental admissibility action from the original continuous microaction, match loop holonomy to dimensionful Regge/Einstein curvature, and derive gauge-null Lorentzian dynamics and universal source coupling."
   }
 }

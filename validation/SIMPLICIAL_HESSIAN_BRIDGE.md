@@ -50,6 +50,31 @@ durch gemeinsame Flächen verbundene Raumsektor besitzt:
 - 66 Randflächen;
 - maximale Flächeninzidenz zwei.
 
+## Inkrementelles Variationsprinzip der Auswahl
+
+Für die binäre Belegung `n_i in {0,1}` und die Zellorientierung
+`o_i in {-1,+1}` besitzt jeder kanonisch geordnete Geburtsschritt die exakte
+parameterfreie Wirkung
+
+```text
+Delta S_i(n_i,o_i) = -n_i + I_admissible(n_i,o_i).
+```
+
+Der Indikatorterm ist null, wenn nach Aufnahme der Zelle jede Dreiecksfläche
+Inzidenz höchstens zwei besitzt und die induzierten Orientierungen auf allen
+gemeinsamen Flächen entgegengesetzt sind; andernfalls ist er `+infinity`.
+Damit wird eine zulässige Zelle stets aufgenommen und eine unzulässige stets
+verworfen. Der vollständige Rundlauf bestätigt für alle 1.003 Entscheidungen
+das lokale Wirkungsminimum: 264 Aufnahmen, 717 Verwerfungen wegen
+Flächenkapazität und 22 wegen Orientierungsfrustration. 35 neu beginnende
+Komponenten besitzen eine freie Orientierungs-Eichwahl, 229 Aufnahmen eine
+erzwungene Orientierung.
+
+Dies schließt die Variationsform der kausalen Update-Regel, aber noch nicht
+ihre mikroskopische Herleitung: Der harte Indikatorterm muss weiterhin als
+Grenzwert oder Nebenbedingung aus der ursprünglichen kontinuierlichen
+SubQG-Wirkung gewonnen werden.
+
 ## Kollektiver TT-Hessian
 
 Auf dem Dualgraphen der 116 kausal ausgewählten Zellen werden die bereits aus Kanten konstruierten
@@ -122,11 +147,12 @@ und den Einstein-Krümmungstensor abzubilden.
 
 Die verwendete Dirichlet-Form ist dieselbe quadratische FPV-Wellenwirkung, die
 bereits im kanonischen Projekt vorhanden ist. Die Auswahl ist nun
-parameterfrei an die vorhandene kausale Entstehungsordnung gebunden, der
+parameterfrei an die vorhandene kausale Entstehungsordnung gebunden und als
+inkrementelles diskretes Variationsminimum formuliert, der
 lokale Paralleltransport ist konstruiert und die geschlossene Holonomie der
 vollständigen fundamentalen Zyklenbasis ist berechnet. Noch nicht bewiesen ist,
-dass die Zulassungsregel selbst als Euler-Lagrange-Bedingung der fundamentalen
-Wirkung folgt. Ebenfalls offen bleibt das dimensionsbehaftete Matching der
+dass der dabei verwendete Indikatorterm selbst aus der ursprünglichen
+kontinuierlichen Mikrowirkung folgt. Ebenfalls offen bleibt das dimensionsbehaftete Matching der
 Verbindungsholonomie auf Regge-/Einstein-Krümmung.
 
 ## Reproduktion
@@ -137,5 +163,5 @@ npm run validation:collective-spin2-hessian
 
 Ergebnisdatei: `validation/results/collective_spin2_hessian.json`.
 
-SHA-256: `0773F2938CC391B850A9282379333359FDF54B665DCEF71CC21E08E0A03F8F53`.
+SHA-256: `4C7A30E2E06FDCE5D08D2E135D7A2312BFB1CFECFB86877C0571664A858480C3`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.

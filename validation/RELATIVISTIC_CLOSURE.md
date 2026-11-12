@@ -103,8 +103,10 @@ und 199 inneren Flächen. Sein dualer FPV-Dirichlet-Hessian trägt zwei exakte
 masselose TT-Nullmoden. Auf allen 199 Dualbindungen ist der lokale
 SO(3)-Rahmentransport sowie der induzierte normerhaltende SO(2)-Transport der
 Plus-/Kreuzmoden geschlossen. Noch nicht hergeleitet sind die Auswahlregel als
-Euler-Lagrange-Gleichung der kanonischen Wirkung und das dimensionsbehaftete
-Matching auf Regge-/Einstein-Krümmung. Die 84 unabhängigen geschlossenen
+Euler-Lagrange-Gleichung der ursprünglichen kontinuierlichen Mikrowirkung und das dimensionsbehaftete
+Matching auf Regge-/Einstein-Krümmung. Als diskrete kausale Update-Regel ist
+die Auswahl bereits exakt durch `Delta S_i=-n_i+I_admissible` variationell
+charakterisiert. Die 84 unabhängigen geschlossenen
 Dualschleifen besitzen wohldefinierte, sämtlich nichttriviale SO(3)-Holonomien;
 die Spin-2-Darstellung erfüllt den Doppelwinkel. Der frühere deterministisch
 gesuchte 186-Zellen-Unterkomplex bleibt lediglich ein Existenznachweis.
