@@ -79,6 +79,14 @@ period and eccentricity, with no radiation fit. This result validates the
 infrared candidate but is not yet a derivation of nonlinear radiation
 reaction from the anchored scalar canonical microaction.
 
+The same frozen infrared sector predicts propagation at light speed, zero
+graviton mass and exactly two transverse-traceless tensor polarizations. These
+parameter-free observables satisfy the GW170817 multimessenger speed interval,
+the GWTC-3 and GWTC-4.0 dispersion bounds, and the GW170814/GWTC-4.0
+polarization results. This closes the direct-observation portion of the G6
+gate conditionally; deriving the normalized spin-2 source sector from the
+anchored scalar canonical microaction remains open.
+
 ---
 
 ## 3. Architecture & Module Structure
@@ -144,10 +152,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **270 unit tests** spanning 35 test files:
-- **Total Tests:** 270
-- **Suites:** 35
-- **Passing:** 270 (100%)
+SubQG 1.0 features an automated test battery with **313 unit tests**:
+- **Total Tests:** 313
+- **Passing:** 313 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -162,7 +169,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 270 unit tests via `node --test` |
+| `npm test` | Runs all 313 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

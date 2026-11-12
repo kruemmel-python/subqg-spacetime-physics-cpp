@@ -272,3 +272,22 @@ stehen in `BINARY_PULSAR.md`.
 Die deterministische Ergebnisdatei
 `validation/results/binary_pulsar_validation.json` hat SHA-256
 `431C037B76085CE83E323DF60DAA313989533B2F0F60F975241DCBF267258F41`.
+
+## Test 7: Direkte Gravitationswellen
+
+Der parameterfreie masselose Spin-2-IR-Sektor sagt `v_g=c`, `m_g=0` und
+genau zwei Tensor-TT-Polarisationen voraus. Diese Vorhersagen liegen innerhalb
+der GW170817-Geschwindigkeitsgrenze und der GWTC-3/4-Dispersionsgrenzen; die
+Tensorpolarisation stimmt mit GW170814 und dem GWTC-4.0-Nullbefund für
+nichttensorielle Moden überein.
+
+```powershell
+npm run validation:gravitational-waves
+```
+
+Messwerte, Einschränkungen der Polarisationstests und die weiterhin offene
+Mikro-zu-Spin-2-Herleitung stehen in `GRAVITATIONAL_WAVES.md`.
+
+Die deterministische Ergebnisdatei
+`validation/results/gravitational_wave_validation.json` hat SHA-256
+`1A41C4E5FCC5EBF17D19384DFAE7C1685EE239027BF934971592E8E5EBDD0789`.

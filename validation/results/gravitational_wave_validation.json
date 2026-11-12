@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "fixedSubqgInfraredPrediction": {
+    "gravitationalWaveSpeedMetersPerSecond": 299792458,
+    "fractionalSpeedDifferenceFromLight": 0,
+    "gravitonMassEvPerC2": 0,
+    "dispersionRelation": "omega^2 = c^2 |k|^2",
+    "polarizationModes": [
+      "plus",
+      "cross"
+    ],
+    "polarizationClass": "pure tensor transverse-traceless",
+    "infraredClosureSelfConsistent": true,
+    "microscopicMatchingStatus": "not yet derived from the anchored scalar SubQG microaction"
+  },
+  "observations": {
+    "propagationSpeed": {
+      "source": "Abbott et al. (2017), Gravitational Waves and Gamma-Rays from a Binary Neutron Star Merger: GW170817 and GRB 170817A",
+      "arxiv": "1710.05834",
+      "observedArrivalDelaySeconds": 1.74,
+      "observedArrivalDelayOneSigmaSeconds": 0.05,
+      "fractionalSpeedDifferenceInterval": [
+        -3e-15,
+        7e-16
+      ],
+      "prediction": 0,
+      "compatible": true
+    },
+    "dispersion": {
+      "gwtc3": {
+        "source": "LIGO-Virgo-KAGRA (2021), Tests of General Relativity with GWTC-3",
+        "arxiv": "2112.06861",
+        "credibility": 0.9,
+        "gravitonMassUpperEvPerC2": 1.27e-23,
+        "prediction": 0,
+        "compatible": true
+      },
+      "gwtc4": {
+        "source": "LIGO-Virgo-KAGRA (2026), Tests of General Relativity with GWTC-4.0",
+        "arxiv": "2603.19020",
+        "credibility": 0.9,
+        "gravitonMassUpperEvPerC2": 1.92e-23,
+        "prediction": 0,
+        "compatible": true
+      }
+    },
+    "polarization": {
+      "gw170814": {
+        "source": "Abbott et al. (2017), A Three-Detector Observation of Gravitational Waves from a Binary Black Hole Coalescence",
+        "doi": "10.1103/PhysRevLett.119.141101",
+        "tensorVsVectorBayesFactorLower": 200,
+        "tensorVsScalarBayesFactorLower": 1000,
+        "scope": "Comparison of pure tensor, pure vector and pure scalar hypotheses; not a bound on every small mixed-polarization admixture."
+      },
+      "gwtc4": {
+        "source": "LIGO-Virgo-KAGRA (2026), GWTC-4.0 tests overview",
+        "arxiv": "2603.19019",
+        "confidentEvents": 91,
+        "nonTensorEvidenceFound": false
+      },
+      "predictedModes": [
+        "plus",
+        "cross"
+      ],
+      "compatible": true
+    }
+  },
+  "verdict": {
+    "speedCompatible": true,
+    "dispersionCompatible": true,
+    "polarizationCompatible": true,
+    "directG6ObservablesPassed": true,
+    "fullG6Closed": false,
+    "openDerivation": "The normalized massless spin-2 source sector has not yet been derived from the anchored scalar canonical SubQG microaction."
+  }
+}

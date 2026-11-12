@@ -173,6 +173,17 @@ export function petersMathewsPeriodDerivative(options: {
   solarMassTimeSeconds?: number;
 }): any;
 export function binaryRadiationClosureAudit(): any;
+export function masslessSpinTwoObservables(options?: { speedOfLightMetersPerSecond?: number }): any;
+export function closedIntervalCompatibility(prediction: number, lower: number, upper: number): any;
+export function upperLimitCompatibility(prediction: number, upperLimit: number): any;
+export function directGravitationalWaveAudit(options?: {
+  speedLower?: number;
+  speedUpper?: number;
+  gwtc3GravitonMassUpperEv?: number;
+  gwtc4GravitonMassUpperEv?: number;
+  tensorVsVectorBayesFactorLower?: number;
+  tensorVsScalarBayesFactorLower?: number;
+}): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

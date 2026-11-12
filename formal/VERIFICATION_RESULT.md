@@ -9,7 +9,7 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
 - Lean-Version: **4.34.1**
 - Unbewiesene Platzhalter (`sorry`, `admit`, `sorryAx`): **keine (0)**
 - Axiomatische Grundlage: Ausschließlich Lean 4 Kernaxiome `[propext, Classical.choice, Quot.sound]`
-- `npm test`: **308 von 308 Tests bestanden**
+- `npm test`: **313 von 313 Tests bestanden**
 - Fehlgeschlagene, übersprungene oder abgebrochene Tests: **0**
 - Spezifische Tests der `SubQGExactGlitchEngine`: **3 von 3 bestanden**
 
@@ -35,6 +35,11 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
    Metrikgradienten kürzt sich die jeweilige Objektnorm aus metrischer Kraft
    und Trägheitsmasse. Lean beweist damit direkt
    `eta_AB = 0` (`SubQG.universal_free_fall_eotvos_zero`).
+9. **Direkte Gravitationswellen-Observablen**: Die eingefrorene masselose
+   Spin-2-IR-Closure sagt `v_g=c`, `m_g=0` sowie genau die TT-Moden Plus und
+   Kreuz voraus. Diese Vorhersagen bestehen die kodierten GW170817-,
+   GWTC-3/4- und GW170814-Grenzen ohne Parameterfit; das fehlende
+   Mikro-zu-Spin-2-Matching bleibt maschinenlesbar offen.
 
 ## Numerische Umsetzung (Weg A: Emergentes Actio = Reactio & Hartree-Korrektur)
 

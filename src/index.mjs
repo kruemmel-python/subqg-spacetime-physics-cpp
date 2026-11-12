@@ -72,6 +72,12 @@ export {
   binaryRadiationClosureAudit
 } from './modules/subqg_binary_pulsar.mjs';
 export {
+  masslessSpinTwoObservables,
+  closedIntervalCompatibility,
+  upperLimitCompatibility,
+  directGravitationalWaveAudit
+} from './modules/subqg_gw_observations.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,

@@ -124,3 +124,17 @@ Inverses Quadratgesetz:
 - verwendete Tabellenwerte: `P_b`, `e_T`, `m_A`, `m_B`
 - verwendete Vergleichswerte: Gleichungen 44, 45 und 48 für gemessene
   GW-Bahnabnahme, führende 2,5PN-Vorhersage und vollständigen GR-Quotienten
+
+## Direkte Gravitationswellen
+
+- GW170817/GRB 170817A, Laufzeitdifferenz und GW-Geschwindigkeit:
+  <https://arxiv.org/abs/1710.05834>
+- GWTC-3, Dispersions- und Gravitonenmassentest:
+  <https://arxiv.org/abs/2112.06861>
+- GWTC-4.0, parametrisierte Tests und Gravitonenmassengrenze:
+  <https://arxiv.org/abs/2603.19020>
+- GWTC-4.0, Katalogübersicht und Polarisationstests:
+  <https://arxiv.org/abs/2603.19019>
+- GW170814, Drei-Detektor-Polarisationstest:
+  DOI `10.1103/PhysRevLett.119.141101`,
+  <https://dcc.ligo.org/public/0145/P170814/015/LIGO-P170814.pdf>
