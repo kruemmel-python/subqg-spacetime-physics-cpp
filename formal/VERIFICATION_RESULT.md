@@ -9,7 +9,7 @@ Projekt: `SubQG_Fundamental_Physics_Validation_FPV6/developer`
 - Lean-Version: **4.34.1**
 - Unbewiesene Platzhalter (`sorry`, `admit`, `sorryAx`): **keine (0)**
 - Axiomatische Grundlage: Ausschließlich Lean 4 Kernaxiome `[propext, Classical.choice, Quot.sound]`
-- `npm test`: **313 von 313 Tests bestanden**
+- `npm test`: **318 von 318 Tests bestanden**
 - Fehlgeschlagene, übersprungene oder abgebrochene Tests: **0**
 - Spezifische Tests der `SubQGExactGlitchEngine`: **3 von 3 bestanden**
 

@@ -21,6 +21,70 @@
     "supportsMasslessSpinTwo": false,
     "reason": "Positive anchor gaps every scalar edge-length mode; no tensor gauge field is present."
   },
+  "tensorKinematics": {
+    "relationalConstruction": "tetrahedron Gram metric from six squared edge lengths",
+    "ambientCoordinatesRequired": false,
+    "tetrahedralCliques": 1003,
+    "examples": [
+      [
+        0,
+        12,
+        28,
+        30
+      ],
+      [
+        0,
+        12,
+        28,
+        34
+      ],
+      [
+        0,
+        12,
+        28,
+        52
+      ],
+      [
+        0,
+        12,
+        30,
+        34
+      ],
+      [
+        0,
+        12,
+        30,
+        52
+      ],
+      [
+        0,
+        12,
+        34,
+        52
+      ],
+      [
+        0,
+        26,
+        28,
+        30
+      ],
+      [
+        0,
+        26,
+        28,
+        34
+      ]
+    ],
+    "scalarEdgeComponentsPerCell": 6,
+    "independentSymmetricSpatialMetricComponents": 6,
+    "edgeToMetricLinearMapDeterminant": -0.125,
+    "exactLinearMapInvertible": true,
+    "maxRoundTripResidual": 1.3877787807814457e-17,
+    "localSymmetricTensorKinematicsDerived": true,
+    "newFundamentalDegreesOfFreedomAdded": false,
+    "masslessGaugeDynamicsDerived": false,
+    "spacetimeSpinTwoMatchingComplete": false
+  },
   "effectiveSpinTwoSolution": {
     "effectiveEquation": "box(bar(h)_mu_nu) = -16*pi*G*T_mu_nu/c^4",
     "sourceSector": "static pressureless matter: T00=rho*c^2, Tij=0",
@@ -54,9 +118,11 @@
   "verdict": {
     "effectiveSpinTwoClosureGivesGammaOne": true,
     "canonicalMicroactionHasMasslessMode": false,
-    "canonicalMicroactionHasSpinTwoTensorStructure": false,
+    "isolatedEdgeVariableIsDirectTensorField": false,
+    "collectiveEdgesDeriveLocalSymmetricSpatialTensor": true,
+    "tensorKinematicsAddsFundamentalDegreesOfFreedom": false,
     "infraredCandidateSelfConsistent": true,
     "derivationComplete": false,
-    "requiredChange": "Derive or add a gauge-invariant tensor metric sector whose infrared quadratic action is Fierz-Pauli; the positive anchored scalar edge action alone cannot supply it."
+    "requiredChange": "Tensor kinematics is now derived from tetrahedral edge lengths. Derive the gauge-null Lorentzian collective dynamics whose infrared quadratic action is Fierz-Pauli; the positive anchored static action alone cannot supply it."
   }
 }

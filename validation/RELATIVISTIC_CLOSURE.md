@@ -77,9 +77,16 @@ v^T H v = anchor ||v||² + sum w_ij (v_i-v_j)²
 Alle Gewichte sind nichtnegativ und `anchor = 1`. Daher ist jeder Modus
 mindestens um `1` gegappt. Im deterministischen Audit von 320 Kanten und 3.421
 Kopplungspaaren beträgt der uniforme Eigenwert `1,0000000000000058` bei einem
-Residuum von `5,83e-15`. Jede Kante hat außerdem nur eine skalare
-Längenvariable. Die vorhandene Wirkung kann somit allein weder einen
-masselosen Modus noch ein symmetrisches Spin-2-Tensorfeld liefern.
+Residuum von `5,83e-15`. Die vorhandene statische Wirkung kann somit allein
+keinen masselosen Modus liefern.
+
+Die frühere Schlussfolgerung, skalare Kantenvariablen könnten auch kinematisch
+keinen Tensor bilden, wurde inzwischen verschärft: Sechs Kantenlängen einer
+relationalen Tetraederzelle bestimmen über die Gram-Identität exakt die sechs
+Komponenten einer symmetrischen räumlichen `3 x 3`-Metrik. Der kanonische Lauf
+enthält 1.003 solche Zellen. Damit ist die Tensor-Kinematik aus vorhandenen
+Freiheitsgraden hergeleitet; offen bleibt ihre masselose Eichdynamik. Details
+stehen in `SIMPLEX_TENSOR_BRIDGE.md`.
 
 Lean formalisiert auch diesen Befund:
 
@@ -90,10 +97,9 @@ Damit ist die Beweisgrenze exakt: Die Spin-2-No-Slip-Closure selbst ist
 hergeleitet; offen ist das mikroskopische Matching der ursprünglichen
 Graphdynamik auf diesen IR-Fixpunkt. Dafür müssen noch gezeigt werden:
 
-1. Entstehung eines kollektiven symmetrischen Tensorsektors;
-2. Verschwinden seines Ankerterms durch echte Eichsymmetrie im IR;
-3. Lorentz-invariante masselose Dispersion;
-4. universelle Kopplung massiver und masseloser Anregungen.
+1. Verschwinden des kollektiven Ankerterms durch echte Eichsymmetrie im IR;
+2. Lorentz-invariante masselose Dispersion;
+3. universelle Kopplung massiver und masseloser Anregungen.
 
 ## Empirischer Zielwert
 

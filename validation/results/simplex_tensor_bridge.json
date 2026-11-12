@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "question": "Can the canonical scalar edge-length variables encode a local symmetric spatial metric without adding fundamental fields?",
+  "identity": "G_ij = (d_0i + d_0j - d_ij)/2 for each relational tetrahedron",
+  "inverseIdentity": "d_ij = G_ii + G_jj - 2 G_ij",
+  "canonicalGraph": {
+    "seed": 42,
+    "evolutionSteps": 400,
+    "nodes": 60,
+    "edges": 320,
+    "triangularFaces": 745
+  },
+  "kinematics": {
+    "relationalConstruction": "tetrahedron Gram metric from six squared edge lengths",
+    "ambientCoordinatesRequired": false,
+    "tetrahedralCliques": 1003,
+    "examples": [
+      [
+        0,
+        12,
+        28,
+        30
+      ],
+      [
+        0,
+        12,
+        28,
+        34
+      ],
+      [
+        0,
+        12,
+        28,
+        52
+      ],
+      [
+        0,
+        12,
+        30,
+        34
+      ],
+      [
+        0,
+        12,
+        30,
+        52
+      ],
+      [
+        0,
+        12,
+        34,
+        52
+      ],
+      [
+        0,
+        26,
+        28,
+        30
+      ],
+      [
+        0,
+        26,
+        28,
+        34
+      ]
+    ],
+    "scalarEdgeComponentsPerCell": 6,
+    "independentSymmetricSpatialMetricComponents": 6,
+    "edgeToMetricLinearMapDeterminant": -0.125,
+    "exactLinearMapInvertible": true,
+    "maxRoundTripResidual": 1.3877787807814457e-17,
+    "localSymmetricTensorKinematicsDerived": true,
+    "newFundamentalDegreesOfFreedomAdded": false,
+    "masslessGaugeDynamicsDerived": false,
+    "spacetimeSpinTwoMatchingComplete": false
+  },
+  "existingScalarActionSpectrum": {
+    "edgeDegreesOfFreedom": 320,
+    "interactionPairs": 3421,
+    "componentsPerEdge": 1,
+    "anchor": 1,
+    "allPairWeightsNonnegative": true,
+    "uniformModeEigenvalue": 1.0000000000000058,
+    "uniformModeResidual": 5.833955260131092e-15,
+    "provenEigenvalueLowerBound": 1,
+    "hasMasslessMode": false,
+    "hasSymmetricTensorStructure": false,
+    "supportsMasslessSpinTwo": false,
+    "reason": "Positive anchor gaps every scalar edge-length mode; no tensor gauge field is present."
+  },
+  "verdict": {
+    "tensorKinematicsFromExistingEdgesDerived": true,
+    "extraFundamentalTensorFieldNeededForKinematics": false,
+    "currentAnchoredActionSuppliesMasslessGaugeDynamics": false,
+    "microToSpinTwoBridgeComplete": false,
+    "nextNecessaryProof": "Derive a gauge-null collective kinetic operator and its Lorentzian time evolution on overlapping tetrahedral cells; the positive anchor still gaps the current static edge action."
+  }
+}

@@ -87,6 +87,14 @@ polarization results. This closes the direct-observation portion of the G6
 gate conditionally; deriving the normalized spin-2 source sector from the
 anchored scalar canonical microaction remains open.
 
+The apparent kinematic scalar-to-tensor obstruction is now resolved without
+adding fundamental fields.  Each relational tetrahedron carries six scalar
+edge lengths, and the coordinate-free Gram identity maps them invertibly to
+the six components of a local symmetric spatial metric.  The canonical
+seeded graph contains 1,003 such cells.  What remains open is dynamical rather
+than kinematical: the positive static anchor must be replaced or eliminated
+by a derived gauge-null Lorentzian collective operator.
+
 ---
 
 ## 3. Architecture & Module Structure
@@ -152,9 +160,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **313 unit tests**:
-- **Total Tests:** 313
-- **Passing:** 313 (100%)
+SubQG 1.0 features an automated test battery with **318 unit tests**:
+- **Total Tests:** 318
+- **Passing:** 318 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -169,7 +177,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 313 unit tests via `node --test` |
+| `npm test` | Runs all 318 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

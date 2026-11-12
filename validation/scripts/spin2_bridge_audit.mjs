@@ -7,6 +7,7 @@ import {
   microToSpinTwoBridgeAudit
 } from '../../src/modules/subqg_weak_field_metric.mjs';
 import { spinTwoInfraredAudit } from '../../src/modules/subqg_spin2_ir.mjs';
+import { simplexTensorKinematicsAudit } from '../../src/modules/subqg_simplex_tensor_bridge.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'spin2_bridge_audit.json');
@@ -14,6 +15,7 @@ const resultPath = path.resolve(scriptDir, '..', 'results', 'spin2_bridge_audit.
 const world = new MicroActionWorld({ seed: 42 });
 world.run(400);
 const microscopicSpectrum = world.linearizedMetricSpectrumAudit();
+const tensorKinematics = simplexTensorKinematicsAudit(world);
 const effectiveSpinTwoSolution = linearizedSpinTwoStaticDustClosure(1e-9);
 const bridge = microToSpinTwoBridgeAudit();
 const infraredCandidate = spinTwoInfraredAudit();
@@ -28,16 +30,19 @@ const result = {
     gammaOne: 'SubQG.linearized_spin_two_static_dust_gamma_one'
   },
   microscopicSpectrum,
+  tensorKinematics,
   effectiveSpinTwoSolution,
   infraredCandidate,
   bridge,
   verdict: {
     effectiveSpinTwoClosureGivesGammaOne: effectiveSpinTwoSolution.gamma === 1,
     canonicalMicroactionHasMasslessMode: microscopicSpectrum.hasMasslessMode,
-    canonicalMicroactionHasSpinTwoTensorStructure: microscopicSpectrum.hasSymmetricTensorStructure,
+    isolatedEdgeVariableIsDirectTensorField: microscopicSpectrum.hasSymmetricTensorStructure,
+    collectiveEdgesDeriveLocalSymmetricSpatialTensor: tensorKinematics.localSymmetricTensorKinematicsDerived,
+    tensorKinematicsAddsFundamentalDegreesOfFreedom: tensorKinematics.newFundamentalDegreesOfFreedomAdded,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
-    requiredChange: 'Derive or add a gauge-invariant tensor metric sector whose infrared quadratic action is Fierz-Pauli; the positive anchored scalar edge action alone cannot supply it.'
+    requiredChange: 'Tensor kinematics is now derived from tetrahedral edge lengths. Derive the gauge-null Lorentzian collective dynamics whose infrared quadratic action is Fierz-Pauli; the positive anchored static action alone cannot supply it.'
   }
 };
 

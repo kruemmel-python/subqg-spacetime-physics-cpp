@@ -78,6 +78,14 @@ export {
   directGravitationalWaveAudit
 } from './modules/subqg_gw_observations.mjs';
 export {
+  tetrahedronGramFromSquaredLengths,
+  tetrahedronSquaredLengthsFromGram,
+  metricPerturbationFromSquaredLengthPerturbations,
+  squaredLengthPerturbationsFromMetric,
+  tetrahedralCliques,
+  simplexTensorKinematicsAudit
+} from './modules/subqg_simplex_tensor_bridge.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,

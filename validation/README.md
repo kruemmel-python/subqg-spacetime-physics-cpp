@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`C32EE7C5F05C483B07FE9D63B701882DD4D9ECF495040535B7CCF983391FACE9`.
+`2957A553CA42CBD5FFB294D4FBA975515D2BA327615269511268003F264B345D`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -291,3 +291,20 @@ Mikro-zu-Spin-2-Herleitung stehen in `GRAVITATIONAL_WAVES.md`.
 Die deterministische Ergebnisdatei
 `validation/results/gravitational_wave_validation.json` hat SHA-256
 `1A41C4E5FCC5EBF17D19384DFAE7C1685EE239027BF934971592E8E5EBDD0789`.
+
+## Test 8: Relationale Simplex-Tensor-Brücke
+
+Sechs vorhandene skalare Kantenlängen jeder tetraedrischen Zelle bestimmen
+über ihre Gram-Matrix exakt sechs unabhängige Komponenten einer lokalen
+symmetrischen räumlichen Metrik. Im kanonischen Lauf existieren 1.003 solcher
+Zellen. Damit ist die Tensor-Kinematik ohne neue fundamentale Freiheitsgrade
+hergeleitet; die masselose Lorentz- und Eichdynamik bleibt der nächste Schritt.
+
+```powershell
+npm run validation:simplex-tensor-bridge
+```
+
+Herleitung und Beweisgrenze stehen in `SIMPLEX_TENSOR_BRIDGE.md`.
+
+Die deterministische Ergebnisdatei `simplex_tensor_bridge.json` hat SHA-256
+`7E53B3D336DD15345BA8D90716B90C52EC14C73BB8462340C81C1142A8FC3770`.

@@ -184,6 +184,12 @@ export function directGravitationalWaveAudit(options?: {
   tensorVsVectorBayesFactorLower?: number;
   tensorVsScalarBayesFactorLower?: number;
 }): any;
+export function tetrahedronGramFromSquaredLengths(squaredLengths: Record<string, number>): number[][];
+export function tetrahedronSquaredLengthsFromGram(gram: number[][]): Record<string, number>;
+export function metricPerturbationFromSquaredLengthPerturbations(delta: Record<string, number>): number[][];
+export function squaredLengthPerturbationsFromMetric(deltaMetric: number[][]): Record<string, number>;
+export function tetrahedralCliques(world: any, options?: { exampleLimit?: number }): any;
+export function simplexTensorKinematicsAudit(world: any): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);
