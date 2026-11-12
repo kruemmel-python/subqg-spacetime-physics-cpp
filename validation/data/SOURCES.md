@@ -45,3 +45,19 @@ Die normalisierten Hashes umfassen Spaltenkopf und alle Tabellenzeilen, aber
 nicht die bei jedem Abruf wechselnden VizieR-Zeitstempel. Der Abrufprüfer
 kontrolliert zusätzlich Schema, 1.716 beziehungsweise 1.485 Tabellenzeilen
 und 26 beziehungsweise 22 Galaxien.
+
+## Starke Galaxienlinsen und PPN-`gamma`
+
+- Primärpublikation: Cao et al., *ApJ* 835, 92 (2017)
+- DOI: `10.3847/1538-4357/835/1/92`
+- Preprint: <https://arxiv.org/abs/1701.00357>
+- Beobachtete Stichprobe: 80 massenselektierte Linsen aus SLACS, BELLS, LSD
+  und SL2S
+- veröffentlichter Wert bei festen fiduzialen Galaxienstrukturparametern:
+  `gamma = 0.995 +0.037/-0.047` bei 68 % Konfidenz
+- veröffentlichte 68-%-Spanne unter Einbeziehung untersuchter
+  Struktur-Systematiken: ungefähr `0.845` bis `1.240`
+
+Die aktuelle Pipeline verwendet nur diese publizierten Posteriorangaben und
+behauptet keinen Refit der Bildpixel oder des ursprünglichen Linsenkatalogs.
+Ein späterer radienaufgelöster Rohdatentest muss dieses Aggregat-Gate ersetzen.

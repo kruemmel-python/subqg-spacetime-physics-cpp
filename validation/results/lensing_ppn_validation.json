@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "title": "Test of parametrized post-Newtonian gravity with galaxy-scale strong lensing systems",
+    "authors": "Cao et al.",
+    "year": 2017,
+    "doi": "10.3847/1538-4357/835/1/92",
+    "arxiv": "1701.00357",
+    "sample": "80 mass-selected observed lenses from SLACS, BELLS, LSD and SL2S"
+  },
+  "publishedConstraint": {
+    "gamma": 0.995,
+    "lower68": 0.047,
+    "upper68": 0.037,
+    "systematicEnvelope68": [
+      0.845,
+      1.24
+    ],
+    "lenses": 80,
+    "confidence": "68% statistical interval for fixed fiducial lens-structure parameters",
+    "systematicWarning": "Authors report approximately 25% systematics from density slope, anisotropy and light profile."
+  },
+  "weakFieldRelation": {
+    "metric": "ds^2 = -(1-2U/c^2)c^2dt^2 + (1+2*gamma*U/c^2)dl^2",
+    "einsteinRadiusScaling": "theta_E(gamma)/theta_E(gamma=1) = sqrt((1+gamma)/2)"
+  },
+  "closure": {
+    "gamma": 1,
+    "status": "conditional",
+    "equation": "Psi = Phi, hence gamma = Psi/Phi = 1",
+    "requiredProof": [
+      "continuum Lorentzian metric from the SubQG graph action",
+      "universal minimal coupling of massive and massless excitations",
+      "vanishing weak-field gravitational slip for a static spherical source"
+    ]
+  },
+  "candidates": {
+    "subqgSingleMetricNoSlip": {
+      "name": "SubQG single-metric/no-slip candidate",
+      "gamma": 1,
+      "derivationStatus": "conditional",
+      "lensingStrengthRelativeToGammaOne": 1,
+      "einsteinRadiusRelativeToGammaOne": 1,
+      "zAsymmetricGaussian": 0.13513513513513525,
+      "insidePublished68StatisticalInterval": true,
+      "insidePublishedSystematicEnvelope": true
+    },
+    "flatSpatialNewtonian": {
+      "name": "time-potential with flat spatial metric",
+      "gamma": 0,
+      "derivationStatus": "comparison",
+      "lensingStrengthRelativeToGammaOne": 0.5,
+      "einsteinRadiusRelativeToGammaOne": 0.7071067811865476,
+      "zAsymmetricGaussian": -21.170212765957448,
+      "insidePublished68StatisticalInterval": false,
+      "insidePublishedSystematicEnvelope": false
+    },
+    "conformalNoLensing": {
+      "name": "gamma=-1 no-lensing limit",
+      "gamma": -1,
+      "derivationStatus": "comparison",
+      "lensingStrengthRelativeToGammaOne": 0,
+      "einsteinRadiusRelativeToGammaOne": 0,
+      "zAsymmetricGaussian": -42.4468085106383,
+      "insidePublished68StatisticalInterval": false,
+      "insidePublishedSystematicEnvelope": false
+    }
+  },
+  "conclusion": {
+    "observationalCompatibilityOfNoSlipCandidate": true,
+    "rejectsFlatSpatialMetricAtAbsoluteZGreaterThan20": true,
+    "evidenceGatePassed": false,
+    "reason": "gamma=1 is empirically compatible but is still a conditional no-slip closure, not yet derived from the canonical SubQG microaction."
+  }
+}

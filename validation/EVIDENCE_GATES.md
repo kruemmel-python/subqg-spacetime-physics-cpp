@@ -9,7 +9,7 @@ werden. Kein einzelnes Gate reicht allein aus.
 |---|---|---|
 | G1 Interne Mathematik | Formale Konsistenz der verwendeten Gleichungen | bestanden, Lean- und Numeriknachweise vorhanden |
 | G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | SPARC-Holdout und LITTLE-THINGS-Außentest ausgeführt: klar besser als Newton; gegenüber RAR statistisch noch nicht eindeutig; externe Reproduktion offen |
-| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | offen |
+| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | konditionaler No-Slip-Kandidat `gamma=1` mit 80 starken Linsen kompatibel; Ableitung aus der Mikrowirkung und Rohdatentest offen |
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | offen |
 | G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | offen |
 | G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | offen |

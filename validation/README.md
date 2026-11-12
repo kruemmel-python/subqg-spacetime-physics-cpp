@@ -158,3 +158,30 @@ auf noch nicht vollständig modellierte Mess- und Massenmodell-Systematiken
 und/oder verbleibende Modellabweichungen hin. Der unabhängige Survey bestätigt
 somit robust die Verbesserung gegenüber baryonischem Newton, schließt aber die
 übrigen Evidenz-Gates noch nicht.
+
+## Test 3: Starke Linsen und relativistische Closure
+
+Rotationskurven bestimmen nur das dynamische Potential. Die Lichtablenkung
+hängt zusätzlich vom räumlichen metrischen Potential und damit vom
+PPN-Parameter `gamma` ab. Die vollständige Herleitung und ihr offener
+Beweisschritt stehen in `RELATIVISTIC_CLOSURE.md`.
+
+```powershell
+npm run validation:lensing
+```
+
+Der Test vergleicht drei vorab bestimmte metrische Closures mit der
+veröffentlichten Messung aus 80 starken Galaxienlinsen:
+
+| Closure | `gamma` | Abstand vom Messzentrum |
+|---|---:|---:|
+| SubQG gemeinsames Potential ohne Slip | 1 | +0,135 Sigma |
+| zeitartiges Potential bei räumlich flacher Metrik | 0 | -21,170 Sigma |
+| No-Lensing-Grenze | -1 | -42,447 Sigma |
+
+Der No-Slip-Kandidat besteht den empirischen Kompatibilitätstest. Das
+Linsen-Gate bleibt trotzdem offen, da diese Closure gegenwärtig eine explizit
+markierte Bedingung und noch kein Satz der kanonischen SubQG-Mikrowirkung ist.
+Die deterministische Ergebnisdatei
+`validation/results/lensing_ppn_validation.json` hat SHA-256
+`109AE0A8316308535BF63BB981647A5C463F4DD839C90C6ED9D904B290B0B6E3`.

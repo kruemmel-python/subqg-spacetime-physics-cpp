@@ -30,6 +30,20 @@ export interface TullyFisherResult {
 }
 
 export function subqgDualStrainAcceleration(gbar: number, a0: number): number;
+export function weakFieldMetricComponents(options: { potential: number; gamma: number; c?: number }): {
+  g00: number;
+  spatialDiagonal: number;
+  epsilon: number;
+  gamma: number;
+};
+export function lensingStrengthRelativeToGammaOne(gamma: number): number;
+export function einsteinRadiusRelativeToGammaOne(gamma: number): number;
+export function singleMetricNoSlipClosure(): {
+  readonly gamma: 1;
+  readonly status: 'conditional';
+  readonly equation: string;
+  readonly requiredProof: readonly string[];
+};
 
 export class SubQGUnifiedProofEngine {
   constructor(options?: {
