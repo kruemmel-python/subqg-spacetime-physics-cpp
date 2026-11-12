@@ -49,6 +49,38 @@ delta G -> sechs delta d_ij -> rekonstruiertes delta G
 hat für eine allgemeine symmetrische Teststörung Residuum null innerhalb der
 Gleitkommaarithmetik.
 
+## Eich- und Strahlungssektor
+
+Für eine beliebige nichtverschwindende lokale Wellenrichtung wird aus der
+rekonstruierten Metrik der koordinatenunabhängige TT-Projektor
+
+```text
+P_ij = delta_ij - n_i n_j
+h_TT = P h P - 1/2 P tr(P h)
+```
+
+gebildet. Der vollständige geprüfte Rundlauf lautet
+
+```text
+(plus,cross) -> orthonormales h_TT -> Simplex-Gram-Störung
+             -> sechs Kantenstörungen -> rekonstruiertes h_TT
+             -> masseloser Fierz-Pauli-Operator.
+```
+
+Dabei gelten numerisch bis unter `1e-12`:
+
+- reine räumliche Eichstörungen `h_ij=k_i xi_j+k_j xi_i` werden vom
+  TT-Projektor annihiliert;
+- die Projektion ist idempotent;
+- Transversalität und Spurfreiheit bleiben erhalten;
+- genau Plus und Kreuz sind unabhängig;
+- für `omega²=|k|²` verschwindet der linearisierte Einstein-/Fierz-Pauli-
+  Vakuumoperator.
+
+Damit sind nicht nur abstrakte Tensoren, sondern die beiden beobachteten
+masselosen Gravitationswellenmoden unmittelbar durch die vorhandenen
+Kantenstörungen repräsentiert.
+
 ## Was damit geschlossen ist
 
 Geschlossen ist der erste bislang offene Brückenschritt: Die Entstehung einer
@@ -57,11 +89,11 @@ SubQG-Kantenvariablen. Die frühere Aussage „eine skalare Variable pro Kante
 kann keinen Tensor liefern“ gilt nur für eine isolierte Kante und ist für die
 vollständige Simplex-Zelle zu stark.
 
-Noch nicht geschlossen ist die Dynamik. Der positive Ankerterm der aktuellen
-statischen Kantenwirkung erzeugt weiterhin eine Spektrallücke. Als Nächstes
-muss auf überlappenden Tetraedern gezeigt werden, dass die kollektive
-Lorentz-Dynamik reine diskrete Diffeomorphismen als Nullrichtungen besitzt
-und im langwelligen Grenzfall den Fierz-Pauli-Operator liefert.
+Noch nicht geschlossen ist die Ableitung dieser Dynamik aus der kanonischen
+Wirkung. Der positive Ankerterm der aktuellen statischen Kantenwirkung erzeugt
+weiterhin eine Spektrallücke. Als Nächstes muss gezeigt werden, dass ihr
+physikalischer kollektiver Hessian nach den relationalen Nebenbedingungen
+genau auf den nun identifizierten TT-/Fierz-Pauli-Operator reduziert.
 
 ## Reproduktion
 
@@ -71,5 +103,5 @@ npm run validation:simplex-tensor-bridge
 
 Ergebnisdatei: `validation/results/simplex_tensor_bridge.json`.
 
-SHA-256: `7E53B3D336DD15345BA8D90716B90C52EC14C73BB8462340C81C1142A8FC3770`.
+SHA-256: `D0E954A19F34D4A94BA8694D3BC105DFB954E76B16A87CF20D4C1926B8EF08CD`.
 Zwei unmittelbar aufeinanderfolgende Läufe erzeugten byteidentische Dateien.

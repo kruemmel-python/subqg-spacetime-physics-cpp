@@ -12,7 +12,7 @@ werden. Kein einzelnes Gate reicht allein aus.
 | G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | Spin-2-No-Slip `gamma=1` formal bewiesen und mit 80 starken Linsen kompatibel; lokale Tensor-Kinematik aus Tetraederkanten hergeleitet; masselose Mikro-Dynamik und Rohdatentest offen |
 | G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | bedingt bestanden: formale Vorhersage `eta=0` liegt 0,546 Sigma vom finalen MICROSCOPE-Wert; Eöt-Wash-Nullbefund im gesättigten terrestrischen Regime kompatibel; Standardmodell-zu-SubQG-Materiekopplung und direkter Apparatefit offen |
 | G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | INPOP10a/EPM2011 bestanden; führende parameterfreie Doppelpulsar-Quadrupolvorhersage 0,359 Sigma vom Messwert; vollständige starke-Feld-Mikro-Closure offen |
-| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Doppelpulsar-Dämpfung kompatibel; universelles Mikro-zu-Spin-2-Quellenmatching bleibt offen |
+| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Plus/Kreuz jetzt direkt als Simplex-Kantenstörungen rekonstruiert und Fierz-Pauli-on-shell; Wirkungs-Hessian und universelles Quellenmatching bleiben offen |
 | G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | offen |
 | G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | offen |
 

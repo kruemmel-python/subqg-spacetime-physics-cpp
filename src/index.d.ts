@@ -190,6 +190,16 @@ export function metricPerturbationFromSquaredLengthPerturbations(delta: Record<s
 export function squaredLengthPerturbationsFromMetric(deltaMetric: number[][]): Record<string, number>;
 export function tetrahedralCliques(world: any, options?: { exampleLimit?: number }): any;
 export function simplexTensorKinematicsAudit(world: any): any;
+export function transverseTracelessProjector(spatialMetricPerturbation: number[][], waveVector: number[]): number[][];
+export function spatialGaugePerturbation(waveVector: number[], gaugeVector: number[]): number[][];
+export function tensorPolarizationBasis(waveVector: number[]): any;
+export function orthonormalPerturbationToSimplexGram(spatialMetricPerturbation: number[][], backgroundGram: number[][]): number[][];
+export function simplexGramPerturbationToOrthonormal(deltaGram: number[][], backgroundGram: number[][]): number[][];
+export function simplexRadiativeGaugeAudit(options?: {
+  waveVector?: number[];
+  plusAmplitude?: number;
+  crossAmplitude?: number;
+}): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

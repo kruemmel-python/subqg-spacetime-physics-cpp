@@ -204,7 +204,7 @@ Fierz-Pauli-IR-Sektor:
 - mikro-zu-IR-Matching: noch nicht hergeleitet.
 
 Die deterministische Ergebnisdatei `spin2_bridge_audit.json` hat SHA-256
-`2957A553CA42CBD5FFB294D4FBA975515D2BA327615269511268003F264B345D`.
+`FC0E5D96655A5E6A917299BD9BAB79C821C47D445D3D4A2BF0858C21F62CF958`.
 
 ## Test 4: Sonnensystem-Perihelien
 
@@ -304,7 +304,10 @@ hergeleitet; die masselose Lorentz- und Eichdynamik bleibt der nächste Schritt.
 npm run validation:simplex-tensor-bridge
 ```
 
-Herleitung und Beweisgrenze stehen in `SIMPLEX_TENSOR_BRIDGE.md`.
+Der ergänzende Eichrundlauf zeigt, dass die daraus konstruierten Plus- und
+Kreuzmoden reine räumliche Eichstörungen entfernen und den masselosen
+Fierz-Pauli-Vakuumoperator erfüllen. Herleitung und Beweisgrenze stehen in
+`SIMPLEX_TENSOR_BRIDGE.md`.
 
 Die deterministische Ergebnisdatei `simplex_tensor_bridge.json` hat SHA-256
-`7E53B3D336DD15345BA8D90716B90C52EC14C73BB8462340C81C1142A8FC3770`.
+`D0E954A19F34D4A94BA8694D3BC105DFB954E76B16A87CF20D4C1926B8EF08CD`.

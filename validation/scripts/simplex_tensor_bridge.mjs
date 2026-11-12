@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MicroActionWorld } from '../../src/modules/subqg_microaction.mjs';
 import { simplexTensorKinematicsAudit } from '../../src/modules/subqg_simplex_tensor_bridge.mjs';
+import { simplexRadiativeGaugeAudit } from '../../src/modules/subqg_simplex_gauge_bridge.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'simplex_tensor_bridge.json');
@@ -10,6 +11,7 @@ const world = new MicroActionWorld({ seed: 42 });
 world.run(400);
 const kinematics = simplexTensorKinematicsAudit(world);
 const spectrum = world.linearizedMetricSpectrumAudit();
+const radiativeGaugeBridge = simplexRadiativeGaugeAudit();
 
 const result = {
   schemaVersion: 1,
@@ -24,13 +26,17 @@ const result = {
     triangularFaces: world.faces.size
   },
   kinematics,
+  radiativeGaugeBridge,
   existingScalarActionSpectrum: spectrum,
   verdict: {
     tensorKinematicsFromExistingEdgesDerived: kinematics.localSymmetricTensorKinematicsDerived,
     extraFundamentalTensorFieldNeededForKinematics: false,
+    edgeDerivedTTModesSolveMasslessFierzPauli: radiativeGaugeBridge.radiativeEdgeToSpinTwoBridgeClosed,
+    pureSpatialGaugeDirectionsRemovedByTTProjection:
+      radiativeGaugeBridge.pureSpatialGaugeProjectionResidual < 1e-12,
     currentAnchoredActionSuppliesMasslessGaugeDynamics: spectrum.hasMasslessMode,
     microToSpinTwoBridgeComplete: kinematics.spacetimeSpinTwoMatchingComplete,
-    nextNecessaryProof: 'Derive a gauge-null collective kinetic operator and its Lorentzian time evolution on overlapping tetrahedral cells; the positive anchor still gaps the current static edge action.'
+    nextNecessaryProof: 'Derive the now-identified TT/Fierz-Pauli operator as the collective Hessian and Lorentzian time evolution of the canonical action; the positive anchor still gaps the current static edge action.'
   }
 };
 

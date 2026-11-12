@@ -85,6 +85,34 @@
     "masslessGaugeDynamicsDerived": false,
     "spacetimeSpinTwoMatchingComplete": false
   },
+  "radiativeGaugeBridge": {
+    "construction": "six scalar tetrahedron-edge perturbations -> local orthonormal metric -> TT spin-2 wave",
+    "background": "regular relational tetrahedron",
+    "waveVector": [
+      0.3,
+      -0.4,
+      0.5
+    ],
+    "edgePerturbations": {
+      "d01": -0.5740000000000001,
+      "d02": 0.17881354643194802,
+      "d03": 0.40790440701536446,
+      "d12": 0.2248491078252015,
+      "d13": -0.10443105598387614,
+      "d23": -0.13313600528863812
+    },
+    "physicalPolarizations": 2,
+    "edgeRoundTripResidual": 1.249000902703301e-16,
+    "transversalityResidual": 1.1102230246251565e-16,
+    "traceResidual": 2.220446049250313e-16,
+    "physicalProjectionResidual": 1.1102230246251565e-16,
+    "ttIdempotenceResidual": 1.1102230246251565e-16,
+    "pureSpatialGaugeProjectionResidual": 6.175615574477434e-17,
+    "massSquared": 1.1102230246251565e-16,
+    "fierzPauliVacuumResidual": 7.45482436617521e-17,
+    "radiativeEdgeToSpinTwoBridgeClosed": true,
+    "canonicalAnchoredActionDerivationClosed": false
+  },
   "effectiveSpinTwoSolution": {
     "effectiveEquation": "box(bar(h)_mu_nu) = -16*pi*G*T_mu_nu/c^4",
     "sourceSector": "static pressureless matter: T00=rho*c^2, Tij=0",
@@ -121,6 +149,7 @@
     "isolatedEdgeVariableIsDirectTensorField": false,
     "collectiveEdgesDeriveLocalSymmetricSpatialTensor": true,
     "tensorKinematicsAddsFundamentalDegreesOfFreedom": false,
+    "edgeDerivedRadiativeModesSolveFierzPauli": true,
     "infraredCandidateSelfConsistent": true,
     "derivationComplete": false,
     "requiredChange": "Tensor kinematics is now derived from tetrahedral edge lengths. Derive the gauge-null Lorentzian collective dynamics whose infrared quadratic action is Fierz-Pauli; the positive anchored static action alone cannot supply it."

@@ -95,6 +95,14 @@ seeded graph contains 1,003 such cells.  What remains open is dynamical rather
 than kinematical: the positive static anchor must be replaced or eliminated
 by a derived gauge-null Lorentzian collective operator.
 
+The radiative kinematic map is also explicit.  Plus and cross perturbations
+are encoded as six edge variations of a regular relational tetrahedron,
+reconstructed in its local orthonormal frame, and projected transversely and
+tracelessly.  Pure spatial gauge perturbations project to zero, while the two
+physical edge-derived modes satisfy the massless Fierz-Pauli vacuum equation.
+The remaining task is to derive this identified operator as the constrained
+collective Hessian of the canonical action rather than supply it separately.
+
 ---
 
 ## 3. Architecture & Module Structure
@@ -160,9 +168,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **318 unit tests**:
-- **Total Tests:** 318
-- **Passing:** 318 (100%)
+SubQG 1.0 features an automated test battery with **323 unit tests**:
+- **Total Tests:** 323
+- **Passing:** 323 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -177,7 +185,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 318 unit tests via `node --test` |
+| `npm test` | Runs all 323 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

@@ -8,6 +8,7 @@ import {
 } from '../../src/modules/subqg_weak_field_metric.mjs';
 import { spinTwoInfraredAudit } from '../../src/modules/subqg_spin2_ir.mjs';
 import { simplexTensorKinematicsAudit } from '../../src/modules/subqg_simplex_tensor_bridge.mjs';
+import { simplexRadiativeGaugeAudit } from '../../src/modules/subqg_simplex_gauge_bridge.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const resultPath = path.resolve(scriptDir, '..', 'results', 'spin2_bridge_audit.json');
@@ -16,6 +17,7 @@ const world = new MicroActionWorld({ seed: 42 });
 world.run(400);
 const microscopicSpectrum = world.linearizedMetricSpectrumAudit();
 const tensorKinematics = simplexTensorKinematicsAudit(world);
+const radiativeGaugeBridge = simplexRadiativeGaugeAudit();
 const effectiveSpinTwoSolution = linearizedSpinTwoStaticDustClosure(1e-9);
 const bridge = microToSpinTwoBridgeAudit();
 const infraredCandidate = spinTwoInfraredAudit();
@@ -31,6 +33,7 @@ const result = {
   },
   microscopicSpectrum,
   tensorKinematics,
+  radiativeGaugeBridge,
   effectiveSpinTwoSolution,
   infraredCandidate,
   bridge,
@@ -40,6 +43,7 @@ const result = {
     isolatedEdgeVariableIsDirectTensorField: microscopicSpectrum.hasSymmetricTensorStructure,
     collectiveEdgesDeriveLocalSymmetricSpatialTensor: tensorKinematics.localSymmetricTensorKinematicsDerived,
     tensorKinematicsAddsFundamentalDegreesOfFreedom: tensorKinematics.newFundamentalDegreesOfFreedomAdded,
+    edgeDerivedRadiativeModesSolveFierzPauli: radiativeGaugeBridge.radiativeEdgeToSpinTwoBridgeClosed,
     infraredCandidateSelfConsistent: infraredCandidate.infraredClosureSelfConsistent,
     derivationComplete: bridge.bridgeComplete && microscopicSpectrum.supportsMasslessSpinTwo,
     requiredChange: 'Tensor kinematics is now derived from tetrahedral edge lengths. Derive the gauge-null Lorentzian collective dynamics whose infrared quadratic action is Fierz-Pauli; the positive anchored static action alone cannot supply it.'

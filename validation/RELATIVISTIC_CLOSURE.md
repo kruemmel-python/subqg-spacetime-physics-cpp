@@ -88,6 +88,13 @@ enthält 1.003 solche Zellen. Damit ist die Tensor-Kinematik aus vorhandenen
 Freiheitsgraden hergeleitet; offen bleibt ihre masselose Eichdynamik. Details
 stehen in `SIMPLEX_TENSOR_BRIDGE.md`.
 
+Die anschließende Eichprüfung kodiert außerdem beliebige Plus-/Kreuz-Wellen
+direkt als sechs Simplex-Kantenstörungen. Nach Rekonstruktion annihiliert der
+TT-Projektor reine räumliche Eichrichtungen, und die beiden verbleibenden
+Moden erfüllen bei masseloser Dispersion den Fierz-Pauli-Vakuumoperator. Die
+offene Brücke betrifft damit nicht mehr die Repräsentation des Spin-2-Sektors,
+sondern ausschließlich seine Herleitung als kollektiver Wirkungs-Hessian.
+
 Lean formalisiert auch diesen Befund:
 
 - `anchored_metric_hessian_lower_bound`;

@@ -86,6 +86,14 @@ export {
   simplexTensorKinematicsAudit
 } from './modules/subqg_simplex_tensor_bridge.mjs';
 export {
+  transverseTracelessProjector,
+  spatialGaugePerturbation,
+  tensorPolarizationBasis,
+  orthonormalPerturbationToSimplexGram,
+  simplexGramPerturbationToOrthonormal,
+  simplexRadiativeGaugeAudit
+} from './modules/subqg_simplex_gauge_bridge.mjs';
+export {
   SubQGAppleWorld,
   SubQGAppleExperiment,
   executeAppleExperimentSuite,
