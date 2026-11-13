@@ -162,8 +162,10 @@ function pairedGalaxyBootstrap(galaxies, predictorA, parameterA, predictorB, par
 
 if (!fs.existsSync(sparcResultPath)) throw new Error('SPARC result missing. Run: npm run validation:sparc');
 const sparc = JSON.parse(fs.readFileSync(sparcResultPath, 'utf8'));
-const frozenSubqgA0 = sparc.models.subqgDualStrain.fittedA0MetersPerSecondSquared;
-const frozenRarA0 = sparc.models.empiricalRarReference.fittedA0MetersPerSecondSquared;
+const frozenSubqgA0 =
+  sparc.hierarchicalNuisanceProfile.subqgDualStrain.fittedA0MetersPerSecondSquared;
+const frozenRarA0 =
+  sparc.hierarchicalNuisanceProfile.empiricalRarReference.fittedA0MetersPerSecondSquared;
 const totalRows = parseVizieR(totalPath);
 const darkMatterRows = parseVizieR(darkMatterPath);
 const { galaxies, stats } = reconstructGalaxies(totalRows, darkMatterRows);

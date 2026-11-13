@@ -5,23 +5,32 @@ const PHOTON_DENSITY_H2_AT_2_7255_K = 2.469e-5;
 const PLANCK_ACOUSTIC_SCALE_100 = 1.04110;
 const PLANCK_ACOUSTIC_SCALE_SIGMA_100 = 0.00031;
 
-// Fifth-order minimax-like polynomial surrogates along the frozen SubQG
-// closure line Omega_m/Omega_b = 1 + 6/1.12.  They reproduce a 25-point
-// CAMB recombination reference grid over 0.019 <= omega_b <= 0.025.  x is
-// (omega_b - 0.022)/0.003; coefficients are ordered highest power first.
+// Polynomial surrogates along the frozen SubQG closure
+// Omega_network/Omega_b = 6/1.12.  The acoustic-angle surface was trained on
+// 143 CAMB points and checked on a disjoint 120-point grid over
+// 0.019 <= omega_b <= 0.025 and 60 <= H0 <= 80.  The one-dimensional sound
+// horizons depend on the physical early-time densities, not independently on
+// H0.  x is (omega_b - 0.022)/0.003.
 // This is a numerical evaluator of standard photon-baryon thermodynamics,
 // not a fitted SubQG parameter or a particle-dark-matter assumption.
 const RECOMBINATION_SURROGATE = Object.freeze({
   physicalBaryonDensityRange: [0.019, 0.025],
+  hubbleConstantRange: [60, 80],
   lastScatteringRedshift: [-0.0009672761722664406, 0.004206199784396376,
     -0.03478177009979536, 0.283525523950148, -2.4381698458092376,
     1090.1909479483943],
   lastScatteringSoundHorizonMpc: [-0.000027313509090903,
     0.00136368655137676, -0.02287245532977335, 0.37333982861422815,
     -6.527704512481928, 145.27404233709638],
-  acousticAngle100: [0.0000031686855241360736, -0.000028388776384778766,
-    0.00028172635219740193, -0.002833843153166393, 0.023288508250634075,
-    1.0381332312631935],
+  acousticAngleTerms: [[0, 0], [0, 1], [1, 0], [0, 2], [1, 1], [2, 0],
+    [0, 3], [1, 2], [2, 1], [3, 0], [0, 4], [1, 3], [2, 2], [3, 1], [4, 0]],
+  acousticAngle100: [1.0476597729180468, 0.02950377112839254,
+    0.00941608520022003, -0.000871075212832341, -0.0005302139109603506,
+    -0.0019275367584340938, 0.00004504052646833004,
+    0.00003533522815296074, -0.000010727527245102864,
+    0.00022514684586515623, -0.000002610602654275554,
+    -0.0000028684678038961447, -0.0000010886136019572223,
+    0.000003869485619239159, -0.000024755420120425864],
   dragSoundHorizonMpc: [-0.0006293175877626142, 0.004201116863181056,
     -0.043412519053438715, 0.5391856053578561, -7.7117367396652865,
     148.0781030592048],
@@ -32,9 +41,17 @@ function evaluatePolynomial(coefficients, x) {
   return coefficients.reduce((value, coefficient) => value * x + coefficient, 0);
 }
 
+function evaluateAcousticAngleSurrogate(physicalBaryonDensity, hubbleConstant) {
+  const x = (physicalBaryonDensity - 0.022) / 0.003;
+  const y = (hubbleConstant - 70) / 10;
+  return RECOMBINATION_SURROGATE.acousticAngle100.reduce((sum, coefficient, index) => {
+    const [xPower, yPower] = RECOMBINATION_SURROGATE.acousticAngleTerms[index];
+    return sum + coefficient * x ** xPower * y ** yPower;
+  }, 0);
+}
+
 function onFrozenSubQGClosureLine(background) {
   return Math.abs(background.lambdaRatio - 1.12) < 1e-12 &&
-    Math.abs(background.omegaB - 0.0493) < 1e-12 &&
     Math.abs((background.omegaMatter - background.omegaMassiveNeutrino) /
       background.omegaB - (1 + 6 / 1.12)) < 1e-12;
 }
@@ -66,7 +83,8 @@ function darkEnergyScale(a, w0, wa) {
  */
 export function deriveSubQGFluidBackground({
   lambdaRatio = 1.12,
-  omegaB = 0.0493,
+  omegaB = null,
+  hubbleConstantKmPerSecMpc = 70,
   physicalBaryonDensity = 0.02218,
   physicalBaryonDensitySigma = 0.00055,
   cmbTemperatureKelvin = 2.7255,
@@ -76,23 +94,29 @@ export function deriveSubQGFluidBackground({
   wa = 0
 } = {}) {
   for (const [name, value] of Object.entries({
-    lambdaRatio, omegaB, physicalBaryonDensity, physicalBaryonDensitySigma,
+    lambdaRatio, physicalBaryonDensity, physicalBaryonDensitySigma,
     cmbTemperatureKelvin, effectiveRelativisticSpecies,
-    physicalMassiveNeutrinoDensity, w0, wa
+    physicalMassiveNeutrinoDensity, hubbleConstantKmPerSecMpc, w0, wa
   })) {
     if (!Number.isFinite(value)) throw new RangeError(`${name} must be finite`);
   }
-  if (lambdaRatio <= 1 || omegaB <= 0 || physicalBaryonDensity <= 0 ||
+  if (lambdaRatio <= 1 || physicalBaryonDensity <= 0 ||
       physicalBaryonDensitySigma <= 0 || cmbTemperatureKelvin <= 0 ||
-      effectiveRelativisticSpecies < 0 || physicalMassiveNeutrinoDensity < 0) {
+      effectiveRelativisticSpecies < 0 || physicalMassiveNeutrinoDensity < 0 ||
+      hubbleConstantKmPerSecMpc <= 0 ||
+      (omegaB !== null && (!Number.isFinite(omegaB) || omegaB <= 0))) {
     throw new RangeError('invalid SubQG background controls');
   }
   const closure = deriveGaugeReducedPhaseSpaceClosure({ lambdaRatio });
-  const h = Math.sqrt(physicalBaryonDensity / omegaB);
-  const hubbleConstantKmPerSecMpc = 100 * h;
-  const omegaSubEffective = omegaB * closure.networkExcitationEnergyRatio;
+  const legacyOmegaBParameterization = omegaB !== null;
+  const h = legacyOmegaBParameterization
+    ? Math.sqrt(physicalBaryonDensity / omegaB)
+    : hubbleConstantKmPerSecMpc / 100;
+  const resolvedHubbleConstant = 100 * h;
+  const resolvedOmegaB = physicalBaryonDensity / h ** 2;
+  const omegaSubEffective = resolvedOmegaB * closure.networkExcitationEnergyRatio;
   const omegaMassiveNeutrino = physicalMassiveNeutrinoDensity / h ** 2;
-  const omegaMatter = omegaB + omegaSubEffective + omegaMassiveNeutrino;
+  const omegaMatter = resolvedOmegaB + omegaSubEffective + omegaMassiveNeutrino;
   const physicalPhotonDensity = PHOTON_DENSITY_H2_AT_2_7255_K *
     (cmbTemperatureKelvin / 2.7255) ** 4;
   const omegaPhoton = physicalPhotonDensity / h ** 2;
@@ -132,11 +156,11 @@ export function deriveSubQGFluidBackground({
   const comovingDistanceMpc = z => {
     if (!Number.isFinite(z) || z < 0) throw new RangeError('redshift must be non-negative');
     const lower = 1 / (1 + z);
-    return C_KM_PER_SECOND / hubbleConstantKmPerSecMpc *
+    return C_KM_PER_SECOND / resolvedHubbleConstant *
       simpsonIntegral(a => 1 / (a * a * expansionRate(a)), lower, 1);
   };
   const hubbleDistanceMpc = z => C_KM_PER_SECOND /
-    (hubbleConstantKmPerSecMpc * hubbleRatioAtRedshift(z));
+    (resolvedHubbleConstant * hubbleRatioAtRedshift(z));
   const volumeDistanceMpc = z => {
     const dm = comovingDistanceMpc(z);
     const dh = hubbleDistanceMpc(z);
@@ -152,7 +176,7 @@ export function deriveSubQGFluidBackground({
     },
     lambdaRatio,
     networkToBaryonEnergyRatio: closure.networkExcitationEnergyRatio,
-    omegaB,
+    omegaB: resolvedOmegaB,
     omegaSubEffective,
     omegaMassiveNeutrino,
     physicalMassiveNeutrinoDensity,
@@ -164,7 +188,10 @@ export function deriveSubQGFluidBackground({
     neutrinoTransitionScaleFactor,
     omegaVacuum,
     h,
-    hubbleConstantKmPerSecMpc,
+    hubbleConstantKmPerSecMpc: resolvedHubbleConstant,
+    backgroundParameterization: legacyOmegaBParameterization
+      ? 'legacy Omega_b plus physical omega_b (H0 derived)'
+      : 'physical omega_b plus independent H0 integration constant (Omega_b derived)',
     w0,
     wa,
     closure,
@@ -225,8 +252,13 @@ export function auditPlanckAcousticScale(background, {
   }
   const physicalBaryonDensity = background.bbnCalibration.physicalBaryonDensity;
   const [minimum, maximum] = RECOMBINATION_SURROGATE.physicalBaryonDensityRange;
+  const [minimumH0, maximumH0] = RECOMBINATION_SURROGATE.hubbleConstantRange;
   if (physicalBaryonDensity < minimum || physicalBaryonDensity > maximum) {
     throw new RangeError(`physical baryon density must be in [${minimum}, ${maximum}]`);
+  }
+  if (background.hubbleConstantKmPerSecMpc < minimumH0 ||
+      background.hubbleConstantKmPerSecMpc > maximumH0) {
+    throw new RangeError(`H0 must be in [${minimumH0}, ${maximumH0}]`);
   }
   const x = (physicalBaryonDensity - 0.022) / 0.003;
   const lastScatteringRedshift = evaluatePolynomial(
@@ -236,15 +268,15 @@ export function auditPlanckAcousticScale(background, {
   // The same recombination grid also carries the massive-neutrino transition
   // through the line-of-sight distance.  This avoids treating a 0.06 eV
   // neutrino as either pure radiation or pure matter near recombination.
-  const baseline100ThetaStar = evaluatePolynomial(
-    RECOMBINATION_SURROGATE.acousticAngle100, x);
+  const baseline100ThetaStar = evaluateAcousticAngleSurrogate(
+    physicalBaryonDensity, background.hubbleConstantKmPerSecMpc);
   const baselineComovingDistanceMpc = 100 * soundHorizonMpc /
     baseline100ThetaStar;
   let comovingAngularDiameterDistanceMpc = baselineComovingDistanceMpc;
   if (background.w0 !== -1 || background.wa !== 0) {
     const numericalBaseline = deriveSubQGFluidBackground({
       lambdaRatio: background.lambdaRatio,
-      omegaB: background.omegaB,
+      hubbleConstantKmPerSecMpc: background.hubbleConstantKmPerSecMpc,
       physicalBaryonDensity,
       physicalBaryonDensitySigma: background.bbnCalibration.physicalBaryonDensitySigma,
       physicalMassiveNeutrinoDensity: background.physicalMassiveNeutrinoDensity,
@@ -279,9 +311,12 @@ export function auditPlanckAcousticScale(background, {
     passesThreeSigma: Math.abs(residualSigma) <= 3,
     recombinationNumerics: {
       referenceSolver: 'CAMB',
-      gridPoints: 25,
+      trainingGridPoints: 143,
+      disjointValidationGridPoints: 120,
       physicalBaryonDensityRange: [minimum, maximum],
+      hubbleConstantRange: [minimumH0, maximumH0],
       maximumRelativeGridError: RECOMBINATION_SURROGATE.maximumRelativeGridError,
+      acousticAngleMaximumRelativeValidationError: 5.14e-7,
       physicalMassiveRelicDensity: 0.000644,
       summedNeutrinoMassEv: 0.06,
       effectiveRelativisticSpecies: 3.046
@@ -501,7 +536,11 @@ export function profileBbnCalibratedDesiBao({
   };
 }
 
-/** Joint profile of one external BBN calibration against BAO and CMB angle. */
+/**
+ * Joint profile of the external BBN calibration and the independent H0
+ * integration constant against BAO and the CMB acoustic angle.  The SubQG
+ * closure ratio is fixed throughout; Omega_b is derived rather than inserted.
+ */
 export function profileBbnDesiPlanckAcousticScale({
   observations,
   covariance,
@@ -511,19 +550,23 @@ export function profileBbnDesiPlanckAcousticScale({
   observedSigma100ThetaStar = PLANCK_ACOUSTIC_SCALE_SIGMA_100,
   backgroundOptions = {},
   sigmaRange = 5,
-  iterations = 72
+  iterations = 96,
+  initialHubbleConstant = 70
 } = {}) {
   if (!Array.isArray(observations) || !Array.isArray(covariance) ||
       !Number.isFinite(bbnMean) || !Number.isFinite(bbnSigma) || bbnSigma <= 0 ||
       !Number.isFinite(sigmaRange) || sigmaRange <= 0 ||
-      !Number.isInteger(iterations) || iterations < 16) {
+      !Number.isInteger(iterations) || iterations < 24 ||
+      !Number.isFinite(initialHubbleConstant)) {
     throw new RangeError('invalid joint BBN-DESI-Planck profile controls');
   }
-  const evaluate = physicalBaryonDensity => {
+  const evaluate = (physicalBaryonDensity, hubbleConstantKmPerSecMpc) => {
     const background = deriveSubQGFluidBackground({
       ...backgroundOptions,
       physicalBaryonDensity,
-      physicalBaryonDensitySigma: bbnSigma
+      physicalBaryonDensitySigma: bbnSigma,
+      omegaB: null,
+      hubbleConstantKmPerSecMpc
     });
     const bao = auditDesiDR2Bao(background, observations, covariance);
     const cmb = auditPlanckAcousticScale(background, {
@@ -533,37 +576,83 @@ export function profileBbnDesiPlanckAcousticScale({
     const bbnPull = (physicalBaryonDensity - bbnMean) / bbnSigma;
     const bbnChiSquare = bbnPull ** 2;
     return {
-      physicalBaryonDensity, background, bao, cmb, bbnPull, bbnChiSquare,
+      physicalBaryonDensity, hubbleConstantKmPerSecMpc,
+      background, bao, cmb, bbnPull, bbnChiSquare,
       jointChiSquare: bao.chiSquare + cmb.chiSquare + bbnChiSquare
     };
   };
   const [surrogateMinimum, surrogateMaximum] =
     RECOMBINATION_SURROGATE.physicalBaryonDensityRange;
-  let left = Math.max(surrogateMinimum, bbnMean - sigmaRange * bbnSigma);
-  let right = Math.min(surrogateMaximum, bbnMean + sigmaRange * bbnSigma);
-  const golden = (Math.sqrt(5) - 1) / 2;
-  let x1 = right - golden * (right - left);
-  let x2 = left + golden * (right - left);
-  let f1 = evaluate(x1);
-  let f2 = evaluate(x2);
+  const baryonBounds = [
+    Math.max(surrogateMinimum, bbnMean - sigmaRange * bbnSigma),
+    Math.min(surrogateMaximum, bbnMean + sigmaRange * bbnSigma)
+  ];
+  const hubbleBounds = RECOMBINATION_SURROGATE.hubbleConstantRange;
+  const clampPoint = point => [
+    Math.max(baryonBounds[0], Math.min(baryonBounds[1], point[0])),
+    Math.max(hubbleBounds[0], Math.min(hubbleBounds[1], point[1]))
+  ];
+  const valueAt = point => {
+    const bounded = clampPoint(point);
+    return evaluate(bounded[0], bounded[1]);
+  };
+  let simplex = [
+    [bbnMean, initialHubbleConstant],
+    [bbnMean + 0.0004, initialHubbleConstant],
+    [bbnMean, initialHubbleConstant + 2]
+  ].map(point => ({ point: clampPoint(point), result: valueAt(point) }));
   for (let iteration = 0; iteration < iterations; iteration++) {
-    if (f1.jointChiSquare < f2.jointChiSquare) {
-      right = x2; x2 = x1; f2 = f1;
-      x1 = right - golden * (right - left); f1 = evaluate(x1);
+    simplex.sort((left, right) => left.result.jointChiSquare - right.result.jointChiSquare);
+    const centroid = [
+      (simplex[0].point[0] + simplex[1].point[0]) / 2,
+      (simplex[0].point[1] + simplex[1].point[1]) / 2
+    ];
+    const reflectedPoint = clampPoint([
+      2 * centroid[0] - simplex[2].point[0],
+      2 * centroid[1] - simplex[2].point[1]
+    ]);
+    const reflected = { point: reflectedPoint, result: valueAt(reflectedPoint) };
+    if (reflected.result.jointChiSquare < simplex[0].result.jointChiSquare) {
+      const expandedPoint = clampPoint([
+        centroid[0] + 2 * (reflectedPoint[0] - centroid[0]),
+        centroid[1] + 2 * (reflectedPoint[1] - centroid[1])
+      ]);
+      const expanded = { point: expandedPoint, result: valueAt(expandedPoint) };
+      simplex[2] = expanded.result.jointChiSquare < reflected.result.jointChiSquare
+        ? expanded : reflected;
+    } else if (reflected.result.jointChiSquare < simplex[1].result.jointChiSquare) {
+      simplex[2] = reflected;
     } else {
-      left = x1; x1 = x2; f1 = f2;
-      x2 = left + golden * (right - left); f2 = evaluate(x2);
+      const contractedPoint = clampPoint([
+        centroid[0] + 0.5 * (simplex[2].point[0] - centroid[0]),
+        centroid[1] + 0.5 * (simplex[2].point[1] - centroid[1])
+      ]);
+      const contracted = { point: contractedPoint, result: valueAt(contractedPoint) };
+      if (contracted.result.jointChiSquare < simplex[2].result.jointChiSquare) {
+        simplex[2] = contracted;
+      } else {
+        simplex = [simplex[0], ...simplex.slice(1).map(vertex => {
+          const point = clampPoint([
+            simplex[0].point[0] + 0.5 * (vertex.point[0] - simplex[0].point[0]),
+            simplex[0].point[1] + 0.5 * (vertex.point[1] - simplex[0].point[1])
+          ]);
+          return { point, result: valueAt(point) };
+        })];
+      }
     }
   }
-  const best = f1.jointChiSquare < f2.jointChiSquare ? f1 : f2;
-  const degreesOfFreedom = observations.length + 2 - 1;
+  simplex.sort((left, right) => left.result.jointChiSquare - right.result.jointChiSquare);
+  const best = simplex[0].result;
+  const degreesOfFreedom = observations.length + 2 - 2;
   const pValue = regularizedGammaQ(degreesOfFreedom / 2, best.jointChiSquare / 2);
   return {
     schemaVersion: 1,
     fittedSubQGClosureParameters: 0,
     profiledExternalNuisanceParameters: 1,
+    fittedBackgroundIntegrationConstants: 1,
     observables: { desiBao: observations.length, bbnPrior: 1, cmbAcousticScale: 1 },
     bestPhysicalBaryonDensity: best.physicalBaryonDensity,
+    bestHubbleConstantKmPerSecMpc: best.hubbleConstantKmPerSecMpc,
     bestBbnPull: best.bbnPull,
     bbnChiSquare: best.bbnChiSquare,
     baoChiSquare: best.bao.chiSquare,
@@ -644,5 +733,57 @@ export function evolveSubQGLinearGrowth(background, {
     initialScaleFactor,
     steps,
     samples
+  };
+}
+
+/**
+ * Propagates a CMB-calibrated primordial amplitude through the SubQG network
+ * growth equation and compares only with independent late-time amplitudes.
+ */
+export function auditSubQGStructureAmplitude(background, {
+  sigma8AtZero,
+  observations = {
+    desiDr1FullShapeSigma8: { value: 0.842, sigma: 0.034 },
+    desY3S8: { value: 0.776, sigma: 0.017 },
+    sptClusterAbundanceS8: { value: 0.795, sigma: 0.029 },
+    desiDr1PeculiarVelocityFsigma8: { z: 0.07, value: 0.450, sigma: 0.055 }
+  }
+} = {}) {
+  if (!background || !Number.isFinite(sigma8AtZero) || sigma8AtZero <= 0 ||
+      !observations || Object.values(observations).some(observation =>
+        !Number.isFinite(observation.value) || !Number.isFinite(observation.sigma) ||
+        observation.sigma <= 0)) {
+    throw new RangeError('invalid structure-amplitude audit inputs');
+  }
+  const velocityRedshift = observations.desiDr1PeculiarVelocityFsigma8?.z ?? 0.07;
+  const growth = evolveSubQGLinearGrowth(background, {
+    sampleRedshifts: [0, velocityRedshift, 0.5, 1, 2]
+  });
+  const atVelocityRedshift = growth.samples.find(sample =>
+    sample.z === velocityRedshift);
+  const predictions = {
+    desiDr1FullShapeSigma8: sigma8AtZero,
+    desY3S8: sigma8AtZero * Math.sqrt(background.omegaMatter / 0.3),
+    sptClusterAbundanceS8: sigma8AtZero * Math.sqrt(background.omegaMatter / 0.3),
+    desiDr1PeculiarVelocityFsigma8:
+      sigma8AtZero * atVelocityRedshift.normalizedGrowthRateProduct
+  };
+  const comparisons = Object.fromEntries(Object.entries(observations).map(([name, observed]) => {
+    const predicted = predictions[name];
+    const residualSigma = (predicted - observed.value) / observed.sigma;
+    return [name, { ...observed, predicted, residualSigma,
+      passesThreeSigma: Math.abs(residualSigma) <= 3 }];
+  }));
+  return {
+    schemaVersion: 1,
+    ontology: 'CMB-normalized linear perturbations of the pressureless SubQG phase network',
+    particleNBodySimulationUsed: false,
+    primordialAmplitudeFittedToCmb: true,
+    lateTimeAmplitudeFitted: false,
+    sigma8AtZero,
+    comparisons,
+    allIndependentStructureChecksPassThreeSigma:
+      Object.values(comparisons).every(comparison => comparison.passesThreeSigma),
+    growth
   };
 }

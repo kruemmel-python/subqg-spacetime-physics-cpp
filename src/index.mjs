@@ -129,7 +129,8 @@ export {
   auditDesiDR2Bao,
   profileBbnCalibratedDesiBao,
   profileBbnDesiPlanckAcousticScale,
-  evolveSubQGLinearGrowth
+  evolveSubQGLinearGrowth,
+  auditSubQGStructureAmplitude
 } from './modules/subqg_cosmological_background.mjs';
 export {
   measureSubstrateClusteringDynamics,

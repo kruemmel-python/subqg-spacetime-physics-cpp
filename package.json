@@ -24,7 +24,11 @@
     "validation:simplex-tensor-bridge": "node validation/scripts/simplex_tensor_bridge.mjs",
     "validation:collective-spin2-hessian": "node validation/scripts/collective_spin2_hessian.mjs",
     "validation:cosmology": "node validation/scripts/cosmology_validation.mjs",
-    "validation:background-bao": "node validation/scripts/subqg_background_bao_validation.mjs"
+    "validation:background-bao": "node validation/scripts/subqg_background_bao_validation.mjs",
+    "validation:fetch:planck-plik-lite": "powershell -ExecutionPolicy Bypass -File validation/scripts/fetch-planck-plik-lite.ps1",
+    "validation:cmb-spectrum": "powershell -ExecutionPolicy Bypass -File validation/scripts/run-cmb-spectrum.ps1",
+    "validation:structure-growth": "node validation/scripts/subqg_structure_growth_validation.mjs",
+    "validation:empirical-gates": "node validation/scripts/empirical_gravity_gate_validation.mjs"
   },
   "keywords": [
     "quantum-gravity",

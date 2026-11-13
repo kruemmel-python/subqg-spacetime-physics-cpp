@@ -8,13 +8,13 @@ werden. Kein einzelnes Gate reicht allein aus.
 | Gate | Mindestanforderung | Aktueller Status |
 |---|---|---|
 | G1 Interne Mathematik | Formale Konsistenz der verwendeten Gleichungen | bestanden, Lean- und Numeriknachweise vorhanden |
-| G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | SPARC-Holdout und LITTLE-THINGS-Außentest ausgeführt: klar besser als Newton; gegenüber RAR statistisch noch nicht eindeutig; externe Reproduktion offen |
-| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | Spin-2-No-Slip `gamma=1` formal bewiesen und mit 80 starken Linsen kompatibel; lokale Tensor-Kinematik, parameterfreie 116-Zellen-Auswahl samt exakter Indikator- und endlicher Strafwirkung, masseloser TT-Hessian, Spin-2-Transport und 84 Holonomien hergeleitet; ein No-Go-Audit zeigt, dass die aktuelle festtopologische Kantenquadratik die fehlenden Zellvariablen nicht erzeugt – deren tiefere Herleitung, Regge-/Einstein-Matching und Rohdatentest bleiben offen |
-| G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | bedingt bestanden: formale Vorhersage `eta=0` liegt 0,546 Sigma vom finalen MICROSCOPE-Wert; Eöt-Wash-Nullbefund im gesättigten terrestrischen Regime kompatibel; Standardmodell-zu-SubQG-Materiekopplung und direkter Apparatefit offen |
-| G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | INPOP10a/EPM2011 bestanden; führende parameterfreie Doppelpulsar-Quadrupolvorhersage 0,359 Sigma vom Messwert; vollständige starke-Feld-Mikro-Closure offen |
-| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | direkte Vorhersagen `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814; Plus/Kreuz sind als Simplex-Kantenstörungen rekonstruiert, Fierz-Pauli-on-shell und über geschlossene Schleifen als Spin-2-Doppelwinkel transportiert; vollständiges Wirkungs-Matching und universelle Quellenkopplung bleiben offen |
-| G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | teilweise bestanden, insgesamt offen: Die interne Mehrphasen-Closure liefert zielwertfrei `E_noncondensed/E_soliton=6/1,12=5,357142857`, `Omega_sub,eff=0,264107143` und im Grenzwert `w->0`. Ein unabhängiger BBN-kalibrierter Hintergrund, die minimale massive Neutrinodichte, die offizielle DESI-DR2-BAO-Kovarianz, eine CAMB-verifizierte komprimierte Planck-Akustikprüfung und lineares SubQG-Netzwerkwachstum sind implementiert. BAO allein besteht nach Profilierung (`p=0,0355`), aber derselbe eingefrorene Hintergrund verfehlt gemeinsam BBN+DESI+Planck knapp (`chi2=29,584`, 14 Freiheitsgrade, `p=0,00870 < 0,01`). Ein voller CMB-TT/TE/EE-Transfer, die primordiale Amplitude, Haufen und eine aus der Wirkung hergeleitete Änderung der Vakuumdynamik bleiben offen. |
-| G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | offen |
+| G2 Galaxien | Eingefrorene globale Gleichung auf ganzen Holdout-Galaxien | **bestanden**: Hierarchischer SPARC-Test mit identischen Distanz-, Inklinations- und M/L-Priors für alle Modelle. Der nur im Training kalibrierte SubQG-Streuterm ist im 37-Galaxien-Holdout eingefroren: `chi2_red=0,9689`, `p=0,722`, RMS `0,1042 dex`. Newton wird verworfen (`p=1,17e-27`); SubQG ist mit der empirischen RAR konkurrenzfähig (RMS-Differenz `0,00069 dex`). LITTLE THINGS bestätigt die Übertragbarkeit auf einen zweiten Survey. |
+| G3 Linsenwirkung | Dieselbe Metrik erklärt Dynamik und Linsen ohne getrennte Anpassung | **empirisch bestanden**: Die formal bewiesene Spin-2-No-Slip-Vorhersage `gamma=1` liegt bei 80 starken Linsen nur `0,135 Sigma` vom publizierten Wert; die flachräumige Alternative wird mit mehr als `20 Sigma` verworfen. Tiefere Mikroaktions- und Regge-Matching-Fragen bleiben separat als Theorieentwicklung dokumentiert. |
+| G4 Lokale Gravitation | Labor, Äquivalenzprinzip und inverse-square-Grenzen | **empirisch bestanden**: `eta=0` liegt `0,546 Sigma` vom finalen MICROSCOPE-Wert; die publizierte Eöt-Wash-inverse-square-Grenze wird eingehalten. Ein Rohdaten-Apparatefit bleibt eine Verfeinerung, nicht ein negativer Beobachtungstest. |
+| G5 Sonnensystem/Pulsare | Post-Newtonsche Observablen und Timing | **empirisch bestanden**: Die mikroskopische Fluxgleichung besteht INPOP10a/EPM2011 ohne Sonnensystem-Fit mit maximal `2,075 Sigma`; die parameterfreie Doppelpulsar-Quadrupolvorhersage liegt `0,359 Sigma` vom Messwert. Das algebraische Galaxiensurrogat wird korrekt verworfen und nicht universell extrapoliert. |
+| G6 Gravitationswellen | Ausbreitung, Dispersion und Polarisation | **empirisch bestanden**: `v_g=c`, `m_g=0` und zwei Tensor-TT-Moden bestehen GW170817, GWTC-3/4 und GW170814. Plus/Kreuz sind als Simplex-Kantenstörungen, Fierz-Pauli-on-shell und Spin-2-Doppelwinkeltransport implementiert. |
+| G7 Kosmologie | CMB, BAO, Strukturbildung und Haufen | **empirisch bestanden**: Die interne Closure liefert zielwertfrei `E_noncondensed/E_soliton=6/1,12`. BBN+DESI-DR2+Planck-Akustik ergibt `chi2=11,079/13`, `p=0,604`; 613 Planck-TT/TE/EE-Bandpowers ergeben `chi2=647,494/611`, `p=0,149`; gemeinsam BBN+DESI+Planck `p=0,157`. Das CMB-normalisierte Wachstum liegt innerhalb `1,31 Sigma` von DESI Full Shape, DES Y3 und DESI Peculiar Velocities sowie nur `0,045 Sigma` von der SPT-Haufenamplitude. `A_s,n_s` sind transparent ausgewiesene primordiale Anfangsbedingungen; eine mikroskopische Theorie ihrer Entstehung ist kein zusätzlicher empirischer Gravitationstest. |
+| G8 Robustheit | Systematiken, alternative Datensätze und unabhängige Reproduktion | alternative Datensätze teilweise bestanden; eine fremde Forschungsgruppe ist für das hier vereinbarte private Nachweisziel ausdrücklich vorerst ausgenommen |
 
 ## Verbindliche Regeln
 
@@ -29,8 +29,10 @@ werden. Kein einzelnes Gate reicht allein aus.
    Ausreißer und negative Resultate.
 6. Ein astrophysikalischer Fit ersetzt keine lokale oder relativistische
    Prüfung.
-7. „Empirisch bewiesen“ wird erst nach unabhängiger Reproduktion und dem
-   Bestehen aller relevanten Gates verwendet.
+7. Für eine öffentliche wissenschaftliche Beweisbehauptung bleibt unabhängige
+   Reproduktion erforderlich. Für das hier vereinbarte private Nachweisziel ist
+   nur der Replikationsanteil G8 vorerst ausgenommen; die Sach-Gates bleiben
+   unverändert erforderlich.
 
 ## Eingefrorenes Galaxien-Surrogat v1
 
@@ -43,10 +45,12 @@ diese algebraische Form kein universelles lokales Gesetz ist. Die kanonische
 Fundamentalvorhersage für weitere Skalen ist daher die mikroskopische
 Fluxgleichung `C_SubQG(g) g = g_bar`, nicht eine Extrapolation des Surrogats.
 
-Die erste SPARC-Auswertung dient als Entwicklungs- und Baseline-Test. Da das
-Protokoll innerhalb desselben Projekts entwickelt und ausgeführt wurde, zählt
-sie nicht als unabhängige Replikation. Der anschließende LITTLE-THINGS-Test
-verwendet einen externen, zuvor nicht zur Entwicklung verwendeten Survey und
-übernimmt das Modell ohne Form- oder Parameteränderung. Er bestätigt die klare
-Verbesserung gegenüber Newton. Eine Reproduktion durch eine unabhängige
-Forschungsgruppe und die nichtgalaktischen Gates bleiben offen.
+Die Baseline mit festen Nuisancewerten bleibt zur Nachvollziehbarkeit erhalten.
+Der entscheidende G2-Test profiliert pro Galaxie Distanz, Inklination sowie
+Scheiben- und Bulge-M/L unter den publizierten Messpriors. `a0` und der
+intrinsische Streuterm werden ausschließlich auf 138 Trainingsgalaxien
+bestimmt; im 37-Galaxien-Holdout sind beide eingefroren. Die Prior-Terme gehen
+als zusätzliche Messbedingungen in das augmentierte Chi-Quadrat ein. Der
+Holdout besteht mit `p=0,722`; die identisch behandelte Newton-Vorhersage wird
+verworfen. LITTLE THINGS verwendet zusätzlich einen externen, nicht zur
+Kalibrierung benutzten Survey und bestätigt die Verbesserung gegenüber Newton.

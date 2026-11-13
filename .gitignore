@@ -1,5 +1,6 @@
 dist/
 validation/data/raw/
+validation/data/planck_plik_lite/
 cpp/build*/
 cpp/*.o
 *.obj
@@ -13,6 +14,8 @@ node_modules/
 .env.*
 *.log
 results/
+!validation/results/
+!validation/results/*.json
 coverage/
 __pycache__/
 *.pyc

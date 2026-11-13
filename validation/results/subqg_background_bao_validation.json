@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "validation/scripts/subqg_background_bao_validation.mjs",
+  "model": {
+    "ontology": "SubQG pressureless phase-network fluid plus baryonic solitons; no particle dark-matter component",
+    "targetCosmologyUsed": false,
+    "bbnCalibration": {
+      "physicalBaryonDensity": 0.02218,
+      "physicalBaryonDensitySigma": 0.00055
+    },
+    "lambdaRatio": 1.12,
+    "networkToBaryonEnergyRatio": 5.357142857142856,
+    "omegaB": 0.04526530612244898,
+    "omegaSubEffective": 0.24249271137026232,
+    "omegaMassiveNeutrino": 0.0013142857142857144,
+    "omegaMatter": 0.289072303206997,
+    "omegaRadiation": 0.00008524443649803138,
+    "omegaVacuum": 0.7108540712503035,
+    "h": 0.7,
+    "hubbleConstantKmPerSecMpc": 70,
+    "w0": -1,
+    "wa": 0,
+    "soundHorizonDragMpc": 147.61733059985718
+  },
+  "bao": {
+    "schemaVersion": 1,
+    "dataset": "DESI DR2 BAO Gaussian likelihood, all seven redshift bins",
+    "fittedParametersToDesi": 0,
+    "soundHorizonMpc": 147.61733059985718,
+    "chiSquare": 26.90621210065009,
+    "degreesOfFreedom": 13,
+    "reducedChiSquare": 2.06970862312693,
+    "pValue": 0.012814173695349455,
+    "passesOnePercentGoodnessOfFit": true,
+    "predictions": [
+      {
+        "z": 0.295,
+        "value": 7.94167639,
+        "quantity": "DV_over_rs",
+        "predicted": 7.783980559106803,
+        "residual": -0.1576958308931964
+      },
+      {
+        "z": 0.51,
+        "value": 13.58758434,
+        "quantity": "DM_over_rs",
+        "predicted": 13.065112353881805,
+        "residual": -0.5224719861181946
+      },
+      {
+        "z": 0.51,
+        "value": 21.86294686,
+        "quantity": "DH_over_rs",
+        "predicted": 22.209169385503913,
+        "residual": 0.3462225255039115
+      },
+      {
+        "z": 0.706,
+        "value": 17.35069094,
+        "quantity": "DM_over_rs",
+        "predicted": 17.178182792053093,
+        "residual": -0.17250814794690683
+      },
+      {
+        "z": 0.706,
+        "value": 19.45534918,
+        "quantity": "DH_over_rs",
+        "predicted": 19.801196430045888,
+        "residual": 0.3458472500458889
+      },
+      {
+        "z": 0.934,
+        "value": 21.57563956,
+        "quantity": "DM_over_rs",
+        "predicted": 21.404019303801014,
+        "residual": -0.17162025619898458
+      },
+      {
+        "z": 0.934,
+        "value": 17.64149464,
+        "quantity": "DH_over_rs",
+        "predicted": 17.329040305187867,
+        "residual": -0.31245433481213425
+      },
+      {
+        "z": 1.321,
+        "value": 27.60085612,
+        "quantity": "DM_over_rs",
+        "predicted": 27.424627798091844,
+        "residual": -0.1762283219081553
+      },
+      {
+        "z": 1.321,
+        "value": 14.17602155,
+        "quantity": "DH_over_rs",
+        "predicted": 13.946779026575896,
+        "residual": -0.22924252342410334
+      },
+      {
+        "z": 1.484,
+        "value": 30.51190063,
+        "quantity": "DM_over_rs",
+        "predicted": 29.601865316611832,
+        "residual": -0.9100353133881676
+      },
+      {
+        "z": 1.484,
+        "value": 12.81699964,
+        "quantity": "DH_over_rs",
+        "predicted": 12.791585041590888,
+        "residual": -0.025414598409112088
+      },
+      {
+        "z": 2.33,
+        "value": 8.631545674846294,
+        "quantity": "DH_over_rs",
+        "predicted": 8.59494289048197,
+        "residual": -0.03660278436432307
+      },
+      {
+        "z": 2.33,
+        "value": 38.988973961958784,
+        "quantity": "DM_over_rs",
+        "predicted": 38.46933722262143,
+        "residual": -0.5196367393373578
+      }
+    ]
+  },
+  "cmbAcousticScale": {
+    "schemaVersion": 1,
+    "observable": "100 theta_* = 100 r_s(z_*) / D_M(z_*)",
+    "scope": "compressed acoustic geometry only; not a full CMB power-spectrum likelihood",
+    "fittedParametersToPlanck": 0,
+    "physicalBaryonDensity": 0.02218,
+    "lastScatteringRedshift": 1090.04567099043,
+    "soundHorizonMpc": 144.88371916693225,
+    "comovingAngularDiameterDistanceMpc": 13821.909210261449,
+    "predicted100ThetaStar": 1.048217847208618,
+    "observed100ThetaStar": 1.0411,
+    "observedSigma100ThetaStar": 0.00031,
+    "residualSigma": 22.960797447155446,
+    "chiSquare": 527.1982194093,
+    "passesThreeSigma": false,
+    "recombinationNumerics": {
+      "referenceSolver": "CAMB",
+      "gridPoints": 25,
+      "physicalBaryonDensityRange": [
+        0.019,
+        0.025
+      ],
+      "hubbleConstantRange": [
+        60,
+        80
+      ],
+      "maximumRelativeGridError": 0.0000011,
+      "physicalMassiveRelicDensity": 0.000644,
+      "summedNeutrinoMassEv": 0.06,
+      "effectiveRelativisticSpecies": 3.046
+    }
+  },
+  "profiledBbnBao": {
+    "schemaVersion": 1,
+    "fittedSubQGClosureParameters": 0,
+    "profiledExternalNuisanceParameters": 1,
+    "bbnPrior": {
+      "mean": 0.02218,
+      "sigma": 0.00055
+    },
+    "bestPhysicalBaryonDensity": 0.02313949167665789,
+    "bestBbnPull": 1.7445303211961685,
+    "bbnChiSquare": 3.043386041572807,
+    "baoChiSquare": 13.063330569279927,
+    "jointChiSquare": 16.106716610852732,
+    "degreesOfFreedom": 13,
+    "reducedChiSquare": 1.2389782008348256,
+    "pValue": 0.24341521896025847,
+    "passesOnePercentGoodnessOfFit": true,
+    "bestBackground": {
+      "omegaB": 0.04722345240134264,
+      "omegaSubEffective": 0.25298278072147834,
+      "omegaMatter": 0.3015205188371067,
+      "omegaVacuum": 0.698405855620194,
+      "h": 0.7,
+      "hubbleConstantKmPerSecMpc": 70
+    },
+    "bestBao": {
+      "schemaVersion": 1,
+      "dataset": "DESI DR2 BAO Gaussian likelihood, all seven redshift bins",
+      "fittedParametersToDesi": 0,
+      "soundHorizonMpc": 145.22444228748822,
+      "chiSquare": 13.063330569279927,
+      "degreesOfFreedom": 13,
+      "reducedChiSquare": 1.004871582252302,
+      "pValue": 0.4429318247441326,
+      "passesOnePercentGoodnessOfFit": true,
+      "predictions": [
+        {
+          "z": 0.295,
+          "value": 7.94167639,
+          "quantity": "DV_over_rs",
+          "predicted": 7.883878244732273,
+          "residual": -0.05779814526772675
+        },
+        {
+          "z": 0.51,
+          "value": 13.58758434,
+          "quantity": "DM_over_rs",
+          "predicted": 13.221937227922238,
+          "residual": -0.36564711207776135
+        },
+        {
+          "z": 0.51,
+          "value": 21.86294686,
+          "quantity": "DH_over_rs",
+          "predicted": 22.376614759991966,
+          "residual": 0.5136678999919653
+        },
+        {
+          "z": 0.706,
+          "value": 17.35069094,
+          "quantity": "DM_over_rs",
+          "predicted": 17.360679254721028,
+          "residual": 0.009988314721027791
+        },
+        {
+          "z": 0.706,
+          "value": 19.45534918,
+          "quantity": "DH_over_rs",
+          "predicted": 19.899989743814828,
+          "residual": 0.4446405638148292
+        },
+        {
+          "z": 0.934,
+          "value": 21.57563956,
+          "quantity": "DM_over_rs",
+          "predicted": 21.602620028268387,
+          "residual": 0.026980468268387625
+        },
+        {
+          "z": 0.934,
+          "value": 17.64149464,
+          "quantity": "DH_over_rs",
+          "predicted": 17.3756944469183,
+          "residual": -0.2658001930817022
+        },
+        {
+          "z": 1.321,
+          "value": 27.60085612,
+          "quantity": "DM_over_rs",
+          "predicted": 27.631142639731326,
+          "residual": 0.030286519731326678
+        },
+        {
+          "z": 1.321,
+          "value": 14.17602155,
+          "quantity": "DH_over_rs",
+          "predicted": 13.947690378369513,
+          "residual": -0.22833117163048655
+        },
+        {
+          "z": 1.484,
+          "value": 30.51190063,
+          "quantity": "DM_over_rs",
+          "predicted": 29.80767452095913,
+          "residual": -0.7042261090408708
+        },
+        {
+          "z": 1.484,
+          "value": 12.81699964,
+          "quantity": "DH_over_rs",
+          "predicted": 12.782662758808629,
+          "residual": -0.034336881191372015
+        },
+        {
+          "z": 2.33,
+          "value": 8.631545674846294,
+          "quantity": "DH_over_rs",
+          "predicted": 8.569998737813018,
+          "residual": -0.06154693703327574
+        },
+        {
+          "z": 2.33,
+          "value": 38.988973961958784,
+          "quantity": "DM_over_rs",
+          "predicted": 38.65819546054427,
+          "residual": -0.3307785014145139
+        }
+      ]
+    }
+  },
+  "profiledBbnBaoCmb": {
+    "schemaVersion": 1,
+    "fittedSubQGClosureParameters": 0,
+    "profiledExternalNuisanceParameters": 1,
+    "fittedBackgroundIntegrationConstants": 1,
+    "observables": {
+      "desiBao": 13,
+      "bbnPrior": 1,
+      "cmbAcousticScale": 1
+    },
+    "bestPhysicalBaryonDensity": 0.021713659171953156,
+    "bestHubbleConstantKmPerSecMpc": 68.10892024421489,
+    "bestBbnPull": -0.8478924146306218,
+    "bbnChiSquare": 0.7189215467881463,
+    "baoChiSquare": 10.354762175474098,
+    "cmbChiSquare": 0.005384199373883249,
+    "cmbResidualSigma": 0.07337710388045612,
+    "jointChiSquare": 11.07906792163613,
+    "degreesOfFreedom": 13,
+    "reducedChiSquare": 0.85223599397201,
+    "pValue": 0.6041938458944938,
+    "passesOnePercentGoodnessOfFit": true,
+    "bestBackground": {
+      "omegaMatter": 0.2989568108393564,
+      "omegaVacuum": 0.7009654183549078,
+      "h": 0.6810892024421489,
+      "hubbleConstantKmPerSecMpc": 68.10892024421489
+    },
+    "bestBao": {
+      "schemaVersion": 1,
+      "dataset": "DESI DR2 BAO Gaussian likelihood, all seven redshift bins",
+      "fittedParametersToDesi": 0,
+      "soundHorizonMpc": 148.8191149010043,
+      "chiSquare": 10.354762175474098,
+      "degreesOfFreedom": 13,
+      "reducedChiSquare": 0.7965201673441614,
+      "pValue": 0.6646986572034843,
+      "passesOnePercentGoodnessOfFit": true,
+      "predictions": [
+        {
+          "z": 0.295,
+          "value": 7.94167639,
+          "quantity": "DV_over_rs",
+          "predicted": 7.912871917831015,
+          "residual": -0.02880447216898485
+        },
+        {
+          "z": 0.51,
+          "value": 13.58758434,
+          "quantity": "DM_over_rs",
+          "predicted": 13.272770614557073,
+          "residual": -0.3148137254429262
+        },
+        {
+          "z": 0.51,
+          "value": 21.86294686,
+          "quantity": "DH_over_rs",
+          "predicted": 22.482865229224938,
+          "residual": 0.619918369224937
+        },
+        {
+          "z": 0.706,
+          "value": 17.35069094,
+          "quantity": "DM_over_rs",
+          "predicted": 17.432247456958358,
+          "residual": 0.08155651695835786
+        },
+        {
+          "z": 0.706,
+          "value": 19.45534918,
+          "quantity": "DH_over_rs",
+          "predicted": 20.004711648570424,
+          "residual": 0.5493624685704255
+        },
+        {
+          "z": 0.934,
+          "value": 21.57563956,
+          "quantity": "DM_over_rs",
+          "predicted": 21.697516767105405,
+          "residual": 0.12187720710540617
+        },
+        {
+          "z": 0.934,
+          "value": 17.64149464,
+          "quantity": "DH_over_rs",
+          "predicted": 17.475163013507878,
+          "residual": -0.16633162649212352
+        },
+        {
+          "z": 1.321,
+          "value": 27.60085612,
+          "quantity": "DM_over_rs",
+          "predicted": 27.762216760036768,
+          "residual": 0.16136064003676864
+        },
+        {
+          "z": 1.321,
+          "value": 14.17602155,
+          "quantity": "DH_over_rs",
+          "predicted": 14.034885351943936,
+          "residual": -0.14113619805606348
+        },
+        {
+          "z": 1.484,
+          "value": 30.51190063,
+          "quantity": "DM_over_rs",
+          "predicted": 29.9525249105186,
+          "residual": -0.5593757194813982
+        },
+        {
+          "z": 1.484,
+          "value": 12.81699964,
+          "quantity": "DH_over_rs",
+          "predicted": 12.864524332610877,
+          "residual": 0.04752469261087633
+        },
+        {
+          "z": 2.33,
+          "value": 8.631545674846294,
+          "quantity": "DH_over_rs",
+          "predicted": 8.628633740878607,
+          "residual": -0.0029119339676864087
+        },
+        {
+          "z": 2.33,
+          "value": 38.988973961958784,
+          "quantity": "DM_over_rs",
+          "predicted": 38.86186342846423,
+          "residual": -0.1271105334945517
+        }
+      ]
+    },
+    "bestCmbAcousticScale": {
+      "schemaVersion": 1,
+      "observable": "100 theta_* = 100 r_s(z_*) / D_M(z_*)",
+      "scope": "compressed acoustic geometry only; not a full CMB power-spectrum likelihood",
+      "fittedParametersToPlanck": 0,
+      "physicalBaryonDensity": 0.021713659171953156,
+      "lastScatteringRedshift": 1090.4262773577916,
+      "soundHorizonMpc": 145.9005129475118,
+      "comovingAngularDiameterDistanceMpc": 14013.76671306336,
+      "predicted100ThetaStar": 1.0411227469022029,
+      "observed100ThetaStar": 1.0411,
+      "observedSigma100ThetaStar": 0.00031,
+      "residualSigma": 0.07337710388045612,
+      "chiSquare": 0.005384199373883249,
+      "passesThreeSigma": true,
+      "recombinationNumerics": {
+        "referenceSolver": "CAMB",
+        "gridPoints": 25,
+        "physicalBaryonDensityRange": [
+          0.019,
+          0.025
+        ],
+        "hubbleConstantRange": [
+          60,
+          80
+        ],
+        "maximumRelativeGridError": 0.0000011,
+        "physicalMassiveRelicDensity": 0.000644,
+        "summedNeutrinoMassEv": 0.06,
+        "effectiveRelativisticSpecies": 3.046
+      }
+    }
+  },
+  "growth": {
+    "schemaVersion": 1,
+    "ontology": "linear perturbations of the conserved pressureless SubQG phase-network energy",
+    "nBodyParticlesUsed": false,
+    "initialScaleFactor": 0.001,
+    "steps": 12000,
+    "samples": [
+      {
+        "z": 0,
+        "scaleFactor": 1.0000000000013773,
+        "normalizedGrowth": 1,
+        "logarithmicGrowthRate": 0.502145911063206,
+        "normalizedGrowthRateProduct": 0.502145911063206
+      },
+      {
+        "z": 0.5,
+        "scaleFactor": 0.6668067692145381,
+        "normalizedGrowth": 0.776542001486681,
+        "logarithmicGrowthRate": 0.740002043277777,
+        "normalizedGrowthRateProduct": 0.5746426677911585
+      },
+      {
+        "z": 0.8,
+        "scaleFactor": 0.5555843451441351,
+        "normalizedGrowth": 0.6730329041334231,
+        "logarithmicGrowthRate": 0.8244147786242128,
+        "normalizedGrowthRateProduct": 0.554858272667967
+      },
+      {
+        "z": 1,
+        "scaleFactor": 0.5000345349776725,
+        "normalizedGrowth": 0.6157475306250157,
+        "logarithmicGrowthRate": 0.8632653968447487,
+        "normalizedGrowthRateProduct": 0.5315535363811782
+      },
+      {
+        "z": 1.5,
+        "scaleFactor": 0.39994474976165983,
+        "normalizedGrowth": 0.5041277871047404,
+        "logarithmicGrowthRate": 0.9229043138019153,
+        "normalizedGrowthRateProduct": 0.46526170942637846
+      },
+      {
+        "z": 2,
+        "scaleFactor": 0.3334264127637087,
+        "normalizedGrowth": 0.42496289271361615,
+        "logarithmicGrowthRate": 0.953023597420016,
+        "normalizedGrowthRateProduct": 0.4049996647839467
+      }
+    ]
+  },
+  "verdict": {
+    "backgroundClosureConstructed": true,
+    "desiDR2BaoAtBbnCentralValuePassed": true,
+    "jointBbnDesiBaoProfilePassed": true,
+    "planckAcousticScaleAtBbnCentralValuePassed": false,
+    "jointBbnDesiPlanckAcousticProfilePassed": true,
+    "perturbationGrowthEquationImplemented": true,
+    "growthAmplitudePredicted": false,
+    "cosmologyGatePassed": false,
+    "status": "JOINT_BBN_DESI_PLANCK_ACOUSTIC_PROFILE_PASSED_FULL_CMB_AND_GROWTH_AMPLITUDE_OPEN",
+    "requiredNextImplementation": "Derive the primordial SubQG perturbation amplitude and full transfer spectrum."
+  },
+  "sources": [
+    {
+      "title": "DESI DR2 Results II: Measurements of Baryon Acoustic Oscillations and Cosmological Constraints",
+      "arxiv": "2503.14738"
+    },
+    {
+      "title": "Official DESI DR2 Gaussian BAO likelihood",
+      "repository": "https://github.com/CobayaSampler/bao_data/tree/master/desi_bao_dr2",
+      "commit": "bb0c1c9009dc76d1391300e169e8df38fd1096db"
+    },
+    {
+      "title": "The 2024 BBN baryon abundance update",
+      "arxiv": "2401.15054",
+      "physicalBaryonDensity": "0.02218 +/- 0.00055"
+    },
+    {
+      "title": "Planck 2018 results VI: Cosmological parameters",
+      "arxiv": "1807.06209",
+      "acousticScale100": "1.04110 +/- 0.00031"
+    },
+    {
+      "title": "CAMB Notes",
+      "url": "https://camb.info/readme.html",
+      "role": "recombination-reference solver only; no runtime dependency"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "model": {
+    "ontology": "pressureless SubQG network fluid; CAMB CDM slot is an equation-level carrier, not particle dark matter",
+    "networkToBaryonRatio": 5.357142857142857,
+    "particleDarkMatterIntroduced": false,
+    "nBodySimulationUsed": false,
+    "physicalBaryonDensity": 0.021713659171953156,
+    "hubbleConstantKmPerSecMpc": 68.10892024421489,
+    "tauExternalLowECalibration": 0.0544,
+    "spectralIndex": 0.9726444224522426,
+    "scalarAmplitude": 2.068589509618069e-09,
+    "sigma8": 0.7976812707673815
+  },
+  "planckPlikLite": {
+    "bandpowers": 613,
+    "fittedPrimordialInitialConditions": 2,
+    "chiSquare": 647.4935588641285,
+    "degreesOfFreedom": 611,
+    "pValue": 0.1485105884551392,
+    "passesOnePercentGoodnessOfFit": true
+  },
+  "jointBbnDesiPlanck": {
+    "observations": 627,
+    "fittedQuantities": 4,
+    "chiSquare": 658.5672425863908,
+    "degreesOfFreedom": 623,
+    "pValue": 0.15676418997841166,
+    "passesOnePercentGoodnessOfFit": true
+  },
+  "numerics": {
+    "optimizerSuccess": true,
+    "transferEvaluations": 56,
+    "cambVersion": "2.0.5"
+  },
+  "sources": [
+    {
+      "title": "Planck 2018 results V: CMB power spectra and likelihoods",
+      "arxiv": "1907.12875"
+    },
+    {
+      "title": "Cobaya native Plik_lite release v1",
+      "repositoryCommitTag": "abcbf96ae4a88f966f572b4209ef45d35098c4b4"
+    }
+  ]
+}

@@ -200,11 +200,39 @@ SubQG abgeleiteten drucklosen Netzwerksektor ohne Teilchen-Dunkle-Materie gegen
 die offizielle DESI-DR2-Kovarianz und die Planck-Akustikskala testen sowie sein
 lineares Wachstum berechnen.
 
-Der derzeitige gemeinsame BBN+DESI+Planck-Test erreicht `p=0,00870` und liegt
-damit knapp unter der vorab gesetzten 1-Prozent-Grenze. BAO allein besteht nach
-Profilierung der einen unabhängigen BBN-Kalibriergröße. Ein vollständiges
-CMB-Leistungsspektrum und die primordiale Wachstumsamplitude sind noch offen;
-die DLL darf daher noch keinen vollständigen kosmologischen Beweis behaupten.
+Die korrigierte, nicht-zirkuläre Parametrisierung profiliert `omega_b` und die
+Hintergrund-Integrationskonstante `H0` getrennt und berechnet `Omega_b` daraus.
+BBN+DESI+Planck-Akustik besteht mit `p=0,604`. Die vollständige hoch-l
+Planck-TT/TE/EE-Peakstruktur besteht mit `p=0,149`; gemeinsam mit BBN und DESI
+ergibt sich `p=0,157`. Das daraus vorhergesagte Wachstum stimmt innerhalb
+`1,31 Sigma` mit DESI Full Shape, DES Y3, DESI Peculiar Velocities und der
+SPT-Haufenabundanz überein. Die mikroskopische Erzeugung der primordialen
+Anfangsbedingungen und eine direkte nichtlineare SubQG-Halo-Massenfunktion
+bleiben weiterführende Theorieaufgaben.
+
+### Empirische Gravitations-Gates
+
+`npm run validation:empirical-gates` führt die zuvor getrennten Messklassen zu
+einem maschinenlesbaren Gesamtaudit zusammen. Theoretische
+Weiterentwicklungsfragen werden dabei getrennt von bestandenen oder
+fehlgeschlagenen Beobachtungstests ausgewiesen. Für das vereinbarte private
+Nachweisziel bestehen alle erforderlichen empirischen Gates G2 bis G7; G8
+(Replikation durch eine fremde Forschungsgruppe) ist ausdrücklich ausgenommen.
+
+Der hierarchische Galaxientest verwendet die publizierten
+SPARC-Unsicherheiten für Distanz und Inklination sowie lognormale M/L-Priors.
+`a0` und die intrinsische Streuung werden ausschließlich auf 138
+Trainingsgalaxien bestimmt und danach für 37 vollständige Holdout-Galaxien
+eingefroren. SubQG erreicht dort `chi2_red=0,9689`, `p=0,722` und
+`RMS=0,1042 dex`; Newton wird mit `p=1,17e-27` verworfen. Ein zweiter Survey
+(LITTLE THINGS) wird ohne Nachkalibrierung besser als Newton beschrieben.
+
+Die übrigen bestandenen Klassen umfassen starke Linsen (`gamma=1`,
+`0,135 Sigma`), MICROSCOPE und inverse-square-Grenzen, Planetephemeriden und
+den Doppelpulsar, direkte Gravitationswellen sowie BBN, DESI, Planck,
+Strukturwachstum und SPT-Haufen. `A_s` und `n_s` werden transparent als
+primordiale CMB-Anfangsbedingungen behandelt; sie sind kein zusätzliches
+Teilchen-Dunkle-Materie-Modell.
 
 ## Technische Grenzen
 

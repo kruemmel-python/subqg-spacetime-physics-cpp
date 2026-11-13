@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "validation/scripts/empirical_gravity_gate_validation.mjs",
+  "scope": "Private empirical gravity evidence target; independent external group replication G8 explicitly waived by the project owner.",
+  "modelIdentity": {
+    "galaxyRegime": "SubQG dual-strain surrogate plus canonical microscopic flux law",
+    "relativisticRegime": "SubQG massless spin-2 no-slip closure",
+    "cosmologicalRegime": "pressureless SubQG phase-network fluid with ratio 6/1.12",
+    "particleDarkMatterIntroduced": false
+  },
+  "gates": {
+    "G2_galaxies": {
+      "passed": true,
+      "evidence": {
+        "sparcHoldoutPValue": 0.7220358889325658,
+        "sparcHoldoutReducedChiSquare": 0.9688756371221448,
+        "littleThingsSubqgBetterThanNewtonProbability": 1
+      }
+    },
+    "G3_lensing": {
+      "passed": true,
+      "evidence": {
+        "predictedPpnGamma": 1,
+        "strongLensResidualSigma": 0.13513513513513525,
+        "flatSpatialMetricRejected": true
+      }
+    },
+    "G4_localGravity": {
+      "passed": true,
+      "evidence": {
+        "microscopeResidualSigma": 0.5462677805469223,
+        "inverseSquareCompatible": true
+      }
+    },
+    "G5_solarSystemAndPulsar": {
+      "passed": true,
+      "evidence": {
+        "maximumPlanetaryResidualSigma": 2.0742049469964665,
+        "doublePulsarResidualSigma": -0.35921753665340106
+      }
+    },
+    "G6_gravitationalWaves": {
+      "passed": true,
+      "evidence": {
+        "speedCompatible": true,
+        "dispersionCompatible": true,
+        "polarizationCompatible": true
+      }
+    },
+    "G7_cosmology": {
+      "passed": true,
+      "evidence": {
+        "bbnDesiAcousticPValue": 0.6041938458944938,
+        "planckTtTeEePValue": 0.1485105884551392,
+        "jointBbnDesiPlanckPValue": 0.15676418997841166,
+        "independentLateTimeStructurePassed": true,
+        "clusterAbundanceResidualSigma": 0.04459226159109017
+      },
+      "initialConditionPolicy": "A_s and n_s are CMB-calibrated primordial initial conditions, not an additional late-time gravity law or particle-dark-matter component."
+    }
+  },
+  "excludedGate": {
+    "id": "G8_externalReplication",
+    "waived": true,
+    "note": "This waiver is valid only for the private project completion criterion, not for a public community consensus claim."
+  },
+  "verdict": {
+    "requiredEmpiricalGates": [
+      "G2_galaxies",
+      "G3_lensing",
+      "G4_localGravity",
+      "G5_solarSystemAndPulsar",
+      "G6_gravitationalWaves",
+      "G7_cosmology"
+    ],
+    "passedRequiredEmpiricalGates": [
+      "G2_galaxies",
+      "G3_lensing",
+      "G4_localGravity",
+      "G5_solarSystemAndPulsar",
+      "G6_gravitationalWaves",
+      "G7_cosmology"
+    ],
+    "failedRequiredEmpiricalGates": [],
+    "allRequiredEmpiricalGatesPassed": true
+  },
+  "interpretation": {
+    "empiricalResult": "Within the declared gates and their stated likelihoods, the same SubQG gravity framework is compatible with all required real-universe measurement classes.",
+    "notClaimed": "Logical uniqueness over every conceivable alternative theory and independent community replication are not claimed by this computation.",
+    "theoryDevelopmentStatus": "Microscopic derivations marked open in component audits are theory-completion questions; they are reported separately and are not silently converted into failed observational tests."
+  }
+}

@@ -4,10 +4,12 @@ $root = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $raw = Join-Path $root 'validation\data\raw'
 $archive = Join-Path $raw 'SPARC_Rotmod_LTG.zip'
 $rar = Join-Path $raw 'SPARC_RAR.mrt'
+$catalog = Join-Path $raw 'SPARC_Lelli2016c.mrt'
 $expanded = Join-Path $raw 'SPARC_Rotmod_LTG'
 
 $expectedArchive = '0A80CC90714828CC28B7DD57923576714D209F2490328C087C4A4AD607FAF588'
 $expectedRar = '24AA7059DAB7FA44787F7C11191052489899819370F6508621674769F3B72833'
+$expectedCatalog = '5AA0501F6B0D881FA579030E315E7B5B6EF561A5BD3A07472F9929C7E5728243'
 
 function Get-Sha256([string] $Path) {
     $stream = [System.IO.File]::OpenRead($Path)
@@ -34,14 +36,21 @@ if (-not (Test-Path -LiteralPath $archive)) {
 if (-not (Test-Path -LiteralPath $rar)) {
     Invoke-WebRequest -Uri 'https://astroweb.cwru.edu/SPARC/RAR.mrt' -OutFile $rar
 }
+if (-not (Test-Path -LiteralPath $catalog)) {
+    Invoke-WebRequest -Uri 'https://zenodo.org/records/16284118/files/SPARC_Lelli2016c.mrt?download=1' -OutFile $catalog
+}
 
 $archiveHash = Get-Sha256 $archive
 $rarHash = Get-Sha256 $rar
+$catalogHash = Get-Sha256 $catalog
 if ($archiveHash -ne $expectedArchive) {
     throw "SPARC archive hash mismatch: $archiveHash"
 }
 if ($rarHash -ne $expectedRar) {
     throw "SPARC RAR hash mismatch: $rarHash"
+}
+if ($catalogHash -ne $expectedCatalog) {
+    throw "SPARC catalog hash mismatch: $catalogHash"
 }
 
 if (-not (Test-Path -LiteralPath $expanded)) {

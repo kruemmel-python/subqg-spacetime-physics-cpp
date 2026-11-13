@@ -236,6 +236,7 @@ export function auditDesiDR2Bao(background: any, observations: any[], covariance
 export function profileBbnCalibratedDesiBao(options?: any): any;
 export function profileBbnDesiPlanckAcousticScale(options?: any): any;
 export function evolveSubQGLinearGrowth(background: any, options?: any): any;
+export function auditSubQGStructureAmplitude(background: any, options?: any): any;
 export function measureSubstrateClusteringDynamics(options?: any): any;
 export function measureSubstrateClusteringDynamicsDefault(): any;
 

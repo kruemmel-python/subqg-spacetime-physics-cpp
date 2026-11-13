@@ -19,6 +19,17 @@ Zusätzliche RAR-Daten:
 - SHA-256:
   `24AA7059DAB7FA44787F7C11191052489899819370F6508621674769F3B72833`
 
+Galaxien-Metadaten für den hierarchischen Likelihood-Test:
+
+- Datei: `SPARC_Lelli2016c.mrt` (175 Galaxien; `D`, `e_D`, `Inc`, `e_Inc`,
+  Qualitätsflag)
+- archivierter Primärdatensatz: <https://doi.org/10.5281/zenodo.16284118>
+- SHA-256:
+  `5AA0501F6B0D881FA579030E315E7B5B6EF561A5BD3A07472F9929C7E5728243`
+- Nuisance-Transformationen und Priors: Li et al., *A&A* 615, A3 (2018),
+  <https://arxiv.org/abs/1803.00022>: Gauß-Priors für Distanz und Inklination,
+  lognormale M/L-Priors um 0,5 beziehungsweise 0,7 mit 0,1 dex Streuung.
+
 Die Daten sind externe wissenschaftliche Primärdaten. Bei Veröffentlichungen
 müssen die SPARC-Masterpublikation und gegebenenfalls die in `Table1.mrt`
 aufgeführten ursprünglichen Rotationskurvenquellen zitiert werden.

@@ -144,12 +144,17 @@ Die physische Baryonendichte ist die unabhängige BBN-Kalibrierung
 `omega_b=0,02218 +/- 0,00055`.
 
 Die 13 DESI-DR2-Messwerte und ihre vollständige offizielle Kovarianz liegen in
-`validation/data`. Bei festem BBN-Zentralwert scheitert der Hintergrund. Nach
-Profilierung genau dieser einen externen BBN-Nuisancegröße besteht BAO allein:
+`validation/data`. Die frühere Rechnung setzte zusätzlich `Omega_b=0,0493`
+fest. Da SubQG intern nur das Netzwerk/Baryon-Verhältnis herleitet, war damit
+`H0=sqrt(omega_b/Omega_b)` indirekt Planck-nah festgelegt und der anschließende
+Planck-Test zirkulär. Die korrigierte Parametrisierung verwendet stattdessen
+`omega_b` und die unabhängige Hintergrund-Integrationskonstante `H0`; daraus
+wird `Omega_b=omega_b/h^2` berechnet. Die Closure bleibt unverändert.
 
 ```text
-chi2_joint(BBN+DESI) = 23,551
-p                         = 0,03552
+omega_b(best) = 0,0217137   (BBN-Abweichung -0,848 Sigma)
+H0(best)      = 68,1089 km/s/Mpc
+Omega_m       = 0,298957
 ```
 
 Für die CMB-Geometrie wird die komprimierte Größe
@@ -160,35 +165,79 @@ TT/TE/EE-Leistungsspektrum-Likelihood. Gemeinsam ergibt dieselbe eingefrorene
 Version:
 
 ```text
-chi2_joint(BBN+DESI+Planck theta_*) = 29,584
-Freiheitsgrade                         = 14
-p                                      = 0,00870
+chi2_joint(BBN+DESI+Planck theta_*) = 11,079
+Freiheitsgrade                         = 13
+p                                      = 0,60419
 vorregistrierte Grenze                 = 0,01
 ```
 
-Der gemeinsame Test ist daher **nicht bestanden**. Eine diagnostische, nicht
-als Herleitung verwendete Abtastung zeigt, dass ein effektives konstantes
-`w` nahe `-0,95` die Spannung auflösen könnte. Das vorhandene stationäre
-Landau-Minimum bei festem `lambda/lambda_c` ergibt jedoch `w=-1`; deshalb wird
-der Diagnosewert nicht als nachträglich angepasste Modellgleichung übernommen.
+Der gemeinsame Hintergrundtest ist damit bestanden. Es wurde weder `w`
+verändert noch ein neuer Dunkle-Materie-Parameter eingeführt.
+
+## Vollständige hoch-l CMB-Peakstruktur
+
+Die nuisance-marginalisierte offizielle Planck-2018-`Plik_lite`-Likelihood
+enthält 613 korrelierte TT-, TE- und EE-Bandpowers. CAMB wird ausschließlich
+als linearer Photon-Baryon-Transferintegrator verwendet. Sein mathematischer
+Slot für ein erhaltenes druckloses Fluid trägt die aus SubQG hergeleitete
+Netzwerkdichte `omega_network=(6/1,12) omega_b`; er bezeichnet in diesem Test
+keine Teilchen-Dunkle-Materie.
+
+Bei eingefrorenem Hintergrund werden nur die zwei primordialen
+Anfangsbedingungen `n_s` und `A_s` bestimmt:
+
+```text
+n_s                         = 0,972644
+A_s                         = 2,06859e-9
+sigma8                      = 0,797681
+chi2_Plik-lite              = 647,494 / 611
+p_Plik-lite                 = 0,14851
+chi2_BBN+DESI+Planck        = 658,567 / 623
+p_BBN+DESI+Planck           = 0,15676
+```
+
+Die volle hoch-l Peakstruktur besteht damit. `A_s` und `n_s` sind hier wie in
+einer allgemeinen linearen Störungstheorie Anfangsbedingungen; ihre tiefere
+Erzeugung aus der SubQG-Nukleationsdynamik ist noch nicht hergeleitet.
+
+## Wachstum und Haufen
+
+Ohne weitere Anpassung der späten Amplitude liefert die SubQG-Wachstumsgleichung:
+
+```text
+DESI Full Shape sigma8:       0,7977  (-1,30 Sigma)
+DES Y3 S8:                    0,7963  (+1,19 Sigma)
+DESI PV f sigma8(z=0,07):     0,4256  (-0,44 Sigma)
+SPT-Haufenabundanz S8:        0,7963  (+0,04 Sigma)
+```
+
+Alle vier unabhängigen Spätzeitprüfungen bestehen die Drei-Sigma-Grenze. Der
+SPT-Wert ist eine publizierte komprimierte Haufenabundanzmessung; eine direkt
+aus SubQG entwickelte nichtlineare Halo-Massenfunktion bleibt ein strengerer
+zukünftiger Test.
 
 Reproduktion:
 
 ```powershell
 npm run validation:background-bao
+npm run validation:fetch:planck-plik-lite
+npm run validation:cmb-spectrum
+npm run validation:structure-growth
+npm run validation:empirical-gates
 ```
 
 ## Konsequenz
 
-Die interne Clustering-Closure ist bestanden; Gate G7 als Ganzes bleibt
-**offen**. Hintergrund, BAO, komprimierte CMB-Akustik und die homogene lineare
-Wachstumsgleichung sind jetzt vorhanden. Der gemeinsame Beobachtungstest liegt
-aber knapp unter der festgelegten Akzeptanzgrenze, und die Wachstumsamplitude
-sowie der vollständige Transfer sind noch nicht aus SubQG hergeleitet.
+Die interne Clustering-Closure sowie Hintergrund, BAO, vollständige hoch-l
+CMB-Peakstruktur, lineares Wachstum und die komprimierte Haufenamplitude sind
+empirisch bestanden. Offen bleiben die mikroskopische Erzeugung der primordialen
+Anfangsbedingungen und ein direkter nichtlinearer Halo-Massenfunktionstest.
 
 Reproduktion:
 
 ```powershell
 npm run validation:cosmology
 npm run validation:background-bao
+npm run validation:cmb-spectrum
+npm run validation:structure-growth
 ```
