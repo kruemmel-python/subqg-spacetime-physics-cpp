@@ -134,17 +134,61 @@ normierten Graphspektrums wie `a^-2`; die nichtlinearen Terme verdünnen sich,
 und für den dominanten quadratischen Massenterm liefert der zeitgemittelte
 Virialsatz `<K>=<V>`. Daher gilt intern `lim_(a->infinity) w=0`.
 
+## Beobachtungs-Hintergrund: BBN, DESI DR2 und Planck-Akustik
+
+Die fehlende Hintergrundrechnung ist nun als eigenständiges Modul umgesetzt.
+Sie verwendet die intern hergeleitete drucklose Netzwerkenergie, baryonische
+Solitonen, Photonen, relativistische Spezies und die minimale bekannte
+Neutrinomasse. Ein kalter Teilchen-Dunkle-Materie-Sektor wird nicht eingeführt.
+Die physische Baryonendichte ist die unabhängige BBN-Kalibrierung
+`omega_b=0,02218 +/- 0,00055`.
+
+Die 13 DESI-DR2-Messwerte und ihre vollständige offizielle Kovarianz liegen in
+`validation/data`. Bei festem BBN-Zentralwert scheitert der Hintergrund. Nach
+Profilierung genau dieser einen externen BBN-Nuisancegröße besteht BAO allein:
+
+```text
+chi2_joint(BBN+DESI) = 23,551
+p                         = 0,03552
+```
+
+Für die CMB-Geometrie wird die komprimierte Größe
+`100 theta_*=100 r_s(z_*)/D_M(z_*)` geprüft. Die Rekombinationsrechnung ist
+über 25 CAMB-Punkte im gesamten verwendeten BBN-Bereich validiert; der maximale
+relative Surrogatfehler beträgt `1,1e-6`. Das ist ausdrücklich keine
+TT/TE/EE-Leistungsspektrum-Likelihood. Gemeinsam ergibt dieselbe eingefrorene
+Version:
+
+```text
+chi2_joint(BBN+DESI+Planck theta_*) = 29,584
+Freiheitsgrade                         = 14
+p                                      = 0,00870
+vorregistrierte Grenze                 = 0,01
+```
+
+Der gemeinsame Test ist daher **nicht bestanden**. Eine diagnostische, nicht
+als Herleitung verwendete Abtastung zeigt, dass ein effektives konstantes
+`w` nahe `-0,95` die Spannung auflösen könnte. Das vorhandene stationäre
+Landau-Minimum bei festem `lambda/lambda_c` ergibt jedoch `w=-1`; deshalb wird
+der Diagnosewert nicht als nachträglich angepasste Modellgleichung übernommen.
+
+Reproduktion:
+
+```powershell
+npm run validation:background-bao
+```
+
 ## Konsequenz
 
-Die interne Clustering-Closure ist damit bestanden; Gate G7 als Ganzes bleibt
-**offen**. Der MUSE-Zusammenfassungsparameter entscheidet es nicht.
-Vor Aussagen zu CMB, BAO oder Strukturbildung müssen der direkte
-Beschleunigungsdatentest sowie `H(z)`, `a0(z)` und das Wachstum kosmologischer
-Störungen aus einer SubQG-Hintergrund- und Störungsgleichung hergeleitet werden.
-Eingesetzte Lambda-CDM-Parameter sind keine SubQG-Vorhersage.
+Die interne Clustering-Closure ist bestanden; Gate G7 als Ganzes bleibt
+**offen**. Hintergrund, BAO, komprimierte CMB-Akustik und die homogene lineare
+Wachstumsgleichung sind jetzt vorhanden. Der gemeinsame Beobachtungstest liegt
+aber knapp unter der festgelegten Akzeptanzgrenze, und die Wachstumsamplitude
+sowie der vollständige Transfer sind noch nicht aus SubQG hergeleitet.
 
 Reproduktion:
 
 ```powershell
 npm run validation:cosmology
+npm run validation:background-bao
 ```

@@ -23,7 +23,8 @@
     "validation:gravitational-waves": "node validation/scripts/gravitational_wave_validation.mjs",
     "validation:simplex-tensor-bridge": "node validation/scripts/simplex_tensor_bridge.mjs",
     "validation:collective-spin2-hessian": "node validation/scripts/collective_spin2_hessian.mjs",
-    "validation:cosmology": "node validation/scripts/cosmology_validation.mjs"
+    "validation:cosmology": "node validation/scripts/cosmology_validation.mjs",
+    "validation:background-bao": "node validation/scripts/subqg_background_bao_validation.mjs"
   },
   "keywords": [
     "quantum-gravity",

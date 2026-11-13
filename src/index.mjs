@@ -123,6 +123,15 @@ export {
   deriveSubstrateClusteringClosureDefault
 } from './modules/subqg_cosmology.mjs';
 export {
+  deriveSubQGFluidBackground,
+  photonBaryonDragHorizon,
+  auditPlanckAcousticScale,
+  auditDesiDR2Bao,
+  profileBbnCalibratedDesiBao,
+  profileBbnDesiPlanckAcousticScale,
+  evolveSubQGLinearGrowth
+} from './modules/subqg_cosmological_background.mjs';
+export {
   measureSubstrateClusteringDynamics,
   measureSubstrateClusteringDynamicsDefault
 } from './modules/subqg_substrate_clustering.mjs';

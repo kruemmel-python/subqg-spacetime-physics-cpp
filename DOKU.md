@@ -192,9 +192,19 @@ insbesondere `deriveGaugeReducedPhaseSpaceClosure()`,
 `measureGaugeReducedClusteringDynamics()` und
 `deriveSubstrateClusteringClosure()`.
 
-Diese interne Closure ersetzt keine kosmologische Beobachtungsprüfung. Eine
-vollständige Vorhersage von CMB, BAO und Störungswachstum ist weiterhin ein
-separater offener Implementierungsschritt.
+Zusätzlich stehen nun `deriveSubQGFluidBackground()`,
+`photonBaryonDragHorizon()`, `auditDesiDR2Bao()`,
+`auditPlanckAcousticScale()`, `profileBbnDesiPlanckAcousticScale()` und
+`evolveSubQGLinearGrowth()` zur Verfügung. Damit kann die Bibliothek den aus
+SubQG abgeleiteten drucklosen Netzwerksektor ohne Teilchen-Dunkle-Materie gegen
+die offizielle DESI-DR2-Kovarianz und die Planck-Akustikskala testen sowie sein
+lineares Wachstum berechnen.
+
+Der derzeitige gemeinsame BBN+DESI+Planck-Test erreicht `p=0,00870` und liegt
+damit knapp unter der vorab gesetzten 1-Prozent-Grenze. BAO allein besteht nach
+Profilierung der einen unabhängigen BBN-Kalibriergröße. Ein vollständiges
+CMB-Leistungsspektrum und die primordiale Wachstumsamplitude sind noch offen;
+die DLL darf daher noch keinen vollständigen kosmologischen Beweis behaupten.
 
 ## Technische Grenzen
 
