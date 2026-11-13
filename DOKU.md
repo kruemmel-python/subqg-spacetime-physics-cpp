@@ -179,6 +179,23 @@ Während der Simulation können folgende Werte ausgelesen werden:
 Das eignet sich sowohl für Spiele als auch für SubQG-Experimente und
 Visualisierungen.
 
+### Gauge-reduzierte kosmologische Clustering-Closure
+
+Der Forschungskern enthält nun außerdem eine zielwertfreie interne
+Clustering-Prüfung. Aus `k*=4` werden durch Entfernen der einheitlichen
+U(1)-Eichrichtung drei relative Phasen und drei konjugierte Impulse. Bei
+`lambda/lambda_c=1,12` ergibt das
+`E_noncondensed/E_soliton=6/1,12=5,357142857`. Die kovariant expandierende
+Mehrphasendynamik erhält die Noether-Ladung numerisch bis unter `4e-14` und
+zeigt mit wachsendem kausalem Volumen den Übergang zu `w->0`. Aufrufbar sind
+insbesondere `deriveGaugeReducedPhaseSpaceClosure()`,
+`measureGaugeReducedClusteringDynamics()` und
+`deriveSubstrateClusteringClosure()`.
+
+Diese interne Closure ersetzt keine kosmologische Beobachtungsprüfung. Eine
+vollständige Vorhersage von CMB, BAO und Störungswachstum ist weiterhin ein
+separater offener Implementierungsschritt.
+
 ## Technische Grenzen
 
 Aktuell gilt:
@@ -210,4 +227,3 @@ Die Schnittstelle zum kanonischen FPV6-Kern befindet sich in:
 ```text
 cpp/include/subqg/canonical_runtime.hpp
 ```
-

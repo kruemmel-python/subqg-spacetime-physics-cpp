@@ -56,7 +56,8 @@ int main(){
   require(background.find("\"uniqueGlobalRelationalTimeDerived\":false")!=std::string::npos,"global relational time caveat");
   require(background.find("\"friedmannEquationDerived\":false")!=std::string::npos,"Friedmann derivation caveat");
   std::string clusteringClosure=runtime.invoke("subqg_cosmology","deriveSubstrateClusteringClosureDefault");
-  require(clusteringClosure.find("\"substrateClusteringClosureDerived\":false")!=std::string::npos,"clustering closure remains an audited postulate");
+  require(clusteringClosure.find("\"substrateClusteringClosureDerived\":true")!=std::string::npos,"gauge-reduced clustering closure is exposed by the canonical runtime");
+  require(clusteringClosure.find("\"status\":\"SUBQG_INTERNAL_CLOSURE_DERIVED\"")!=std::string::npos,"canonical runtime exposes the derived internal closure status");
   require(clusteringClosure.find("\"algorithmUsesProposedTargetValues\":false")!=std::string::npos,"clustering dynamics must remain target blind");
   require(clusteringClosure.find("\"energyAndCausalVolumeMeasuredInSameEvolution\":true")!=std::string::npos,"joint clustering measurement must be preserved");
   auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");

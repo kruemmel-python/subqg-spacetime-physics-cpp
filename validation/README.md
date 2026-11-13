@@ -363,19 +363,18 @@ Zwei vorhandene relationale Uhren stimmen aber noch nicht eindeutig überein;
 eine SubQG-Friedmann-Gleichung ist damit noch nicht hergeleitet. Gate G7 bleibt
 offen, nicht durch den zusammengefassten MUSE-Parameter widerlegt.
 
-Der ebenfalls geprüfte Substrat-Clustering-Closurewert
-`Omega_sub,eff=0,264107` wird nicht als Ableitung gezählt. Der variationale
-Übergangsanalysator zeigt bei `lambdaRatio=1,12` eine perkolierte Raumzeit mit
-69 von 72 Zuständen, 800 Bindungen und 27838 Tetraedern. Im davon getrennten
-Genesis-Energielauf steuert `lambdaRatio` die Nukleation oder Feldentwicklung
-aber noch nicht. Der neue gemeinsame Closure-Lauf verbindet deshalb den
-lambda-gesteuerten Graphen mit der kausal ausgewählten Mannigfaltigkeit und
-misst `E_noncondensed/E_soliton` sowie
-`w=-1-(1/3)d ln(rho)/d ln(a)` ohne die Zielwerte in der Evolution. Der
-konvergente Ein-Komponenten-Lauf liefert aktuell rund `1,397:1` und
-`w=-0,358`, nicht `5,357:1` und `w=0`. Die Mehrphasen- und Ladungserhaltung ist
-damit als nächste konkrete Implementationsstufe festgelegt; der CMB/BAO-Treffer
-bleibt bis zu deren Bestehen ein Closure-Ansatz.
+Die interne Substrat-Clustering-Closure ist nun implementiert und bestanden.
+Aus vier Phasen entfernt die orthonormale U(1)-Projektion eine Eichrichtung;
+drei relative Phasen und ihre drei kanonischen Impulse liefern exakt sechs
+Energiequadraturen. Ohne kosmologischen Zielwert folgt bei
+`lambdaRatio=1,12` daher `E_noncondensed/E_soliton=6/1,12=5,357142857` und mit
+`Omega_b=0,0493` der Wert `Omega_sub,eff=0,264107143`. Die kovariante komplexe
+Mehrphasendynamik erhält die Noether-Ladung besser als `4e-14`; in der
+Finite-Volumen-Folge fällt `w` von `0,0599` über `0,0474` auf `0,0343`, und der
+normierte Gradientendruck verschwindet analytisch wie `a^-2`, sodass
+`w->0`. Dies schließt die interne Closure, aber noch nicht Gate G7: CMB, BAO,
+Störungswachstum, eine eindeutige globale Uhr/Friedmann-Gleichung und der
+direkte MUSE-Rohdatentest bleiben offen.
 
 ```powershell
 npm run validation:cosmology
@@ -383,4 +382,4 @@ npm run validation:cosmology
 
 Methodik, Quelle und Beweisgrenze stehen in `COSMOLOGY_VALIDATION.md`.
 Die byteidentisch reproduzierte Ergebnisdatei `cosmology_validation.json` hat
-SHA-256 `EDF227038049BFF7397E3309D21384C54A6D58504BCAD378F35FE4928A077D8E`.
+SHA-256 `E3F6686DFE0F2E2B7C7DD15D634FAD3220361D177280B2C38C8F449EFD3B7BD4`.

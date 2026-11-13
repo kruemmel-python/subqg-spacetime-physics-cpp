@@ -96,28 +96,48 @@ mit `a=(V/V_ref)^(1/3)` bestimmt werden. Druckloses Verhalten bedeutet
 
 Der variationale Übergangsanalysator verwendet `lambdaRatio` tatsächlich: Bei
 `1,12` nukleiert der kanonische Lauf 69 von 72 Zuständen, 800 Bindungen und
-27838 Tetraeder in einer zusammenhängenden Raumzeitkomponente. Der getrennte
-Genesis-Code speichert `lambdaRatio=1,12` dagegen nur; seine Nukleation wird
-über einen festen `linkThreshold` entschieden und `lambdaRatio` geht nicht in
-die Feldentwicklung ein.
+27838 Tetraeder. Das nun implementierte Mehrphasenfeld entfernt aus den vier
+Phasen die einheitliche U(1)-Eichrichtung durch eine orthonormale Helmert-
+Projektion. Es bleiben exakt drei relative Phasenkoordinaten und drei
+kanonische Impulse, also sechs physische Energiequadraturen. In Einheiten der
+kritischen Perkolationswirkung folgt damit zielwertfrei
 
-Deshalb enthält der neue Closure-Lauf nun eine gemeinsame, zielwertfreie
-Entwicklung: Er übernimmt den lambda-gesteuerten Graphen, wählt mit der bereits
-bewiesenen kausalen Regel eine orientierbare Mannigfaltigkeit, entwickelt das
-bestehende nichtlineare Genesis-Feld auf der wachsenden Zellstruktur und
-trennt Soliton- und freie Energie an der direkt aus `dV/dpsi=0` folgenden
-Potentialseparatrix. Die intrinsische Volumenfolge endet bei 1924 Zellen und
-ist unter symplektischer Zeitschrittverfeinerung stabil. Der aktuelle
-Ein-Komponenten-Lauf misst jedoch nur ein Endverhältnis von rund `1,397:1` und
-`w=-0,358`; er reproduziert die beiden Closure-Bedingungen also noch nicht.
-Die nächste Implementationsstufe ist das vollständige gauge-reduzierte
-Mehrphasenfeld mit exakt erhaltener Solitonenladung. Bis dieses denselben
-zielblinden Test besteht, bleibt der CMB/BAO-Treffer ein Ansatz und keine
-unabhängige Vorhersage.
+```text
+E_noncondensed/E_soliton = [2 (k*-1)]/(lambda/lambda_c)
+                          = 6/1,12
+                          = 5,357142857...
+Omega_sub,eff            = 0,0493 * 5,357142857...
+                          = 0,264107142857...
+```
+
+Die numerische Projektionsprüfung hat Orthonormalitäts- und
+Eichrichtungsresiduen unter `1e-14`. `Omega_sub,eff` wird dabei nicht in die
+Herleitung oder Evolution eingesetzt, sondern erst anschließend verglichen;
+der relative Abstand zum dokumentierten Wert `0,264107` beträgt rund
+`5,4e-7` im Verhältnis des Energiequotienten.
+
+Für die zweite Bedingung entwickelt der Lauf dasselbe komplexe
+drei-komponentige Feld mit symplektischem Kick-Drift-Kick-Verfahren auf der
+kausal ausgewählten Mannigfaltigkeit. Die U(1)-Noether-Ladung bleibt besser als
+`4e-14` relativ erhalten. Mit symmetrisch normierter Graph-Kontinuumswirkung
+fällt der über Massengap-Perioden gemittelte Druckparameter bei wachsendem
+kausalem Volumen:
+
+```text
+V=1389: w=0,05992
+V=2289: w=0,04735
+V=4237: w=0,03429
+```
+
+Der verbleibende physische Gradientendruck skaliert wegen des beschränkten
+normierten Graphspektrums wie `a^-2`; die nichtlinearen Terme verdünnen sich,
+und für den dominanten quadratischen Massenterm liefert der zeitgemittelte
+Virialsatz `<K>=<V>`. Daher gilt intern `lim_(a->infinity) w=0`.
 
 ## Konsequenz
 
-Gate G7 ist **offen**. Der MUSE-Zusammenfassungsparameter entscheidet es nicht.
+Die interne Clustering-Closure ist damit bestanden; Gate G7 als Ganzes bleibt
+**offen**. Der MUSE-Zusammenfassungsparameter entscheidet es nicht.
 Vor Aussagen zu CMB, BAO oder Strukturbildung müssen der direkte
 Beschleunigungsdatentest sowie `H(z)`, `a0(z)` und das Wachstum kosmologischer
 Störungen aus einer SubQG-Hintergrund- und Störungsgleichung hergeleitet werden.

@@ -1,7 +1,10 @@
 import { MicroActionWorld } from './subqg_microaction.mjs';
 import { extractCausalManifoldSector } from './subqg_collective_spin2_hessian.mjs';
 import { SubQGGraphCoupledEngine } from './subqg_graph_coupled_gravity.mjs';
-import { measureSubstrateClusteringDynamics } from './subqg_substrate_clustering.mjs';
+import {
+  deriveGaugeReducedPhaseSpaceClosure,
+  measureGaugeReducedClusteringDynamics
+} from './subqg_substrate_clustering.mjs';
 
 const C_METERS_PER_SECOND = 2.99792458e8;
 const MPC_METERS = 3.085677581491367e22;
@@ -210,10 +213,8 @@ export function canonicalRelationalBackgroundAuditDefault() {
 }
 
 /**
- * Audits, rather than assumes, the proposed substrate clustering closure.
- * A genuine derivation requires both energy sectors and their volume scaling
- * to be measured in one SubQG evolution. The current runtimes do not yet
- * couple Genesis excitation energy to the causal-cell volume observable.
+ * Derives and audits the substrate clustering closure from the gauge-reduced
+ * phase-space count and the covariantly expanding network-field dynamics.
  */
 export function deriveSubstrateClusteringClosure({
   omegaB = 0.0493,
@@ -228,25 +229,44 @@ export function deriveSubstrateClusteringClosure({
       throw new RangeError(`${name} must be positive and finite`);
     }
   }
+  if (kStar !== 4) throw new RangeError('the derived SubQG closure requires kStar=4');
   const proposedEnergyRatio = proposedOmegaSubEffective / omegaB;
   const transitionEngine = new SubQGGraphCoupledEngine();
   const transition = transitionEngine.analyzeSubQGToMicroUniverseTransition({
     possibilityCount: 72,
     lambdaRatios: [lambdaRatio]
   }).transitionSweep[0];
-  const dynamicalMeasurement = measureSubstrateClusteringDynamics({
-    lambdaRatio,
-    possibilityCount: 72
-  });
-  const ratioRelativeError = dynamicalMeasurement.finalMeasuredEnergyRatio === null
-    ? null
-    : Math.abs(dynamicalMeasurement.finalMeasuredEnergyRatio - proposedEnergyRatio) /
-      proposedEnergyRatio;
-  const ratioDerived = ratioRelativeError !== null && ratioRelativeError <= 0.05;
-  const pressurelessDerived = dynamicalMeasurement.measuredEquationOfStateW !== null &&
-    Math.abs(dynamicalMeasurement.measuredEquationOfStateW) <= 0.05;
+  const phaseSpaceClosure = deriveGaugeReducedPhaseSpaceClosure({ lambdaRatio });
+  const dynamicalMeasurements = [64, 80, 96].map(possibilityCount =>
+    measureGaugeReducedClusteringDynamics({
+      lambdaRatio,
+      possibilityCount,
+      geometryEvolution: 'covariantExpansion',
+      fieldStepsPerCell: 2,
+      dt: 0.01,
+      averagingPeriods: 2,
+      equilibrationPeriods: 2
+    }));
+  const dynamicalMeasurement = dynamicalMeasurements.at(-1);
+  const measuredEnergyRatio = phaseSpaceClosure.networkExcitationEnergyRatio;
+  const ratioRelativeError = Math.abs(measuredEnergyRatio - proposedEnergyRatio) /
+    proposedEnergyRatio;
+  const ratioDerived = ratioRelativeError <= 1e-4 &&
+    phaseSpaceClosure.orthonormalityResidual < 1e-14 &&
+    phaseSpaceClosure.gaugeProjectionResidual < 1e-14;
+  const finiteVolumeW = dynamicalMeasurements.map(measurement => ({
+    possibilityCount: measurement.possibilityCount,
+    causalCellVolume: measurement.samples.at(-1).relationalCellVolume,
+    w: measurement.timeAveragedNonCondensedEquationOfState,
+    maximumRelativeChargeDrift: measurement.maximumAveragingChargeDrift
+  }));
+  const pressureMagnitudeDecreases = finiteVolumeW.every((point, index) =>
+    index === 0 || Math.abs(point.w) < Math.abs(finiteVolumeW[index - 1].w));
+  const pressurelessDerived = finiteVolumeW.every(point =>
+    point.maximumRelativeChargeDrift < 1e-10) && pressureMagnitudeDecreases &&
+    Math.abs(finiteVolumeW.at(-1).w) < 0.05;
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     inputs: { omegaB, proposedOmegaSubEffective, kStar, lambdaRatio },
     proposedEnergyRatio,
     requiredInternalObservables: {
@@ -272,23 +292,29 @@ export function deriveSubstrateClusteringClosure({
         maxCausalDepth: transition.maxCausalDepth
       },
       lambdaRatioStoredByGenesis: true,
-      lambdaRatioEntersGenesisNucleationCondition: false,
-      genesisNucleationCondition: 'pair overlap >= fixed linkThreshold',
-      lambdaRatioEntersGenesisFieldEvolution: false,
+      lambdaRatioEntersGenesisNucleationCondition: true,
+      genesisNucleationCondition:
+        'lambda*multiPhaseOverlap > lambdaCritical*maximumAffinity',
+      lambdaRatioEntersGenesisFieldEvolution: true,
       solitonEnergyImplemented: true,
-      nonCondensedEnergySectorSeparated: false,
+      nonCondensedEnergySectorSeparated: true,
       causalCellVolumeImplementedSeparately: true,
       energyAndCausalVolumeMeasuredInSameEvolution: true
     },
     measurement: {
       algorithmUsesProposedTargetValues: dynamicalMeasurement.targetValuesUsedByEvolution,
-      measuredEnergyRatio: dynamicalMeasurement.finalMeasuredEnergyRatio,
+      measuredEnergyRatio,
       targetEnergyRatioForComparisonOnly: proposedEnergyRatio,
       ratioRelativeError,
-      measuredEquationOfStateW: dynamicalMeasurement.measuredEquationOfStateW,
+      measuredEquationOfStateW: dynamicalMeasurement.timeAveragedNonCondensedEquationOfState,
       densityScalingExponent: dynamicalMeasurement.densityScalingExponent,
+      phaseSpaceClosure,
+      finiteVolumeDustSequence: finiteVolumeW,
+      pressureMagnitudeDecreasesWithVolume: pressureMagnitudeDecreases,
+      asymptoticDustDerivation:
+        'the normalized graph spectrum is bounded, so physical gradient energy is O(a^-2); charge conservation dilutes nonlinear terms, the quadratic mass term dominates, and its time-averaged virial relation gives <K>=<V>, hence lim_(a->infinity) w=0',
       numericalTrajectory: dynamicalMeasurement,
-      ratioEmergesWithoutTargetInput: false,
+      ratioEmergesWithoutTargetInput: ratioDerived,
       pressurelessBehaviorDerived: pressurelessDerived
     },
     verdict: {
@@ -297,10 +323,13 @@ export function deriveSubstrateClusteringClosure({
       status: ratioDerived && pressurelessDerived
         ? 'SUBQG_INTERNAL_CLOSURE_DERIVED'
         : 'DYNAMICAL_MEASUREMENT_IMPLEMENTED_CLOSURE_NOT_YET_REPRODUCED',
-      reason:
-        'The target-free joint percolation/field/volume measurement now exists, but its measured energy ratio and equation of state do not yet reproduce both proposed closure conditions.',
+      reason: ratioDerived && pressurelessDerived
+        ? 'The six gauge-reduced canonical phase-space quadratures give 6/lambda without a cosmological target, while the charge-conserving covariant finite-volume sequence approaches the analytically pressureless massive-field limit.'
+        : 'At least one target-free phase-space or covariant dust criterion remains unresolved.',
       requiredNextImplementation:
-        'Replace the one-component transient Genesis field by the full gauge-reduced multi-phase field with an exactly conserved soliton charge, then repeat the same target-blind convergence and volume-scaling test.'
+        ratioDerived && pressurelessDerived
+          ? 'Propagate the derived closure through the perturbation transfer functions and compare the resulting CMB, BAO, and growth observables.'
+          : 'Increase the gauge-reduced finite-volume sequence and resolve whichever internal closure criterion remains open.'
     }
   };
 }

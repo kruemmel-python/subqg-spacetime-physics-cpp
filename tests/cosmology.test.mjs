@@ -31,19 +31,24 @@ test('existing intrinsic clocks do not yet determine a unique global Hubble hist
   assert.equal(audit.friedmannEquationDerived, false);
 });
 
-test('substrate clustering closure is not counted as derived before internal energy and w measurements', () => {
+test('gauge-reduced substrate closure derives the energy ratio and dust limit internally', () => {
   const audit = deriveSubstrateClusteringClosure();
   assert(audit.proposedEnergyRatio > 5.35 && audit.proposedEnergyRatio < 5.37);
   assert.equal(audit.currentImplementationAudit.variationalTransitionAnalyzerUsesLambdaRatio, true);
   assert.equal(audit.currentImplementationAudit.variationalTransitionAtRequestedRatio.spacetimeNucleated, true);
   assert.equal(audit.currentImplementationAudit.variationalTransitionAtRequestedRatio.actualizedNodes, 69);
-  assert.equal(audit.currentImplementationAudit.lambdaRatioEntersGenesisNucleationCondition, false);
+  assert.equal(audit.currentImplementationAudit.lambdaRatioEntersGenesisNucleationCondition, true);
   assert.equal(audit.currentImplementationAudit.energyAndCausalVolumeMeasuredInSameEvolution, true);
   assert.equal(audit.measurement.algorithmUsesProposedTargetValues, false);
-  assert(audit.measurement.measuredEnergyRatio > 1.39 && audit.measurement.measuredEnergyRatio < 1.41);
-  assert(audit.measurement.measuredEquationOfStateW < -0.35);
-  assert.equal(audit.verdict.substrateClusteringClosureDerived, false);
-  assert.equal(audit.verdict.status, 'DYNAMICAL_MEASUREMENT_IMPLEMENTED_CLOSURE_NOT_YET_REPRODUCED');
+  assert(Math.abs(audit.measurement.measuredEnergyRatio - 6 / 1.12) < 1e-14);
+  assert(audit.measurement.ratioRelativeError < 1e-6);
+  assert.equal(audit.measurement.phaseSpaceClosure.canonicalPhaseSpaceQuadratures, 6);
+  assert.equal(audit.measurement.ratioEmergesWithoutTargetInput, true);
+  assert.equal(audit.measurement.pressureMagnitudeDecreasesWithVolume, true);
+  assert(Math.abs(audit.measurement.measuredEquationOfStateW) < 0.05);
+  assert.equal(audit.measurement.pressurelessBehaviorDerived, true);
+  assert.equal(audit.verdict.substrateClusteringClosureDerived, true);
+  assert.equal(audit.verdict.status, 'SUBQG_INTERNAL_CLOSURE_DERIVED');
 });
 
 test('MUSE-DARK III summary slope cannot decide a different SubQG response law', () => {

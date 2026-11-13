@@ -22,6 +22,12 @@ function histogram(values) {
   return out;
 }
 
+function maximum(values, fallback = 0) {
+  let result = fallback;
+  for (const value of values) if (value > result) result = value;
+  return result;
+}
+
 export function tetrahedralIncidenceAudit(world) {
   const cells = tetrahedralCells(world);
   const { faceCells } = incidence(cells);
@@ -33,7 +39,7 @@ export function tetrahedralIncidenceAudit(world) {
     boundaryFaces: counts.filter(value => value === 1).length,
     manifoldInteriorFaces: counts.filter(value => value === 2).length,
     nonManifoldFaces: counts.filter(value => value > 2).length,
-    maximumFaceIncidence: Math.max(0, ...counts),
+    maximumFaceIncidence: maximum(counts),
     fullCliqueComplexIsFaceManifold: counts.every(value => value <= 2)
   };
 }
@@ -133,7 +139,7 @@ export function extractOrientableManifoldSubcomplex(world, {
     faceIncidenceHistogram: histogram([...best.faceCounts.values()]),
     connected: selectedCells.length > 0 && dualBonds.length >= selectedCells.length - 1,
     orientable: best.orientations.size === selectedCells.length,
-    maximumFaceIncidence: Math.max(0, ...best.faceCounts.values())
+    maximumFaceIncidence: maximum(best.faceCounts.values())
   };
 }
 
@@ -246,7 +252,7 @@ export function extractCausalManifoldSector(world) {
     faceIncidenceHistogram: histogram([...retainedFaceCounts.values()]),
     connected: selectedCells.length > 0 && connectedComponents(selectedCells.length, dualBonds).length === 1,
     orientable: retainedOriginal.every(index => orientations.has(index)),
-    maximumFaceIncidence: Math.max(0, ...retainedFaceCounts.values()),
+    maximumFaceIncidence: maximum(retainedFaceCounts.values()),
     acceptedAcrossAllComponents: accepted.length,
     acceptedOriginalCellIndices: accepted,
     componentSizes: components.map(component => component.length),

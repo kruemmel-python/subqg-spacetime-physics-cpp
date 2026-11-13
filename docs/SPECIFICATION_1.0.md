@@ -191,9 +191,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **346 unit tests**:
-- **Total Tests:** 346
-- **Passing:** 346 (100%)
+SubQG 1.0 features an automated test battery with **348 unit tests**:
+- **Total Tests:** 348
+- **Passing:** 348 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -208,7 +208,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 346 unit tests via `node --test` |
+| `npm test` | Runs all 348 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |
