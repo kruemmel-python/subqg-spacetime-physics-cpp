@@ -225,6 +225,12 @@ export function canonicalSimplexParallelTransportAuditDefault(): any;
 export function subqgHubbleScaledAcceleration(z: number, options?: any): any;
 export function museDarkIIIHScalingAudit(options?: any): any;
 export function museDarkIIIHScalingAuditDefault(): any;
+export function canonicalRelationalBackgroundAudit(options?: any): any;
+export function canonicalRelationalBackgroundAuditDefault(): any;
+export function deriveSubstrateClusteringClosure(options?: any): any;
+export function deriveSubstrateClusteringClosureDefault(): any;
+export function measureSubstrateClusteringDynamics(options?: any): any;
+export function measureSubstrateClusteringDynamicsDefault(): any;
 
 export class SubQGMultiversePhaseEngine {
   constructor(options?: any);

@@ -51,9 +51,11 @@ Where:
 - For $g_N \ll a_0$ (Galactic Outskirts / Low Acceleration): $g_{\mathrm{eff}} \approx \sqrt{a_0 g_N} = \frac{\sqrt{G M a_0}}{r}$ (MONDian $1/r$).
 - Historical cosmological bridge ansatz:
   $$a_0 = \frac{c^2}{L_H} \approx 1.2 \times 10^{-10}\,\text{m/s}^2.$$
-  This is not a derivation. Its existing redshift extension
-  `a0(z) proportional H(z)` is falsified by the published 95% interval from
-  MUSE-DARK III; see `validation/COSMOLOGY_VALIDATION.md`.
+  This is not a derivation. MUSE-DARK III's published `a0(z)` interval is
+  conditional on another fitted RAR response law, so comparing that summary
+  parameter with the SubQG bridge is not a valid pass/fail test. A direct fit
+  of the frozen SubQG response to the public accelerations remains required;
+  see `validation/COSMOLOGY_VALIDATION.md`.
 
 Flat rotation curves satisfy the baryonic Tully-Fisher relation identically:
 $$v_{\mathrm{flat}} = (G M a_0)^{1/4} \propto M^{0.25}$$
@@ -189,9 +191,9 @@ developer/
 
 ## 4. Test Suite & Validation Battery
 
-SubQG 1.0 features an automated test battery with **340 unit tests**:
-- **Total Tests:** 340
-- **Passing:** 340 (100%)
+SubQG 1.0 features an automated test battery with **346 unit tests**:
+- **Total Tests:** 346
+- **Passing:** 346 (100%)
 - **Failing:** 0
 - **Execution Time:** ~12-14 seconds
 
@@ -206,7 +208,7 @@ npm test
 
 | Command | Action |
 |---|---|
-| `npm test` | Runs all 340 unit tests via `node --test` |
+| `npm test` | Runs all 346 unit tests via `node --test` |
 | `npm start` | Runs default Genesis Master Simulation demonstration |
 | `npm run demo` | Runs Genesis Master Simulation showing Universe 1 vs 2 |
 | `npm run audit` | Runs the Unified Proof Engine validating all 4 Criteria |

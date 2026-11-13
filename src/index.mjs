@@ -116,8 +116,16 @@ export {
 export {
   subqgHubbleScaledAcceleration,
   museDarkIIIHScalingAudit,
-  museDarkIIIHScalingAuditDefault
+  museDarkIIIHScalingAuditDefault,
+  canonicalRelationalBackgroundAudit,
+  canonicalRelationalBackgroundAuditDefault,
+  deriveSubstrateClusteringClosure,
+  deriveSubstrateClusteringClosureDefault
 } from './modules/subqg_cosmology.mjs';
+export {
+  measureSubstrateClusteringDynamics,
+  measureSubstrateClusteringDynamicsDefault
+} from './modules/subqg_substrate_clustering.mjs';
 export {
   SubQGAppleWorld,
   SubQGAppleExperiment,

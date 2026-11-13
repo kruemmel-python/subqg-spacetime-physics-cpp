@@ -6,10 +6,11 @@ causal order, graph waves, Genesis cosmologies, MOND-like gravity,
 multiverse-phase analysis, the apple experiment, and the associated validation
 engines.
 
-The included Genesis cosmologies are model sectors, not an empirically
-validated cosmology. The first independent redshift-evolution test rejects the
-existing `a0(z) proportional H(z)` bridge; the negative result is preserved in
-`validation/COSMOLOGY_VALIDATION.md` and in the canonical runtime tests.
+The included Genesis cosmologies are model sectors, not yet an empirically
+validated cosmology. MUSE-DARK III's published `a0(z)` summary was fitted with
+a different RAR response law and therefore cannot by itself pass or falsify
+the frozen SubQG response. The corrected audit and the required direct-data
+test are documented in `validation/COSMOLOGY_VALIDATION.md`.
 
 ## What is included
 

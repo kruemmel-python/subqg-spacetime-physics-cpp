@@ -345,13 +345,37 @@ SHA-256 `CBCD4FB43616E93DBF060C1AFF1A97873BA1AAFD7090D5BF2CE992AAEC0EA49E`.
 
 ## Test 10: Kosmologische Entwicklung der Beschleunigungsskala
 
-Die bereits im Projekt vorhandene Hypothese `a0(z) proportional H(z)` wird
-ohne Nachanpassung gegen MUSE-DARK III getestet. Die Modellsekante über den
-beobachteten Bereich `0,33<z<1,44` beträgt `1,123e-10 m/s^2` pro
-Rotverschiebung und liegt außerhalb des publizierten 95-Prozent-Intervalls
-`[1,49;1,70]e-10 m/s^2`. Diese kosmologische Brückenannahme ist damit
-falsifiziert; Gate G7 ist nicht bestanden. Das Ergebnis wird nicht durch eine
-nachträgliche Änderung der Skalierung entfernt.
+Die Modellsekante der vorhandenen Hypothese `a0(z) proportional H(z)` über
+`0,33<z<1,44` beträgt `1,123e-10 m/s^2` pro Rotverschiebung und liegt außerhalb
+des publizierten MUSE-DARK-III-Intervalls `[1,49;1,70]e-10 m/s^2`. Diese Zahlen
+sind jedoch **kein gleichartiger Pass/Fail-Test**: Das publizierte `a0(z)` ist
+der Parameter der dort angepassten Antwortfunktion
+`a_tot=a_bar/[1-exp(-sqrt(a_bar/a0))]`, während SubQG eine andere mikroskopische
+Flussfunktion verwendet. Die frühere Kennzeichnung als Falsifikation war daher
+methodisch falsch und ist auf `INCONCLUSIVE_FUNCTIONAL_FORM_MISMATCH`
+korrigiert. Entscheidend ist ein direkter Likelihoodtest der eingefrorenen
+SubQG-Funktion an den öffentlichen `(a_bar,a_tot,z)`-Daten.
+
+Zusätzlich konstruiert der Audit aus der größten kausal selektierten
+Mannigfaltigkeitskomponente einen intrinsischen Zellvolumen-Skalenfaktor. Im
+kanonischen Lauf wächst das Volumen über neun Stufen von 1 auf 116 Zellen.
+Zwei vorhandene relationale Uhren stimmen aber noch nicht eindeutig überein;
+eine SubQG-Friedmann-Gleichung ist damit noch nicht hergeleitet. Gate G7 bleibt
+offen, nicht durch den zusammengefassten MUSE-Parameter widerlegt.
+
+Der ebenfalls geprüfte Substrat-Clustering-Closurewert
+`Omega_sub,eff=0,264107` wird nicht als Ableitung gezählt. Der variationale
+Übergangsanalysator zeigt bei `lambdaRatio=1,12` eine perkolierte Raumzeit mit
+69 von 72 Zuständen, 800 Bindungen und 27838 Tetraedern. Im davon getrennten
+Genesis-Energielauf steuert `lambdaRatio` die Nukleation oder Feldentwicklung
+aber noch nicht. Der neue gemeinsame Closure-Lauf verbindet deshalb den
+lambda-gesteuerten Graphen mit der kausal ausgewählten Mannigfaltigkeit und
+misst `E_noncondensed/E_soliton` sowie
+`w=-1-(1/3)d ln(rho)/d ln(a)` ohne die Zielwerte in der Evolution. Der
+konvergente Ein-Komponenten-Lauf liefert aktuell rund `1,397:1` und
+`w=-0,358`, nicht `5,357:1` und `w=0`. Die Mehrphasen- und Ladungserhaltung ist
+damit als nächste konkrete Implementationsstufe festgelegt; der CMB/BAO-Treffer
+bleibt bis zu deren Bestehen ein Closure-Ansatz.
 
 ```powershell
 npm run validation:cosmology
@@ -359,4 +383,4 @@ npm run validation:cosmology
 
 Methodik, Quelle und Beweisgrenze stehen in `COSMOLOGY_VALIDATION.md`.
 Die byteidentisch reproduzierte Ergebnisdatei `cosmology_validation.json` hat
-SHA-256 `569A76FEDAA40A60C5C34518C308F4B6445B3BC98C1755080F0251193A7935C6`.
+SHA-256 `EDF227038049BFF7397E3309D21384C54A6D58504BCAD378F35FE4928A077D8E`.

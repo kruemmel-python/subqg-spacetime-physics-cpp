@@ -937,7 +937,8 @@ export class SubQGGraphCoupledEngine {
    */
   analyzeSubQGToMicroUniverseTransition({
     possibilityCount = 72,
-    lambdaRatios = [0.50, 0.75, 0.95, 1.00, 1.05, 1.20, 1.45]
+    lambdaRatios = [0.50, 0.75, 0.95, 1.00, 1.05, 1.20, 1.45],
+    includeMicroscopicState = false
   } = {}) {
     const kStar = this.optimalModeValence; // 4
     const primes = [2, 3, 5, 7, 11];
@@ -1021,6 +1022,7 @@ export class SubQGGraphCoupledEngine {
 
       // Count nucleated 2-simplices (triangles) and 3-simplices (tetrahedra) in the Micro-Universe:
       const triangles = [];
+      const tetrahedra = includeMicroscopicState ? [] : null;
       let tetrahedraCount = 0;
       const activeList = [...activeNodeSet].sort((a, b) => a - b);
 
@@ -1042,6 +1044,7 @@ export class SubQGGraphCoupledEngine {
               const z = activeList[d];
               if (adj[u].includes(z) && adj[v].includes(z) && adj[w].includes(z)) {
                 tetrahedraCount++;
+                if (tetrahedra) tetrahedra.push([u, v, w, z]);
               }
             }
           }
@@ -1165,7 +1168,16 @@ export class SubQGGraphCoupledEngine {
         causalEventsCount: causalEvents.length,
         maxCausalDepth,
         hasPhysicalTime,
-        spacetimeNucleated
+        spacetimeNucleated,
+        microscopicState: includeMicroscopicState ? {
+          possibilities,
+          pairAffinities,
+          activeNodes: activeList,
+          largestComponent: largestComp,
+          bonds,
+          triangles: triangles.map(triangle => triangle.nodes),
+          tetrahedra
+        } : undefined
       };
     });
 

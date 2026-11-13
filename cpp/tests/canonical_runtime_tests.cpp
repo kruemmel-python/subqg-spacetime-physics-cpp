@@ -48,8 +48,17 @@ int main(){
   require(holonomy.find("\"holonomyConnectionMathematicallyClosed\":true")!=std::string::npos,"canonical holonomy closure");
   require(holonomy.find("\"einsteinReggeCurvatureMatchingDerived\":false")!=std::string::npos,"canonical curvature-matching caveat");
   std::string cosmology=runtime.invoke("subqg_cosmology","museDarkIIIHScalingAuditDefault");
-  require(cosmology.find("\"status\":\"FALSIFIED_BY_PUBLISHED_95_PERCENT_INTERVAL\"")!=std::string::npos,"cosmology falsification must be preserved");
+  require(cosmology.find("\"status\":\"INCONCLUSIVE_FUNCTIONAL_FORM_MISMATCH\"")!=std::string::npos,"cosmology summary comparison must remain inconclusive");
+  require(cosmology.find("\"validDirectFalsification\":false")!=std::string::npos,"no cross-response falsification");
   require(cosmology.find("\"cosmologyGatePassed\":false")!=std::string::npos,"cosmology gate caveat");
+  std::string background=runtime.invoke("subqg_cosmology","canonicalRelationalBackgroundAuditDefault");
+  require(background.find("\"backgroundScaleFactorKinematicsConstructed\":true")!=std::string::npos,"relational background kinematics");
+  require(background.find("\"uniqueGlobalRelationalTimeDerived\":false")!=std::string::npos,"global relational time caveat");
+  require(background.find("\"friedmannEquationDerived\":false")!=std::string::npos,"Friedmann derivation caveat");
+  std::string clusteringClosure=runtime.invoke("subqg_cosmology","deriveSubstrateClusteringClosureDefault");
+  require(clusteringClosure.find("\"substrateClusteringClosureDerived\":false")!=std::string::npos,"clustering closure remains an audited postulate");
+  require(clusteringClosure.find("\"algorithmUsesProposedTargetValues\":false")!=std::string::npos,"clustering dynamics must remain target blind");
+  require(clusteringClosure.find("\"energyAndCausalVolumeMeasuredInSameEvolution\":true")!=std::string::npos,"joint clustering measurement must be preserved");
   auto proof=runtime.construct("subqg_unified_proof_engine","SubQGUnifiedProofEngine","[{\"G\":1,\"boxSize\":20}]");
   std::string a0=runtime.get(proof,"a0"); require(!a0.empty()&&a0!="null","proof-engine a0");
   std::string gravity=runtime.call(proof,"effectiveGravitationalAcceleration","[20,0.4]");

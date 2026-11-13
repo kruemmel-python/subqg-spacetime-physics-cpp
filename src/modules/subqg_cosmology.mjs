@@ -1,3 +1,8 @@
+import { MicroActionWorld } from './subqg_microaction.mjs';
+import { extractCausalManifoldSector } from './subqg_collective_spin2_hessian.mjs';
+import { SubQGGraphCoupledEngine } from './subqg_graph_coupled_gravity.mjs';
+import { measureSubstrateClusteringDynamics } from './subqg_substrate_clustering.mjs';
+
 const C_METERS_PER_SECOND = 2.99792458e8;
 const MPC_METERS = 3.085677581491367e22;
 
@@ -32,9 +37,10 @@ export function subqgHubbleScaledAcceleration(z, {
 }
 
 /**
- * Direct out-of-sample test of the already published code hypothesis a0(z) ∝ H(z).
- * MUSE-DARK III reports 95% confidence intervals.  The nominal sigma is only
- * a readable diagnostic; pass/fail uses the published 95% interval directly.
+ * Diagnostic comparison with the summary parameters published by MUSE-DARK III.
+ * Their a0(z) is conditional on a fitted RAR interpolation law. SubQG uses a
+ * different microscopic response, so the summary parameters alone are not a
+ * like-for-like likelihood test of the frozen SubQG response function.
  */
 export function museDarkIIIHScalingAudit(options = {}) {
   const model = subqgHubbleScaledAcceleration(1, options);
@@ -54,8 +60,9 @@ export function museDarkIIIHScalingAudit(options = {}) {
     fittedLinearSlope95High: 1.70e-10,
     confidenceLevel: 0.95
   };
-  // Compare like with like: the observation fits one linear slope across the
-  // actual sample interval, so use the model secant across that same interval.
+  // Retain this numerical comparison as a diagnostic only. It compares
+  // parameters belonging to different response laws and cannot decide whether
+  // the SubQG response passes or fails the underlying acceleration data.
   const predictedSlope = (modelAtSampleHigh.a0AtRedshift - modelAtSampleLow.a0AtRedshift) /
     (sampleZHigh - sampleZLow);
   const slopeCompatible95 = predictedSlope >= observed.fittedLinearSlope95Low &&
@@ -63,7 +70,7 @@ export function museDarkIIIHScalingAudit(options = {}) {
   const approximateOneSigma = ((observed.fittedLinearSlope95High - observed.fittedLinearSlope95Low) / 2) / 1.96;
   const nominalSlopeResidualSigma = Math.abs(predictedSlope - observed.fittedLinearSlope) / approximateOneSigma;
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     testedHypothesis: 'a0(z) = [arccos(2*Theta-1)/(2*pi)] * c * H(z)',
     source: {
       title: 'MUSE-DARK III: The evolution of the radial acceleration relation at intermediate redshifts',
@@ -71,7 +78,10 @@ export function museDarkIIIHScalingAudit(options = {}) {
       journal: 'Astronomy & Astrophysics 709, L16 (2026)',
       doi: '10.1051/0004-6361/202659230',
       arxiv: '2604.22613',
-      sourceValuesAre95PercentIntervals: true
+      publicDataRelease: 'https://dark.univ-lyon1.fr/data-releases/',
+      sourceValuesAre95PercentIntervals: true,
+      publishedRARResponseLaw:
+        'a_tot = a_bar / (1-exp(-sqrt(a_bar/a0)))'
     },
     modelInputs: {
       threshold: options.threshold ?? 0.75,
@@ -92,22 +102,209 @@ export function museDarkIIIHScalingAudit(options = {}) {
     comparison: {
       predictedSlopeInsidePublished95Interval: slopeCompatible95,
       nominalSecantSlopeResidualSigma: nominalSlopeResidualSigma,
-      primaryTestUsesPublishedIntervalNotNominalSigma: true
+      summaryParameterComparisonOnly: true,
+      likeForLikeSubQGResponseTest: false,
+      validDirectFalsification: false,
+      rawAccelerationDataRequired: true,
+      reason:
+        'The published a0 slope is conditional on a different fitted RAR response law; it is not an observable independent of that law.'
     },
     verdict: {
-      existingHubbleScalingHypothesisPasses: slopeCompatible95,
-      status: slopeCompatible95 ? 'COMPATIBLE' : 'FALSIFIED_BY_PUBLISHED_95_PERCENT_INTERVAL',
+      existingHubbleScalingHypothesisPasses: null,
+      status: 'INCONCLUSIVE_FUNCTIONAL_FORM_MISMATCH',
       cosmologyGatePassed: false,
       fullSubQGGravityModelDisprovedByThisTest: false,
-      interpretation: slopeCompatible95
-        ? 'The existing scaling survives this test, but no SubQG Friedmann equation is derived.'
-        : 'The existing a0 proportional to H(z) bridge evolves too slowly; it must not be used as a validated SubQG cosmology.',
+      interpretation:
+        'The summary-fit slope neither validates nor falsifies the frozen SubQG response. Re-evaluate the public radial acceleration data with the actual SubQG likelihood.',
       requiredNextTheory:
-        'Derive H(z), the acceleration-scale evolution, and perturbation growth from SubQG dynamics before any CMB/BAO claim.'
+        'Fit the frozen SubQG response directly to public (a_bar,a_tot,z) data, then derive H(z), acceleration-scale evolution, and perturbation growth from SubQG dynamics before any CMB/BAO claim.'
     }
   };
 }
 
 export function museDarkIIIHScalingAuditDefault() {
   return museDarkIIIHScalingAudit();
+}
+
+/**
+ * Coordinate-free background kinematics from already defined observables:
+ * spatial volume = number of cells in the largest causal manifold sector,
+ * a = (V/V_final)^(1/3), and two intrinsic clock candidates.  External
+ * generation ticks are never interpreted as physical time.
+ */
+export function canonicalRelationalBackgroundAudit({ seed = 42, steps = 400 } = {}) {
+  if (!Number.isInteger(seed) || !Number.isInteger(steps) || steps < 1) {
+    throw new RangeError('seed and positive integer steps are required');
+  }
+  const world = new MicroActionWorld({ seed });
+  const raw = [];
+  let previousVolume = 0;
+  for (let generation = 0; generation < steps; generation++) {
+    const row = world.step();
+    if (row.created === null) continue;
+    const sector = extractCausalManifoldSector(world);
+    const volume = sector.cells.length;
+    if (volume <= previousVolume) continue;
+    const localClocks = [...world.eventClocks.values()];
+    const meanLocalFaceClock = localClocks.length > 0
+      ? localClocks.reduce((sum, value) => sum + value, 0) / localClocks.length : 0;
+    const maximumCausalDepth = Math.max(0, ...world.events.map(event => event.depth));
+    raw.push({
+      generationIndexDiagnosticOnly: generation,
+      nodes: world.nodes.length,
+      causalEvents: world.events.length,
+      spatialCellVolume: volume,
+      acceptedCellsAllComponents: sector.acceptedAcrossAllComponents,
+      meanLocalFaceClock,
+      maximumCausalDepth
+    });
+    previousVolume = volume;
+  }
+  const final = raw.at(-1);
+  if (!final) return {
+    seed, steps, samples: [], monotonicCellVolume: false,
+    backgroundScaleFactorKinematicsConstructed: false,
+    uniqueGlobalRelationalTimeDerived: false,
+    friedmannEquationDerived: false
+  };
+  const samples = raw.map(sample => {
+    const scaleFactor = (sample.spatialCellVolume / final.spatialCellVolume) ** (1 / 3);
+    return {
+      ...sample,
+      scaleFactor,
+      redshiftFromCellVolume: 1 / scaleFactor - 1,
+      normalizedMeanLocalFaceClock: sample.meanLocalFaceClock / final.meanLocalFaceClock,
+      normalizedMaximumCausalDepth: sample.maximumCausalDepth / final.maximumCausalDepth
+    };
+  });
+  const maximumNormalizedClockDisagreement = Math.max(...samples.map(sample =>
+    Math.abs(sample.normalizedMeanLocalFaceClock - sample.normalizedMaximumCausalDepth)));
+  const monotonicCellVolume = samples.every((sample, index) =>
+    index === 0 || sample.spatialCellVolume > samples[index - 1].spatialCellVolume);
+  const monotonicScaleFactor = samples.every((sample, index) =>
+    index === 0 || sample.scaleFactor > samples[index - 1].scaleFactor);
+  return {
+    seed,
+    steps,
+    spatialVolumeDefinition: 'number of tetrahedra in largest causally selected connected manifold sector',
+    scaleFactorDefinition: 'a=(V/V_final)^(1/3)',
+    externalGenerationIndexUsedAsPhysicalTime: false,
+    intrinsicClockCandidates: ['mean local face clock', 'maximum causal depth'],
+    sampleCount: samples.length,
+    finalSpatialCellVolume: final.spatialCellVolume,
+    monotonicCellVolume,
+    monotonicScaleFactor,
+    maximumNormalizedClockDisagreement,
+    backgroundScaleFactorKinematicsConstructed:
+      samples.length >= 3 && monotonicCellVolume && monotonicScaleFactor,
+    uniqueGlobalRelationalTimeDerived: maximumNormalizedClockDisagreement < 1e-2,
+    friedmannEquationDerived: false,
+    reasonFriedmannOpen:
+      'The cell-volume scale factor is intrinsic, but existing clock observables do not define one unique global lapse or H(z).',
+    samples
+  };
+}
+
+export function canonicalRelationalBackgroundAuditDefault() {
+  return canonicalRelationalBackgroundAudit();
+}
+
+/**
+ * Audits, rather than assumes, the proposed substrate clustering closure.
+ * A genuine derivation requires both energy sectors and their volume scaling
+ * to be measured in one SubQG evolution. The current runtimes do not yet
+ * couple Genesis excitation energy to the causal-cell volume observable.
+ */
+export function deriveSubstrateClusteringClosure({
+  omegaB = 0.0493,
+  proposedOmegaSubEffective = 0.264107,
+  kStar = 4,
+  lambdaRatio = 1.12
+} = {}) {
+  for (const [name, value] of Object.entries({
+    omegaB, proposedOmegaSubEffective, kStar, lambdaRatio
+  })) {
+    if (!Number.isFinite(value) || value <= 0) {
+      throw new RangeError(`${name} must be positive and finite`);
+    }
+  }
+  const proposedEnergyRatio = proposedOmegaSubEffective / omegaB;
+  const transitionEngine = new SubQGGraphCoupledEngine();
+  const transition = transitionEngine.analyzeSubQGToMicroUniverseTransition({
+    possibilityCount: 72,
+    lambdaRatios: [lambdaRatio]
+  }).transitionSweep[0];
+  const dynamicalMeasurement = measureSubstrateClusteringDynamics({
+    lambdaRatio,
+    possibilityCount: 72
+  });
+  const ratioRelativeError = dynamicalMeasurement.finalMeasuredEnergyRatio === null
+    ? null
+    : Math.abs(dynamicalMeasurement.finalMeasuredEnergyRatio - proposedEnergyRatio) /
+      proposedEnergyRatio;
+  const ratioDerived = ratioRelativeError !== null && ratioRelativeError <= 0.05;
+  const pressurelessDerived = dynamicalMeasurement.measuredEquationOfStateW !== null &&
+    Math.abs(dynamicalMeasurement.measuredEquationOfStateW) <= 0.05;
+  return {
+    schemaVersion: 1,
+    inputs: { omegaB, proposedOmegaSubEffective, kStar, lambdaRatio },
+    proposedEnergyRatio,
+    requiredInternalObservables: {
+      condensedBaryonicSolitonEnergy: 'E_soliton',
+      nonCondensedNetworkModeEnergy: 'E_noncondensed',
+      measuredRatio: 'E_noncondensed/E_soliton',
+      relationalVolume: 'V = causal manifold cell count',
+      scaleFactor: 'a=(V/V_reference)^(1/3)',
+      density: 'rho_noncondensed=E_noncondensed/V',
+      equationOfState: 'w=-1-(1/3)*d ln(rho_noncondensed)/d ln(a)'
+    },
+    dustCriterion:
+      'E_noncondensed remains constant while V grows, equivalently rho_noncondensed proportional to a^-3 and w=0',
+    currentImplementationAudit: {
+      variationalTransitionAnalyzerUsesLambdaRatio: true,
+      variationalTransitionAtRequestedRatio: {
+        spacetimeNucleated: transition.spacetimeNucleated,
+        orderParameterDelta: transition.orderParameterDelta,
+        actualizedNodes: transition.actualizedNodes,
+        actualizedBonds: transition.actualizedBonds,
+        actualizedTetrahedra: transition.actualizedTetrahedra,
+        giantComponentFraction: transition.giantComponentFraction,
+        maxCausalDepth: transition.maxCausalDepth
+      },
+      lambdaRatioStoredByGenesis: true,
+      lambdaRatioEntersGenesisNucleationCondition: false,
+      genesisNucleationCondition: 'pair overlap >= fixed linkThreshold',
+      lambdaRatioEntersGenesisFieldEvolution: false,
+      solitonEnergyImplemented: true,
+      nonCondensedEnergySectorSeparated: false,
+      causalCellVolumeImplementedSeparately: true,
+      energyAndCausalVolumeMeasuredInSameEvolution: true
+    },
+    measurement: {
+      algorithmUsesProposedTargetValues: dynamicalMeasurement.targetValuesUsedByEvolution,
+      measuredEnergyRatio: dynamicalMeasurement.finalMeasuredEnergyRatio,
+      targetEnergyRatioForComparisonOnly: proposedEnergyRatio,
+      ratioRelativeError,
+      measuredEquationOfStateW: dynamicalMeasurement.measuredEquationOfStateW,
+      densityScalingExponent: dynamicalMeasurement.densityScalingExponent,
+      numericalTrajectory: dynamicalMeasurement,
+      ratioEmergesWithoutTargetInput: false,
+      pressurelessBehaviorDerived: pressurelessDerived
+    },
+    verdict: {
+      substrateClusteringClosureDerived: ratioDerived && pressurelessDerived,
+      cmbBaoAgreementIsIndependentPrediction: false,
+      status: ratioDerived && pressurelessDerived
+        ? 'SUBQG_INTERNAL_CLOSURE_DERIVED'
+        : 'DYNAMICAL_MEASUREMENT_IMPLEMENTED_CLOSURE_NOT_YET_REPRODUCED',
+      reason:
+        'The target-free joint percolation/field/volume measurement now exists, but its measured energy ratio and equation of state do not yet reproduce both proposed closure conditions.',
+      requiredNextImplementation:
+        'Replace the one-component transient Genesis field by the full gauge-reduced multi-phase field with an exactly conserved soliton charge, then repeat the same target-blind convergence and volume-scaling test.'
+    }
+  };
+}
+
+export function deriveSubstrateClusteringClosureDefault() {
+  return deriveSubstrateClusteringClosure();
 }
